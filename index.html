@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Квантум Сейф — Постквантовая криптографическая безопасность</title>
+<meta name="description" content="Криптографический комплаенс КНР (CIPS) и постквантовая безопасность NIST для банков и финансовых организаций Кыргызской Республики.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0f19;
+  --bg-raised:#101526;
+  --bg-card:#131a2b;
+  --line:#232b42;
+  --cyan:#00f2fe;
+  --blue:#4facfe;
+  --text:#f2f5fa;
+  --muted:#8b95ac;
+  --muted-2:#5d6784;
+  --danger:#ff6b6b;
+  --radius-lg:18px;
+  --radius-sm:10px;
+  --maxw:1180px;
+  --font-display:'Space Grotesk', 'Inter', sans-serif;
+  --font-body:'Inter', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%;}
+a{color:inherit;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;font-weight:600;letter-spacing:-0.01em;}
+p{margin:0;}
+button{font-family:inherit;}
+
+/* focus visibility */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:3px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important;}
+}
+
+/* ---------- Header ---------- */
+header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(11,15,25,0.86);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.header-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 22px;
+  gap:14px;
+}
+.logo{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:1.05rem;
+  letter-spacing:0.01em;
+  white-space:nowrap;
+}
+.logo em{
+  font-style:normal;
+  color:var(--cyan);
+}
+.header-right{display:flex;align-items:center;gap:14px;}
+.htp-badge{
+  font-size:0.68rem;
+  color:var(--muted);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 12px;
+  white-space:nowrap;
+  display:none;
+}
+.lang-switch{
+  display:flex;
+  border:1px solid var(--line);
+  border-radius:999px;
+  overflow:hidden;
+}
+.lang-switch button{
+  background:transparent;
+  border:none;
+  color:var(--muted);
+  font-size:0.78rem;
+  font-weight:600;
+  padding:7px 14px;
+  cursor:pointer;
+  transition:color .2s ease, background .2s ease;
+}
+.lang-switch button.active{
+  background:var(--cyan);
+  color:#04121a;
+}
+
+@media(min-width:720px){
+  .htp-badge{display:inline-block;}
+}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative;
+  padding:64px 0 60px;
+  overflow:hidden;
+  background:
+    radial-gradient(680px 420px at 82% -10%, rgba(0,242,254,0.14), transparent 60%),
+    radial-gradient(520px 360px at -10% 40%, rgba(79,172,254,0.10), transparent 60%);
+}
+.hero-grid-lines{
+  position:absolute;inset:0;
+  opacity:0.35;
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;}
+.hero-kicker{
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+  color:var(--cyan);
+  margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(1.9rem, 5vw, 3.1rem);
+  line-height:1.12;
+  max-width:14ch;
+  margin-bottom:22px;
+}
+.hero-sub{
+  color:var(--muted);
+  font-size:1.02rem;
+  max-width:52ch;
+  margin-bottom:30px;
+}
+.btn-primary{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:linear-gradient(120deg, var(--blue), var(--cyan));
+  color:#04121a;
+  font-weight:700;
+  font-size:0.95rem;
+  padding:15px 26px;
+  border:none;
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  box-shadow:0 14px 34px -12px rgba(0,242,254,0.45);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px -12px rgba(0,242,254,0.6);}
+.hero-footnote{
+  margin-top:16px;
+  font-size:0.78rem;
+  color:var(--muted-2);
+  max-width:46ch;
+}
+
+/* ---------- Section shell ---------- */
+section{padding:64px 0;}
+.section-head{
+  max-width:60ch;
+  margin-bottom:36px;
+}
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:0.74rem;
+  color:var(--muted-2);
+  margin-bottom:10px;
+}
+.section-head h2{
+  font-size:clamp(1.5rem, 3.4vw, 2.1rem);
+  margin-bottom:12px;
+}
+.section-head p{color:var(--muted);}
+
+/* ---------- Product cards ---------- */
+.product-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:20px;
+}
+.product-card{
+  flex:1 1 320px;
+  background:var(--bg-card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:28px 26px 30px;
+  display:flex;
+  flex-direction:column;
+}
+.product-card.featured{
+  border-color:rgba(0,242,254,0.35);
+  background:linear-gradient(180deg, rgba(0,242,254,0.05), var(--bg-card) 40%);
+}
+.product-number{
+  font-family:var(--font-mono);
+  font-size:0.72rem;
+  color:var(--cyan);
+  margin-bottom:14px;
+}
+.product-card h3{font-size:1.22rem;margin-bottom:10px;}
+.product-desc{color:var(--muted);font-size:0.92rem;margin-bottom:18px;flex-grow:1;}
+.product-price{
+  font-family:var(--font-mono);
+  font-size:0.86rem;
+  color:var(--text);
+  border-top:1px solid var(--line);
+  padding-top:16px;
+  margin-top:auto;
+}
+.product-price span{display:block;color:var(--muted-2);font-size:0.72rem;margin-bottom:4px;}
+
+/* scan form inside product card 1 */
+.scan-form{margin-top:6px;}
+.scan-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.scan-row input{
+  flex:1;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--text);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  font-family:var(--font-mono);
+  font-size:0.86rem;
+}
+.scan-row input:focus{border-color:var(--cyan);}
+.scan-row button{
+  background:var(--cyan);
+  color:#04121a;
+  border:none;
+  border-radius:var(--radius-sm);
+  padding:0 18px;
+  font-weight:700;
+  font-size:0.85rem;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.scan-row button:disabled{opacity:0.55;cursor:progress;}
+.scan-status{
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+  min-height:1.2em;
+}
+.scan-status.error{color:var(--danger);}
+.scan-status.busy{color:var(--blue);}
+.scan-status.success{color:var(--cyan);}
+
+/* ---------- Tariff table ---------- */
+.tariff-table{
+  width:100%;
+  border-collapse:collapse;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+}
+.tariff-table thead th{
+  text-align:left;
+  font-family:var(--font-mono);
+  font-weight:500;
+  font-size:0.72rem;
+  color:var(--muted-2);
+  background:var(--bg-raised);
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+}
+.tariff-table tbody td{
+  padding:16px;
+  border-bottom:1px solid var(--line);
+  font-size:0.9rem;
+  vertical-align:top;
+}
+.tariff-table tbody tr:last-child td{border-bottom:none;}
+.tariff-name{font-weight:600;}
+.tariff-desc{color:var(--muted);font-size:0.86rem;margin-top:4px;}
+.tariff-price{
+  font-family:var(--font-mono);
+  color:var(--cyan);
+  white-space:nowrap;
+}
+.tariff-price small{display:block;color:var(--muted-2);font-size:0.72rem;margin-top:3px;}
+
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+/* ---------- Industries ---------- */
+.industry-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+@media(min-width:640px){.industry-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:980px){.industry-grid{grid-template-columns:repeat(3,1fr);}}
+.industry-card{
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  padding:20px 20px 22px;
+  background:var(--bg-raised);
+}
+.industry-card h4{font-size:1.02rem;margin-bottom:8px;}
+.industry-card p{color:var(--muted);font-size:0.86rem;}
+
+/* ---------- Vision ---------- */
+.vision-block{
+  display:flex;
+  flex-wrap:wrap;
+  gap:28px;
+}
+.vision-col{flex:1 1 300px;}
+.vision-col h4{font-size:1rem;margin-bottom:10px;color:var(--cyan);}
+.vision-col p{color:var(--muted);font-size:0.92rem;}
+.vendor-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:14px;
+}
+.vendor-chip{
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 14px;
+  font-size:0.78rem;
+  color:var(--muted);
+  font-family:var(--font-mono);
+}
+
+/* ---------- Form ---------- */
+.audit-section{
+  background:var(--bg-raised);
+  border-top:1px solid var(--line);
+}
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:14px;
+  max-width:640px;
+}
+@media(min-width:640px){
+  .form-grid{grid-template-columns:1fr 1fr;}
+  .form-grid .full{grid-column:1 / -1;}
+}
+.field label{
+  display:block;
+  font-size:0.76rem;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+.field input,.field textarea{
+  width:100%;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--text);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  font-size:0.9rem;
+  font-family:inherit;
+}
+.field textarea{resize:vertical;min-height:96px;}
+.field input:focus,.field textarea:focus{border-color:var(--cyan);}
+.form-submit{
+  margin-top:8px;
+  grid-column:1 / -1;
+}
+.form-note{
+  font-size:0.76rem;
+  color:var(--muted-2);
+  margin-top:14px;
+  max-width:56ch;
+}
+.form-status{
+  margin-top:14px;
+  font-size:0.86rem;
+  min-height:1.2em;
+}
+.form-status.error{color:var(--danger);}
+.form-status.success{color:var(--cyan);}
+
+/* ---------- Footer ---------- */
+footer{
+  border-top:1px solid var(--line);
+  padding:34px 0;
+}
+.footer-inner{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:12px;
+  color:var(--muted-2);
+  font-size:0.8rem;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo" data-i18n-html="logo"></div>
+    <div class="header-right">
+      <span class="htp-badge" data-i18n="htpBadge"></span>
+      <div class="lang-switch" role="group" aria-label="Language / Язык">
+        <button type="button" id="lang-ru" onclick="setLang('ru')">RU</button>
+        <button type="button" id="lang-en" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <svg class="hero-grid-lines" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="lineFade" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#4facfe" stop-opacity="0"/>
+        <stop offset="50%" stop-color="#4facfe" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="#00f2fe" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <path d="M0,120 C300,60 500,220 800,140 C950,100 1050,180 1200,130" stroke="url(#lineFade)" stroke-width="1" fill="none"/>
+    <path d="M0,300 C260,340 520,220 780,300 C980,360 1080,260 1200,300" stroke="url(#lineFade)" stroke-width="1" fill="none"/>
+  </svg>
+  <div class="wrap hero-inner">
+    <div class="hero-kicker" data-i18n="heroKicker"></div>
+    <h1 data-i18n="heroTitle"></h1>
+    <p class="hero-sub" data-i18n="heroSub"></p>
+    <button type="button" class="btn-primary" id="hero-cta" onclick="scrollToScan()">
+      <span data-i18n="heroCta"></span>
+    </button>
+    <p class="hero-footnote" data-i18n="heroFootnote"></p>
+  </div>
+</section>
+
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="servicesEyebrow"></div>
+      <h2 data-i18n="servicesTitle"></h2>
+      <p data-i18n="servicesSub"></p>
+    </div>
+
+    <div class="product-grid">
+
+      <article class="product-card featured" id="product-1">
+        <div class="product-number">01</div>
+        <h3 data-i18n="p1Title"></h3>
+        <p class="product-desc" data-i18n="p1Desc"></p>
+
+        <form class="scan-form" id="scan-form" novalidate>
+          <div class="scan-row">
+            <input type="text" id="domain-input" inputmode="url" autocomplete="off" data-i18n-placeholder="p1Placeholder">
+            <button type="submit" id="scan-submit" data-i18n="p1Button"></button>
+          </div>
+          <div class="scan-status" id="scan-status" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="product-price">
+          <span data-i18n="p1PriceLabel"></span>
+          <span data-i18n="p1Price"></span>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="product-number">02</div>
+        <h3 data-i18n="p2Title"></h3>
+        <p class="product-desc" data-i18n="p2Desc"></p>
+        <div class="product-price">
+          <span data-i18n="p2PriceLabel"></span>
+          <span data-i18n="p2Price"></span>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="product-number">03</div>
+        <h3 data-i18n="p3Title"></h3>
+        <p class="product-desc" data-i18n="p3Desc"></p>
+        <div class="product-price">
+          <span data-i18n="p3PriceLabel"></span>
+          <span data-i18n="p3Price"></span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="specialized">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="tariffEyebrow"></div>
+      <h2 data-i18n="tariffTitle"></h2>
+      <p data-i18n="tariffSub"></p>
+    </div>
+
+    <div class="table-scroll">
+      <table class="tariff-table">
+        <thead>
+          <tr>
+            <th data-i18n="tariffColService"></th>
+            <th data-i18n="tariffColPrice"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="tariff-name" data-i18n="t1Name"></div><div class="tariff-desc" data-i18n="t1Desc"></div></td>
+            <td class="tariff-price" data-i18n="t1Price"></td>
+          </tr>
+          <tr>
+            <td><div class="tariff-name" data-i18n="t2Name"></div><div class="tariff-desc" data-i18n="t2Desc"></div></td>
+            <td class="tariff-price" data-i18n="t2Price"></td>
+          </tr>
+          <tr>
+            <td><div class="tariff-name" data-i18n="t3Name"></div><div class="tariff-desc" data-i18n="t3Desc"></div></td>
+            <td class="tariff-price" data-i18n="t3Price"></td>
+          </tr>
+          <tr>
+            <td><div class="tariff-name" data-i18n="t4Name"></div><div class="tariff-desc" data-i18n="t4Desc"></div></td>
+            <td class="tariff-price" data-i18n="t4Price"></td>
+          </tr>
+          <tr>
+            <td><div class="tariff-name" data-i18n="t5Name"></div><div class="tariff-desc" data-i18n="t5Desc"></div></td>
+            <td class="tariff-price" data-i18n="t5Price"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="industries">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="industriesEyebrow"></div>
+      <h2 data-i18n="industriesTitle"></h2>
+    </div>
+    <div class="industry-grid">
+      <div class="industry-card"><h4 data-i18n="i1Title"></h4><p data-i18n="i1Desc"></p></div>
+      <div class="industry-card"><h4 data-i18n="i2Title"></h4><p data-i18n="i2Desc"></p></div>
+      <div class="industry-card"><h4 data-i18n="i3Title"></h4><p data-i18n="i3Desc"></p></div>
+      <div class="industry-card"><h4 data-i18n="i4Title"></h4><p data-i18n="i4Desc"></p></div>
+      <div class="industry-card"><h4 data-i18n="i5Title"></h4><p data-i18n="i5Desc"></p></div>
+      <div class="industry-card"><h4 data-i18n="i6Title"></h4><p data-i18n="i6Desc"></p></div>
+    </div>
+  </div>
+</section>
+
+<section id="vision">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="visionEyebrow"></div>
+      <h2 data-i18n="visionTitle"></h2>
+    </div>
+    <div class="vision-block">
+      <div class="vision-col">
+        <h4 data-i18n="visionVendorsTitle"></h4>
+        <p data-i18n="visionVendorsDesc"></p>
+        <div class="vendor-row">
+          <span class="vendor-chip">Huawei</span>
+          <span class="vendor-chip">Sangfor</span>
+          <span class="vendor-chip">Fortinet</span>
+          <span class="vendor-chip">Thales</span>
+          <span class="vendor-chip">Cisco</span>
+        </div>
+      </div>
+      <div class="vision-col">
+        <h4 data-i18n="visionWeb3Title"></h4>
+        <p data-i18n="visionWeb3Desc"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="audit-section" id="audit-form-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="formEyebrow"></div>
+      <h2 data-i18n="formTitle"></h2>
+      <p data-i18n="formSub"></p>
+    </div>
+
+    <form id="audit-form" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label for="f-name" data-i18n="fName"></label>
+          <input type="text" id="f-name" name="name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f-company" data-i18n="fCompany"></label>
+          <input type="text" id="f-company" name="company" required autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="f-email" data-i18n="fEmail"></label>
+          <input type="email" id="f-email" name="email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="f-phone" data-i18n="fPhone"></label>
+          <input type="tel" id="f-phone" name="phone" autocomplete="tel">
+        </div>
+        <div class="field full">
+          <label for="f-message" data-i18n="fMessage"></label>
+          <textarea id="f-message" name="message"></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" class="btn-primary" id="form-submit-btn">
+            <span data-i18n="fSubmit"></span>
+          </button>
+        </div>
+      </div>
+      <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+      <p class="form-note" data-i18n="formNote"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span data-i18n="footerLine1"></span>
+    <span data-i18n="footerLine2"></span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   API BASE — ЗАМЕНИТЕ на реальный адрес вашего backend на Render,
+   например https://quantum-safe-api.onrender.com
+   "https://onrender.com" сам по себе не является рабочим адресом
+   конкретного сервиса — это домен платформы Render, а не поддомен
+   вашего приложения.
+   ============================================================ */
+const API_BASE = "https://onrender.com";
+
+const T = {
+  ru: {
+    pageTitle: "Квантум Сейф — Постквантовая криптографическая безопасность",
+    logo: "КВАНТУМ <em>СЕЙФ</em>",
+    htpBadge: "РЕЗИДЕНТ ПВТ КР",
+    heroKicker: "Криптографическая инфраструктура нового поколения",
+    heroTitle: "Криптографический комплаенс КНР (CIPS) и постквантовая безопасность NIST",
+    heroSub: "Профессиональный аудит ИТ-периметра, инвентаризация крипто-активов под NDA (On-Premise) и бесшовная оркестровка национальных китайских алгоритмов шифрования SM2/SM4 и постквантовых протоколов защиты NIST (ML-KEM).",
+    heroCta: "Запросить экспресс-аудит инфраструктуры",
+    heroFootnote: "* Вся входящая информация обрабатывается инженерами компании в закрытом локальном контуре строго в соответствии с Законом КР «О банковской тайне» (24–48 часов).",
+
+    servicesEyebrow: "Продуктовая линейка",
+    servicesTitle: "Три уровня криптографической устойчивости",
+    servicesSub: "От дистанционной экспресс-диагностики до управляющего программного слоя внутри банковского контура.",
+
+    p1Title: "Внешний квантовый сканер периметра",
+    p1Desc: "Дистанционный бесконтактный аудит публичных интерфейсов (порт 443), проверка разрядности ключей (RSA-2048/ECDSA) и TLS 1.2/1.3, детекция готовности к стандартам NIST/КНР. Выдача официального PDF-отчета со штампом комплаенса.",
+    p1Placeholder: "например, bank.kg",
+    p1Button: "Сканировать",
+    p1PriceLabel: "Стоимость",
+    p1Price: "Доступно по запросу (тестовый запуск)",
+
+    p2Title: "Внутренний On-Premise инвентаризатор",
+    p2Desc: "Глубокий рекурсивный поиск уязвимостей кода и баз данных (MD5, SHA-1) под NDA. Локальный изолированный ИИ-модуль анализирует конфигурации серверов и формирует спецификацию для закупки аппаратных HSM-шлюзов у авторизованных вендоров. Работает внутри закрытого банковского контура без доступа к сети Интернет.",
+    p2PriceLabel: "Стоимость",
+    p2Price: "850 000 KGS / $10 000 · срок 4–6 недель",
+
+    p3Title: "Управляющая платформа «Квантум Оркестратор»",
+    p3Desc: "Интеллектуальный прокси-хаб диспетчеризации трафика: автоматически подбирает и активирует нужный HSM-шлюз на основании политик банка (транзакции в юанях → шлюзы SM2/SM4, западные контуры → NIST ML-KEM). Платформа работает в классе API Gateway / Proxy поверх сертифицированных внешних СКЗИ и не осуществляет шифрование самостоятельно; итоговая схема встраивания подлежит валидации в рамках предэксплуатационного аудита регуляторов (ГКНБ КР, НБКР).",
+    p3PriceLabel: "Стоимость",
+    p3Price: "от 2 600 000 KGS / $30 000 · внедрение от 1,5 месяцев",
+
+    tariffEyebrow: "Специализированные сервисы",
+    tariffTitle: "Тарифы и подписка",
+    tariffSub: "Точечные аудиты и абонентское сопровождение для быстрого старта.",
+    tariffColService: "Сервис",
+    tariffColPrice: "Стоимость",
+    t1Name: "SWIFT-Vector PQC Audit",
+    t1Desc: "Изолированный аудит безопасности и криптоустойчивости транзакционных каналов межбанковских платежей SWIFT.",
+    t1Price: "от 200 000 KGS / $2 300",
+    t2Name: "PQC Readiness Scan",
+    t2Desc: "Точечная экспресс-оценка готовности финтех-компаний, Web3-протоколов и МСБ к миграции на новые стандарты безопасности.",
+    t2Price: "от 80 000 KGS / $950",
+    t3Name: "Cyber Resilience Score",
+    t3Desc: "Комплексный аудит цифровой устойчивости бизнеса с выводом единого индекса защищённости от квантовых угроз алгоритма Шора.",
+    t3Price: "от 150 000 KGS / $1 750",
+    t4Name: "Академия Квантум Сейф",
+    t4Desc: "Практические интенсивы и сертификация по постквантовой криптографии для ИТ-директоров и офицеров ИБ финансовых институтов.",
+    t4Price: "25 000 KGS / $300 за человека",
+    t5Name: "Managed Security Service",
+    t5Desc: "Ежемесячное абонентское сопровождение инфраструктуры, обновление криптографических политик «на лету» и мониторинг шлюзов.",
+    t5Price: "80 000–150 000 KGS / $1 000–1 750 / мес.",
+
+    industriesEyebrow: "Отраслевые решения",
+    industriesTitle: "Кому подходит Квантум Сейф",
+    i1Title: "Коммерческие банки",
+    i1Desc: "Комплаенс каналов SWIFT/CIPS и подготовка криптографического периметра к регуляторным проверкам.",
+    i2Title: "Финтех-платформы",
+    i2Desc: "Защита высоконагруженных API-соединений и платёжных шлюзов от компрометации ключей.",
+    i3Title: "Web3 / DeFi / криптобиржи",
+    i3Desc: "Инвентаризация квантово-уязвимых алгоритмов подписи (ECDSA/RSA) кошельков и seed-фраз, защита от атак класса Store-Now-Decrypt-Later.",
+    i4Title: "Нотариат и юридические фирмы",
+    i4Desc: "Абсолютная тайна сделок M&A и архивов в системах электронного документооборота.",
+    i5Title: "Государственная инфраструктура и G2B",
+    i5Desc: "Аудит критических узлов: Түндүк, ЕСИ, госавтоматизация, ЦОД, цифровой сом.",
+    i6Title: "Крипто-майнинг",
+    i6Desc: "Постквантовые сетевые «зонтики» для легальных пулов, исключающие подмену адресов выплат хакерами.",
+
+    visionEyebrow: "Vision 2026–2031",
+    visionTitle: "Глобальная экосистема",
+    visionVendorsTitle: "Глобальные вендоры",
+    visionVendorsDesc: "Квантум Сейф выступает системным интегратором, разворачивающим программный слой поверх сертифицированного оборудования лидеров рынка.",
+    visionWeb3Title: "Web3-токенизация",
+    visionWeb3Desc: "В разработке лимитированная B2B-коллекция токенов доступа Quantum Safe Pass (Hybrid NFT + SaaS) для международных крипто-структур, дающих право на ежеквартальные аудиты.",
+
+    formEyebrow: "Заявка под NDA",
+    formTitle: "Обсудить проект",
+    formSub: "Опишите задачу — инженер свяжется с вами в течение 24–48 часов.",
+    fName: "Ваше имя",
+    fCompany: "Название компании",
+    fEmail: "Контактный email",
+    fPhone: "Телефон",
+    fMessage: "Сообщение",
+    fSubmit: "Отправить запрос под NDA",
+    formNote: "Отправляя форму, вы соглашаетесь на обработку данных в закрытом контуре компании в соответствии с Законом КР «О банковской тайне».",
+
+    footerLine1: "ОсОО «Квантум Сейф» © 2026. Все права защищены.",
+    footerLine2: "Резидент Парка высоких технологий Кыргызской Республики",
+
+    scanEmptyErr: "Введите доменное имя.",
+    scanInvalidErr: "Введите корректный домен, например bank.kg",
+    scanBusy: "Идёт сканирование периметра…",
+    scanSuccess: "Отчёт сформирован и загружен.",
+    scanFailErr: "Не удалось выполнить сканирование. Попробуйте ещё раз.",
+
+    formSending: "Отправка запроса…",
+    formSuccess: "Заявка отправлена. Мы свяжемся с вами в течение 24–48 часов.",
+    formFailErr: "Не удалось отправить заявку. Попробуйте ещё раз или напишите нам напрямую.",
+    formFieldsErr: "Заполните обязательные поля: имя, компания, email."
+  },
+  en: {
+    pageTitle: "Quantum Safe — Post-Quantum Cryptographic Security",
+    logo: "QUANTUM <em>SAFE</em>",
+    htpBadge: "HTP RESIDENT KG",
+    heroKicker: "Next-generation cryptographic infrastructure",
+    heroTitle: "PRC Cryptographic Compliance (CIPS) and NIST Post-Quantum Security",
+    heroSub: "Professional IT-perimeter audits, NDA-bound on-premise crypto-asset inventory, and seamless orchestration of national Chinese encryption algorithms (SM2/SM4) alongside NIST post-quantum protocols (ML-KEM).",
+    heroCta: "Request Infrastructure Express Audit",
+    heroFootnote: "* All incoming information is processed by company engineers within a closed local perimeter, strictly in accordance with the KR Law \"On Banking Secrecy\" (24–48 hours).",
+
+    servicesEyebrow: "Product line",
+    servicesTitle: "Three layers of cryptographic resilience",
+    servicesSub: "From remote express diagnostics to a controlling software layer inside the bank's own perimeter.",
+
+    p1Title: "External Quantum Perimeter Scanner",
+    p1Desc: "Remote, non-intrusive audit of public interfaces (port 443), key-length verification (RSA-2048/ECDSA) and TLS 1.2/1.3, readiness detection for NIST/PRC standards. Issues an official PDF report with a compliance stamp.",
+    p1Placeholder: "e.g. bank.kg",
+    p1Button: "Scan",
+    p1PriceLabel: "Price",
+    p1Price: "Available upon request (test run)",
+
+    p2Title: "Internal On-Premise Inventory Scanner",
+    p2Desc: "Deep recursive scan of code and database vulnerabilities (MD5, SHA-1) under NDA. A local, isolated AI module analyzes server configurations and produces a procurement specification for HSM gateways from authorized vendors. Runs entirely inside the bank's closed perimeter, with no internet access.",
+    p2PriceLabel: "Price",
+    p2Price: "$10,000 / 850,000 KGS · 4–6 weeks",
+
+    p3Title: "Quantum Orchestrator Management Platform",
+    p3Desc: "An intelligent traffic-dispatch proxy hub: automatically selects and activates the right HSM gateway based on bank policy (CNY transactions → SM2/SM4 gateways, Western rails → NIST ML-KEM). The platform operates as an API Gateway / Proxy layer on top of certified external cryptographic hardware and does not perform encryption itself; the final integration scheme is subject to validation during the regulators' (ГКНБ КР, НБКР) pre-launch audit.",
+    p3PriceLabel: "Price",
+    p3Price: "from $30,000 / 2,600,000 KGS · rollout from 1.5 months",
+
+    tariffEyebrow: "Specialized services",
+    tariffTitle: "Rates & subscriptions",
+    tariffSub: "Targeted audits and managed support for a fast start.",
+    tariffColService: "Service",
+    tariffColPrice: "Price",
+    t1Name: "SWIFT-Vector PQC Audit",
+    t1Desc: "Isolated security and crypto-resilience audit of interbank SWIFT transaction channels.",
+    t1Price: "from $2,300 / 200,000 KGS",
+    t2Name: "PQC Readiness Scan",
+    t2Desc: "Focused express assessment of fintech companies, Web3 protocols and SMEs for migration readiness to new security standards.",
+    t2Price: "from $950 / 80,000 KGS",
+    t3Name: "Cyber Resilience Score",
+    t3Desc: "A comprehensive digital-resilience audit producing a single index of exposure to Shor's-algorithm quantum threats.",
+    t3Price: "from $1,750 / 150,000 KGS",
+    t4Name: "Quantum Safe Academy",
+    t4Desc: "Hands-on intensives and certification in post-quantum cryptography for CIOs and information-security officers at financial institutions.",
+    t4Price: "$300 / 25,000 KGS per person",
+    t5Name: "Managed Security Service",
+    t5Desc: "Monthly managed infrastructure support, live cryptographic policy updates, and gateway monitoring.",
+    t5Price: "$1,000–1,750 / 80,000–150,000 KGS / mo.",
+
+    industriesEyebrow: "Industry solutions",
+    industriesTitle: "Who Quantum Safe is for",
+    i1Title: "Commercial banks",
+    i1Desc: "SWIFT/CIPS channel compliance and preparing the cryptographic perimeter for regulatory review.",
+    i2Title: "Fintech platforms",
+    i2Desc: "Protecting high-load API connections and payment gateways from key compromise.",
+    i3Title: "Web3 / DeFi / crypto exchanges",
+    i3Desc: "Inventory of quantum-vulnerable signature algorithms (ECDSA/RSA) for wallets and seed phrases, and protection against Store-Now-Decrypt-Later attacks.",
+    i4Title: "Notaries and law firms",
+    i4Desc: "Absolute confidentiality of M&A deals and archives in electronic document-management systems.",
+    i5Title: "Government infrastructure & G2B",
+    i5Desc: "Audit of critical nodes: Tunduk, ESI, state automation systems, data centers, digital som.",
+    i6Title: "Crypto mining",
+    i6Desc: "Post-quantum network \"umbrellas\" for legitimate pools, preventing payout-address substitution by attackers.",
+
+    visionEyebrow: "Vision 2026–2031",
+    visionTitle: "Global ecosystem",
+    visionVendorsTitle: "Global vendors",
+    visionVendorsDesc: "Quantum Safe acts as a systems integrator, deploying its software layer on top of certified hardware from market-leading vendors.",
+    visionWeb3Title: "Web3 tokenization",
+    visionWeb3Desc: "In development: a limited B2B access-token collection, Quantum Safe Pass (hybrid NFT + SaaS), granting international crypto entities ongoing rights to quarterly audits.",
+
+    formEyebrow: "Request under NDA",
+    formTitle: "Discuss your project",
+    formSub: "Describe your need — an engineer will reach out within 24–48 hours.",
+    fName: "Your name",
+    fCompany: "Company name",
+    fEmail: "Contact email",
+    fPhone: "Phone",
+    fMessage: "Message",
+    fSubmit: "Submit Request under NDA",
+    formNote: "By submitting this form you agree to have your data processed within the company's closed perimeter in accordance with the KR Law \"On Banking Secrecy\".",
+
+    footerLine1: "Quantum Safe LLC © 2026. All rights reserved.",
+    footerLine2: "Resident of the High Technology Park of the Kyrgyz Republic",
+
+    scanEmptyErr: "Enter a domain name.",
+    scanInvalidErr: "Enter a valid domain, e.g. bank.kg",
+    scanBusy: "Scanning perimeter…",
+    scanSuccess: "Report generated and downloaded.",
+    scanFailErr: "The scan could not be completed. Please try again.",
+
+    formSending: "Sending request…",
+    formSuccess: "Request sent. We will contact you within 24–48 hours.",
+    formFailErr: "The request could not be sent. Please try again or contact us directly.",
+    formFieldsErr: "Please fill in the required fields: name, company, email."
+  }
+};
+
+let currentLang = localStorage.getItem("qs-lang") || "ru";
+
+function applyLang(lang){
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.title = T[lang].pageTitle;
+
+  document.querySelectorAll("[data-i18n]").forEach(function(el){
+    const key = el.getAttribute("data-i18n");
+    if (T[lang][key] !== undefined) el.textContent = T[lang][key];
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(function(el){
+    const key = el.getAttribute("data-i18n-html");
+    if (T[lang][key] !== undefined) el.innerHTML = T[lang][key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(function(el){
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (T[lang][key] !== undefined) el.setAttribute("placeholder", T[lang][key]);
+  });
+
+  document.getElementById("lang-ru").classList.toggle("active", lang === "ru");
+  document.getElementById("lang-en").classList.toggle("active", lang === "en");
+
+  localStorage.setItem("qs-lang", lang);
+}
+
+function setLang(lang){
+  applyLang(lang);
+}
+
+function scrollToScan(){
+  const target = document.getElementById("product-1");
+  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  const input = document.getElementById("domain-input");
+  if (input) setTimeout(function(){ input.focus(); }, 450);
+}
+
+function cleanDomain(raw){
+  return raw
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .split("/")[0]
+    .split("?")[0];
+}
+
+function isValidDomain(domain){
+  return /^(?!-)[a-z0-9-]{1,63}(?<!-)(\.[a-z0-9-]{1,63})+$/.test(domain);
+}
+
+function setScanStatus(message, cls){
+  const el = document.getElementById("scan-status");
+  el.textContent = message || "";
+  el.className = "scan-status" + (cls ? " " + cls : "");
+}
+
+document.getElementById("scan-form").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const input = document.getElementById("domain-input");
+  const btn = document.getElementById("scan-submit");
+  const raw = input.value;
+
+  if (!raw || !raw.trim()){
+    setScanStatus(T[currentLang].scanEmptyErr, "error");
+    return;
+  }
+
+  const domain = cleanDomain(raw);
+  if (!isValidDomain(domain)){
+    setScanStatus(T[currentLang].scanInvalidErr, "error");
+    return;
+  }
+
+  btn.disabled = true;
+  setScanStatus(T[currentLang].scanBusy, "busy");
+
+  try {
+    const formData = new FormData();
+    formData.append("domain", domain);
+
+    const response = await fetch(API_BASE + "/scan", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) throw new Error("Scan request failed with status " + response.status);
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "QuantumSafe_Audit_" + domain + ".pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
+    setScanStatus(T[currentLang].scanSuccess, "success");
+  } catch (err) {
+    setScanStatus(T[currentLang].scanFailErr, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function setFormStatus(message, cls){
+  const el = document.getElementById("form-status");
+  el.textContent = message || "";
+  el.className = "form-status" + (cls ? " " + cls : "");
+}
+
+document.getElementById("audit-form").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const btn = document.getElementById("form-submit-btn");
+
+  const payload = {
+    name: document.getElementById("f-name").value.trim(),
+    company: document.getElementById("f-company").value.trim(),
+    email: document.getElementById("f-email").value.trim(),
+    phone: document.getElementById("f-phone").value.trim(),
+    message: document.getElementById("f-message").value.trim()
+  };
+
+  if (!payload.name || !payload.company || !payload.email){
+    setFormStatus(T[currentLang].formFieldsErr, "error");
+    return;
+  }
+
+  btn.disabled = true;
+  setFormStatus(T[currentLang].formSending, "");
+
+  try {
+    const response = await fetch(API_BASE + "/contact-request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) throw new Error("Lead submission failed with status " + response.status);
+
+    setFormStatus(T[currentLang].formSuccess, "success");
+    e.target.reset();
+  } catch (err) {
+    setFormStatus(T[currentLang].formFailErr, "error");
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+applyLang(currentLang);
+</script>
+
+</body>
+</html>

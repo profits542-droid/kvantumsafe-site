@@ -389,6 +389,30 @@ section{padding:64px 0;}
 }
 .form-status.error{color:var(--danger);}
 .form-status.success{color:var(--cyan);}
+.field-hint{
+  display:block;
+  font-size:0.7rem;
+  color:var(--muted-2);
+  margin-top:5px;
+}
+.form-success{
+  max-width:640px;
+  margin-top:22px;
+  padding:26px 24px;
+  border:1px solid rgba(0,242,254,0.35);
+  background:linear-gradient(180deg, rgba(0,242,254,0.08), transparent);
+  border-radius:var(--radius-lg);
+}
+.form-success-icon{
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  background:var(--cyan);
+  color:#04121a;
+  font-weight:700;
+  margin-bottom:14px;
+}
+.form-success p{color:var(--text);font-size:0.94rem;}
 
 /* ---------- Footer ---------- */
 footer{
@@ -607,6 +631,7 @@ footer{
         <div class="field">
           <label for="f-phone" data-i18n="fPhone"></label>
           <input type="tel" id="f-phone" name="phone" autocomplete="tel">
+          <span class="field-hint" id="phone-hint" data-i18n="phoneHint"></span>
         </div>
         <div class="field full">
           <label for="f-message" data-i18n="fMessage"></label>
@@ -621,6 +646,12 @@ footer{
       <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
       <p class="form-note" data-i18n="formNote"></p>
     </form>
+
+    <div class="form-success" id="form-success" hidden role="status" aria-live="polite">
+      <div class="form-success-icon">✓</div>
+      <p data-i18n="formSuccessBig"></p>
+    </div>
+
   </div>
 </section>
 
@@ -723,9 +754,11 @@ const T = {
     fCompany: "Название компании",
     fEmail: "Контактный email",
     fPhone: "Телефон",
+    phoneHint: "Начните с +996 или укажите код страны — так мы точно свяжемся с вами.",
     fMessage: "Сообщение",
     fSubmit: "Отправить запрос под NDA",
     formNote: "Отправляя форму, вы соглашаетесь на обработку данных в закрытом контуре компании в соответствии с Законом КР «О банковской тайне».",
+    formSuccessBig: "Заявка успешно отправлена! Наши инженеры свяжутся с вами под NDA в течение 24 часов.",
 
     footerLine1: "ОсОО «Квантум Сейф» © 2026. Все права защищены.",
     footerLine2: "Резидент Парка высоких технологий Кыргызской Республики",
@@ -822,9 +855,11 @@ const T = {
     fCompany: "Company name",
     fEmail: "Contact email",
     fPhone: "Phone",
+    phoneHint: "Start with +996 or include your country code — this helps us reach you.",
     fMessage: "Message",
     fSubmit: "Submit Request under NDA",
     formNote: "By submitting this form you agree to have your data processed within the company's closed perimeter in accordance with the KR Law \"On Banking Secrecy\".",
+    formSuccessBig: "Request submitted successfully! Our engineers will contact you under NDA within 24 hours.",
 
     footerLine1: "Quantum Safe LLC © 2026. All rights reserved.",
     footerLine2: "Resident of the High Technology Park of the Kyrgyz Republic",
@@ -954,16 +989,42 @@ function setFormStatus(message, cls){
   el.className = "form-status" + (cls ? " " + cls : "");
 }
 
+/* Light phone normalization for KG numbers:
+   - strips spaces/dashes/parentheses
+   - a leading "0" (local trunk prefix) becomes "+996"
+   - a bare "996..." gets a leading "+"
+   - anything already starting with "+" is left as-is
+   Does not attempt full international validation — just nudges the
+   common local-format cases into something callable. */
+function normalizePhone(raw){
+  let digits = raw.trim().replace(/[\s\-().]/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("+")) return digits;
+  if (digits.startsWith("00")) return "+" + digits.slice(2);
+  if (digits.startsWith("0")) return "+996" + digits.slice(1);
+  if (digits.startsWith("996")) return "+" + digits;
+  if (/^[0-9]/.test(digits)) return "+996" + digits;
+  return digits;
+}
+
+document.getElementById("f-phone").addEventListener("blur", function(){
+  if (this.value.trim()) this.value = normalizePhone(this.value);
+});
+
 document.getElementById("audit-form").addEventListener("submit", async function(e){
   e.preventDefault();
   const btn = document.getElementById("form-submit-btn");
+  const btnLabel = btn.querySelector("span");
+  const form = document.getElementById("audit-form");
+  const successPanel = document.getElementById("form-success");
 
   const payload = {
     name: document.getElementById("f-name").value.trim(),
     company: document.getElementById("f-company").value.trim(),
     email: document.getElementById("f-email").value.trim(),
-    phone: document.getElementById("f-phone").value.trim(),
-    message: document.getElementById("f-message").value.trim()
+    phone: normalizePhone(document.getElementById("f-phone").value.trim()),
+    message: document.getElementById("f-message").value.trim(),
+    lang: currentLang
   };
 
   if (!payload.name || !payload.company || !payload.email){
@@ -972,9 +1033,14 @@ document.getElementById("audit-form").addEventListener("submit", async function(
   }
 
   btn.disabled = true;
-  setFormStatus(T[currentLang].formSending, "");
+  const originalLabel = btnLabel.textContent;
+  btnLabel.textContent = T[currentLang].formSending;
+  setFormStatus("", "");
 
   try {
+    /* The Telegram Bot API token lives only on the backend (env var),
+       never in this file — see /contact-request in main.py. Sending it
+       from browser JS would expose it to anyone viewing page source. */
     const response = await fetch(API_BASE + "/contact-request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -983,12 +1049,13 @@ document.getElementById("audit-form").addEventListener("submit", async function(
 
     if (!response.ok) throw new Error("Lead submission failed with status " + response.status);
 
-    setFormStatus(T[currentLang].formSuccess, "success");
-    e.target.reset();
+    form.hidden = true;
+    successPanel.hidden = false;
+    successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (err) {
     setFormStatus(T[currentLang].formFailErr, "error");
-  } finally {
     btn.disabled = false;
+    btnLabel.textContent = originalLabel;
   }
 });
 

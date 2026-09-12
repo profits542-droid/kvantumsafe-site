@@ -3,281 +3,1145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Квантум Сейф — Постквантовая криптографическая безопасность</title>
-<meta name="description" content="Криптографический комплаенс КНР (CIPS) и постквантовая безопасность NIST для банков и финансовых организаций Кыргызской Республики.">
-<link rel="preconnect" href="https://googleapis.com">
-<link rel="preconnect" href="https://gstatic.com" crossorigin>
-<link href="https://googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>KvantumSafe — Постквантовый ИБ-аудит и крипто-комплаенс для банков и финтеха</title>
+<meta name="description" content="KvantumSafe — B2B-консалтинг по постквантовой кибербезопасности и крипто-комплаенсу для банков, финтеха и крупного бизнеса в СНГ и Центральной Азии. Резидент ПВТ КР.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+
 <style>
-:root{
-  --bg:#0b0f19;
-  --bg-raised:#101526;
-  --bg-card:#131a2b;
-  --line:#232b42;
-  --cyan:#00f2fe;
-  --blue:#4facfe;
-  --text:#f2f5fa;
-  --muted:#8b95ac;
-  --muted-2:#5d6784;
-  --danger:#ff6b6b;
-  --radius-lg:18px;
-  --radius-sm:10px;
-  --maxw:1180px;
-  --font-display:'Space Grotesk', 'Inter', sans-serif;
-  --font-body:'Inter', sans-serif;
-  --font-mono:'IBM Plex Mono', monospace;
-}
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--font-body);
-  line-height:1.55;
-  -webkit-font-smoothing:antialiased;
-}
-a{color:inherit;text-decoration:none;}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px;}
-h1,h2,h3,h4{font-family:var(--font-display);margin:0;font-weight:600;letter-spacing:-0.01em;}
-p{margin:0;}
-button{font-family:inherit;}
+  html{ scroll-behavior: smooth; }
+  body{ font-family: 'Inter', sans-serif; background:#05070a; }
 
-header{
-  position:sticky;top:0;z-index:50;
-  background:rgba(11,15,25,0.86);
-  backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line);
-}
-.header-inner{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 22px;
-  gap:14px;
-}
-.logo{
-  font-family:var(--font-display);
-  font-weight:700;
-  font-size:1.05rem;
-  letter-spacing:0.01em;
-  white-space:nowrap;
-}
-.logo em{font-style:normal;color:var(--cyan);}
-.header-right{display:flex;align-items:center;gap:14px;}
-.lang-switch{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;}
-.lang-switch button{
-  background:transparent;border:none;color:var(--muted);
-  font-size:0.78rem;font-weight:600;padding:7px 14px;cursor:pointer;
-}
-.lang-switch button.active{background:var(--cyan);color:#04121a;}
+  .bg-mesh{
+    background:
+      radial-gradient(circle at 15% 8%, rgba(139,124,255,0.12), transparent 40%),
+      radial-gradient(circle at 88% 22%, rgba(34,211,238,0.10), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(34,211,238,0.07), transparent 50%);
+  }
 
-section{padding:64px 0;}
-.section-head{max-width:60ch;margin-bottom:36px;}
-.section-head h2{font-size:clamp(1.5rem, 3.4vw, 2.1rem);margin-bottom:12px;}
-.section-head p{color:var(--muted);}
+  #latticeCanvas{
+    mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+  }
 
-.product-grid{display:flex;flex-wrap:wrap;gap:20px;}
-.product-card{
-  flex:1 1 320px;background:var(--bg-card);border:1px solid var(--line);
-  border-radius:var(--radius-lg);padding:28px 26px 30px;display:flex;flex-direction:column;
-}
-.product-card.featured{
-  border-color:rgba(0,242,254,0.35);
-  background:linear-gradient(180deg, rgba(0,242,254,0.05), var(--bg-card) 40%);
-}
-.product-number{font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);margin-bottom:14px;}
-.product-card h3{font-size:1.22rem;margin-bottom:10px;}
-.product-desc{color:var(--muted);font-size:0.92rem;margin-bottom:18px;flex-grow:1;}
-.product-price{font-family:var(--font-mono);font-size:0.86rem;color:var(--text);border-top:1px solid var(--line);padding-top:16px;margin-top:auto;}
-.product-price span{display:block;color:var(--muted-2);font-size:0.72rem;margin-bottom:4px;}
+  ::selection{ background: rgba(34,211,238,0.18); color:#22d3ee; }
 
-.scan-form{margin-top:6px;}
-.scan-row{display:flex;gap:8px;margin-bottom:10px;}
-.scan-row input{
-  flex:1;background:var(--bg);border:1px solid var(--line);color:var(--text);
-  border-radius:var(--radius-sm);padding:12px 14px;font-family:var(--font-mono);font-size:0.86rem;
-}
-.scan-row button{
-  background:var(--cyan);color:#04121a;border:none;border-radius:var(--radius-sm);
-  padding:0 18px;font-weight:700;font-size:0.85rem;cursor:pointer;white-space:nowrap;
-}
-.scan-row button:disabled{opacity:0.55;cursor:progress;}
-.scan-status{font-family:var(--font-mono);font-size:0.78rem;min-height:1.2em;margin-top:4px;}
+  .scrollbar-thin::-webkit-scrollbar{ width:5px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.15); border-radius: 10px; }
 
-.industry-grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:24px;}
-@media(min-width:640px){.industry-grid{grid-template-columns:1fr 1fr;}}
-@media(min-width:980px){.industry-grid{grid-template-columns:repeat(3,1fr);}}
-.industry-card{border:1px solid var(--line);border-radius:var(--radius-sm);padding:20px 20px 22px;background:var(--bg-raised);}
-.industry-card h4{font-size:1.02rem;margin-bottom:8px;color:var(--text);}
-.industry-card p{color:var(--muted);font-size:0.86rem;}
+  @keyframes chatPulse{
+    0%{ transform: scale(0.85); opacity: 0.55; }
+    100%{ transform: scale(1.35); opacity: 0; }
+  }
+  .animate-chat-pulse{ animation: chatPulse 2.4s ease-out infinite; }
 
-footer{background:var(--bg-raised);border-top:1px solid var(--line);padding:40px 0;margin-top:64px;font-size:0.86rem;color:var(--muted);}
-.footer-inner{display:flex;flex-direction:column;gap:20px;text-align:center;}
-@media(min-width:640px){.footer-inner{flex-direction:row;justify-content:space-between;text-align:left;}}
+  @keyframes chatFadeIn{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform: translateY(0);} }
+  .animate-chat-fade{ animation: chatFadeIn .25s ease; }
+
+  @keyframes typingDot{
+    0%, 60%, 100%{ opacity:0.3; transform: translateY(0); }
+    30%{ opacity:1; transform: translateY(-3px); }
+  }
+  .typing-dot{ animation: typingDot 1.1s ease-in-out infinite; }
+  .typing-dot:nth-child(2){ animation-delay:.15s; }
+  .typing-dot:nth-child(3){ animation-delay:.3s; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ animation: none !important; transition: none !important; }
+  }
 </style>
 </head>
-<body>
+<body class="bg-[#05070a] text-slate-100 antialiased">
 
-<header>
-  <div class="wrap header-inner">
-    <div class="logo">KVANTUM<em>SAFE</em></div>
-    <div class="header-right">
-      <div class="lang-switch">
-        <button id="btn-ru" class="active" onclick="setLanguage('ru')">RU</button>
-        <button id="btn-en" onclick="setLanguage('en')">EN</button>
+<div class="bg-mesh fixed inset-0 -z-20 pointer-events-none"></div>
+<canvas id="latticeCanvasFixed" class="fixed inset-0 w-full h-full -z-10 opacity-30 pointer-events-none"></canvas>
+
+<!-- HEADER -->
+<header class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-[#05070a]/75 border-b border-white/10">
+  <div class="max-w-6xl mx-auto px-6 h-[76px] flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <span class="w-9 h-9 rounded-[10px] bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 24 24" fill="none" class="w-[18px] h-[18px]">
+          <path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" stroke="#04120e" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M12 2V22M3 7L21 17M21 7L3 17" stroke="#04120e" stroke-width="1" opacity="0.6"/>
+        </svg>
+      </span>
+      <div class="leading-none">
+        <span class="block font-display font-semibold text-[14.5px] tracking-tight">КВАНТУМ СЕЙФ</span>
+        <span class="block font-mono text-[9px] tracking-[0.14em] text-slate-500 uppercase mt-0.5">Quantum Safe</span>
       </div>
+    </div>
+
+    <nav id="mainNav" class="hidden md:flex items-center gap-8">
+      <a href="#services" class="text-sm font-medium text-slate-400 hover:text-white transition-colors" data-i18n="nav.services">Услуги</a>
+      <a href="#threats" class="text-sm font-medium text-slate-400 hover:text-white transition-colors" data-i18n="nav.threats">Угрозы</a>
+      <a href="#industries" class="text-sm font-medium text-slate-400 hover:text-white transition-colors" data-i18n="nav.industries">Отрасли</a>
+      <a href="#trust" class="text-sm font-medium text-slate-400 hover:text-white transition-colors" data-i18n="nav.trust">Комплаенс</a>
+      <a href="#contacts" class="text-sm font-medium text-slate-400 hover:text-white transition-colors" data-i18n="nav.contacts">Контакты</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <span class="hidden lg:inline-flex items-center gap-2 font-mono text-[10.5px] tracking-wider text-slate-400 border border-white/15 rounded-full px-3.5 py-1.5" data-i18n="header.residency_badge"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0"></span>РЕЗИДЕНТ ПВТ КР</span>
+      <button id="langToggle" class="font-mono text-xs font-semibold tracking-wider px-4 py-2 rounded-full border border-white/15 hover:border-cyan-400 hover:text-cyan-400 transition-colors">EN</button>
+      <a href="#audit-form" class="hidden md:inline-flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-400 to-teal-400 text-[#04120e] hover:shadow-[0_10px_30px_-8px_rgba(34,211,238,0.55)] hover:-translate-y-0.5 transition-all" data-i18n="nav.cta">Связаться</a>
+      <button id="navToggle" class="md:hidden w-9 h-9 flex items-center justify-center" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" class="w-5 h-5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
   </div>
+
+  <nav id="mobileNav" class="hidden md:hidden flex-col bg-[#05070a] border-t border-white/10">
+    <a href="#services" class="px-6 py-4 border-b border-white/10 text-sm font-medium text-slate-300" data-i18n="nav.services">Услуги</a>
+    <a href="#threats" class="px-6 py-4 border-b border-white/10 text-sm font-medium text-slate-300" data-i18n="nav.threats">Угрозы</a>
+    <a href="#industries" class="px-6 py-4 border-b border-white/10 text-sm font-medium text-slate-300" data-i18n="nav.industries">Отрасли</a>
+    <a href="#trust" class="px-6 py-4 border-b border-white/10 text-sm font-medium text-slate-300" data-i18n="nav.trust">Комплаенс</a>
+    <a href="#contacts" class="px-6 py-4 text-sm font-medium text-slate-300" data-i18n="nav.contacts">Контакты</a>
+  </nav>
 </header>
 
-<main class="wrap">
-  <section>
-    <div class="section-head">
-      <h2 id="section-title">Продуктовая линейка безопасности</h2>
-      <p id="section-subtitle">Решения для защиты банковского и корпоративного секторов Кыргызской Республики</p>
+<main>
+
+  <!-- HERO -->
+  <section id="hero" class="relative border-b border-white/10 pt-[190px] pb-28 md:pb-32 min-h-[80vh] flex items-center">
+    <canvas id="latticeCanvas" class="absolute inset-0 w-full h-full opacity-60"></canvas>
+    <div class="max-w-6xl mx-auto px-6 relative z-10 w-full">
+      <div class="max-w-[760px]">
+        <div class="font-mono text-[12.5px] tracking-[0.14em] uppercase text-cyan-400 flex items-center gap-2.5 mb-5">
+          <span class="w-[22px] h-px bg-cyan-400 inline-block"></span>
+          <span data-i18n="hero.eyebrow">РЕЗИДЕНТ ПВТ КР • КИБЕРБЕЗОПАСНОСТЬ НОВОГО ПОКОЛЕНИЯ</span>
+        </div>
+        <h1 class="font-display font-semibold leading-[1.08] text-[34px] md:text-[52px] mb-6" data-i18n="hero.title">Криптографический комплаенс КНР <span class="text-slate-400 text-[0.7em] font-mono align-middle">(SM2/SM4)</span> и постквантовая безопасность <span class="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">NIST</span>.</h1>
+        <p class="text-slate-400 text-[17px] leading-relaxed max-w-[620px] mb-3" data-i18n="hero.subtitle">Профессиональный аудит ИТ-периметра, инвентаризация крипто-активов под NDA (On-Premise) и поддержка национальных китайских алгоритмов шифрования SM2/SM4 и постквантовых протоколов защиты NIST (ML-KEM).</p>
+
+        <div class="flex flex-wrap items-center gap-5 mb-3 mt-7">
+          <a href="#audit-form" class="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-[16px] bg-gradient-to-r from-cyan-400 to-teal-400 text-[#04120e] hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-8px_rgba(34,211,238,0.55)] transition-all" data-i18n="hero.cta_primary">Запросить Экспресс-Аудит Инфраструктуры</a>
+          <a href="#services" class="font-mono text-xs text-cyan-400 border border-cyan-400/30 bg-cyan-400/[0.06] px-4 py-2.5 rounded-full hover:border-cyan-400 transition-colors" data-i18n="hero.services_link">Смотреть пакеты и цены →</a>
+        </div>
+        <p class="text-slate-500 text-[12.5px] leading-relaxed max-w-[560px] mb-10" data-i18n="hero.footnote">* Вся входящая информация обрабатывается инженерами компании в закрытом локальном контуре строго в соответствии с Законом КР «О банковской тайне» (24–48 часов).</p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="font-mono text-xs text-slate-400 border border-white/10 bg-white/[0.02] px-4 py-2 rounded-full flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>Harvest-Now-Decrypt-Later</span>
+        <span class="font-mono text-xs text-slate-400 border border-white/10 bg-white/[0.02] px-4 py-2 rounded-full flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>NIST ML-KEM / FIPS 203</span>
+        <span class="font-mono text-xs text-slate-400 border border-white/10 bg-white/[0.02] px-4 py-2 rounded-full flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span><span data-i18n="hero.badge3">Резидент ПВТ КР</span></span>
+        <span class="font-mono text-xs text-slate-400 border border-white/10 bg-white/[0.02] px-4 py-2 rounded-full flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span><span data-i18n="hero.badge4">Закрытый контур · NDA</span></span>
+      </div>
     </div>
-    
-    <div class="product-grid">
-      <!-- 01 -->
-      <div class="product-card featured">
-        <div class="product-number">01 // B2B ПРОДАЖИ</div>
-        <h3 id="p1-title">Сканирование на уязвимости (Quantum Scan)</h3>
-        <p class="product-desc" id="p1-desc">Автоматическая проверка инфраструктуры на готовность к постквантовым угрозам и аудит текущих криптографических алгоритмов.</p>
-        <div class="scan-form">
-          <div class="scan-row">
-            <input type="text" id="scan-domain" placeholder="domain.kg или IP" required>
-            <input type="email" id="scan-email" placeholder="Ваша почта" required>
-            <button type="button" id="scan-btn" onclick="startQuantumScan()">Scan</button>
+  </section>
+
+  <!-- THREATS / WHY NOW -->
+  <section id="threats" class="border-b border-white/10 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-[680px] mb-16">
+        <div class="font-mono text-[12.5px] tracking-[0.14em] uppercase text-cyan-400 flex items-center gap-2.5 mb-5">
+          <span class="w-[22px] h-px bg-cyan-400 inline-block"></span>
+          <span data-i18n="threats.eyebrow">Почему сейчас</span>
+        </div>
+        <h2 class="font-display font-semibold text-[26px] md:text-[36px] leading-tight mb-4" data-i18n="threats.title">Угроза Harvest Now, Decrypt Later и крипто-гибкость бизнеса</h2>
+        <p class="text-slate-400 text-[16px] leading-relaxed" data-i18n="threats.text">Иностранные разведки и киберпреступные группировки уже перехватывают и сохраняют зашифрованный трафик банков и финтех-компаний — чтобы расшифровать его через 3–5 лет, когда квантовые компьютеры станут достаточно мощными для алгоритма Шора. Если ваша инфраструктура не обладает крипто-гибкостью (Crypto-Agility) — способностью быстро заменить устаревшие алгоритмы на квантово-устойчивые — коммерческая и клиентская тайна вашей компании будет раскрыта.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-16">
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-7">
+          <span class="w-11 h-11 rounded-xl bg-cyan-400/10 flex items-center justify-center mb-5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/></svg>
+          </span>
+          <h4 class="font-semibold text-[16.5px] mb-2" data-i18n="threats.f1.title">Harvest-Now-Decrypt-Later</h4>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="threats.f1.text">Данные, украденные сегодня, будут расшифрованы позже — как только появятся достаточно мощные квантовые компьютеры.</p>
+        </div>
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-7">
+          <span class="w-11 h-11 rounded-xl bg-cyan-400/10 flex items-center justify-center mb-5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M4 12a8 8 0 0113.657-5.657M20 12a8 8 0 01-13.657 5.657"/><path d="M4 4v5h5M20 20v-5h-5"/></svg>
+          </span>
+          <h4 class="font-semibold text-[16.5px] mb-2" data-i18n="threats.f2.title">Crypto-Agility</h4>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="threats.f2.text">Способность инфраструктуры быстро и без сбоев переходить на новые криптографические стандарты по мере их появления.</p>
+        </div>
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-7">
+          <span class="w-11 h-11 rounded-xl bg-cyan-400/10 flex items-center justify-center mb-5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <h4 class="font-semibold text-[16.5px] mb-2" data-i18n="threats.f3.title">NIST PQC (ML-KEM / FIPS 203)</h4>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="threats.f3.text">Официальные квантово-устойчивые алгоритмы, на которые переходят регуляторы и глобальные банки.</p>
+        </div>
+      </div>
+
+      <div id="tls-check" class="border border-violet-400/30 bg-violet-400/[0.06] rounded-2xl p-8 md:p-10 flex flex-col md:flex-row md:items-center gap-6 md:gap-10 justify-between">
+        <div class="max-w-xl">
+          <h3 class="font-display font-semibold text-[21px] mb-2" data-i18n="tlscheck.title">Экспресс-проверка уязвимости TLS</h3>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="tlscheck.text">Узнайте за 48 часов, использует ли ваш периметр устаревшие алгоритмы шифрования (RSA/ECC) и подвержены ли ваши SSL/TLS-сертификаты риску Harvest-Now-Decrypt-Later.</p>
+        </div>
+        <a href="#audit-form" class="shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[15px] bg-violet-400 text-[#0c0820] hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-8px_rgba(139,124,255,0.55)] transition-all" data-i18n="tlscheck.cta">Запросить проверку</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INDUSTRIES / WHO WE SERVE -->
+  <section id="industries" class="border-b border-white/10 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-[720px] mb-16">
+        <div class="font-mono text-[12.5px] tracking-[0.14em] uppercase text-cyan-400 flex items-center gap-2.5 mb-5">
+          <span class="w-[22px] h-px bg-cyan-400 inline-block"></span>
+          <span data-i18n="industries.eyebrow">Кому мы помогаем</span>
+        </div>
+        <h2 class="font-display font-semibold text-[26px] md:text-[36px] leading-tight mb-4" data-i18n="industries.title">Экспертиза для всех, кто управляет цифровыми активами и коммерческой тайной</h2>
+        <p class="text-slate-400 text-[16px] leading-relaxed" data-i18n="industries.subtitle">Продукт №1 (Внешний сканер периметра) и Продукт №2 (Внутренний аудит под NDA) адаптируются под специфику каждой отрасли — от системообразующих банков до частных юридических практик.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+
+        <!-- Banks & Neobanks -->
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <span class="w-11 h-11 rounded-xl bg-cyan-400/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M3 21h18M4 21V10l8-6 8 6v11M9 21v-6h6v6"/></svg>
+            </span>
+            <span class="font-mono text-[10.5px] text-slate-500 border border-white/10 rounded-full px-3 py-1 shrink-0" data-i18n="industries.i1.tag">Продукт №1 + Продукт №2</span>
           </div>
-          <div class="scan-status" id="scan-status"></div>
+          <h3 class="font-display font-semibold text-[18.5px] mb-2.5" data-i18n="industries.i1.title">Банки и необанки</h3>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="industries.i1.text">Мониторинг внешнего периметра в режиме постоянного наблюдения и полная инвентаризация криптографии внутри контура под соглашением о неразглашении (NDA). Отдельное направление — защита транзакционных каналов SWIFT и подготовка ИТ-инфраструктуры к обязательной глобальной миграции на постквантовые стандарты шифрования.</p>
         </div>
-        <div class="product-price">
-          <span id="p1-price-label">Стоимость одной проверки:</span>
-          <strong id="p1-price-val">0 KGS / бесплатно в рамках пилота</strong>
+
+        <!-- Fintech & Payments -->
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <span class="w-11 h-11 rounded-xl bg-cyan-400/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+            </span>
+            <span class="font-mono text-[10.5px] text-slate-500 border border-white/10 rounded-full px-3 py-1 shrink-0" data-i18n="industries.i2.tag">Продукт №1 + Продукт №2</span>
+          </div>
+          <h3 class="font-display font-semibold text-[18.5px] mb-2.5" data-i18n="industries.i2.title">Финтех и платёжные системы</h3>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="industries.i2.text">Глубокий аудит безопасности платёжных шлюзов и высоконагруженных API-интеграций, через которые ежедневно проходят тысячи транзакций. Отдельно проверяем защиту электронных кошельков клиентов и криптографическую стойкость каналов передачи данных от перехвата хакерами.</p>
         </div>
+
+        <!-- Crypto / Web3 -->
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <span class="w-11 h-11 rounded-xl bg-violet-400/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8b7cff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07l-1.5 1.5M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07l1.5-1.5"/></svg>
+            </span>
+          </div>
+          <h3 class="font-display font-semibold text-[18.5px] mb-1" data-i18n="industries.i3.title">Крипто-индустрия и Web3</h3>
+          <p class="font-mono text-[11.5px] text-violet-400 mb-2.5" data-i18n="industries.i3.subtitle">Биржи · Обменники · Кастодианы</p>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="industries.i3.text">Инвентаризация и аудит классических квантово-уязвимых алгоритмов цифровой подписи (ECDSA/RSA), защищающих доступ к холодным и горячим кошелькам, смарт-контрактам и seed-фразам. Отдельно оцениваем устойчивость инфраструктуры к атакам класса SNDL (Store Now, Decrypt Later) — хищению зашифрованных данных сегодня с расчётом на их расшифровку квантовым компьютером завтра.</p>
+        </div>
+
+        <!-- Legal & Notary -->
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8">
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <span class="w-11 h-11 rounded-xl bg-violet-400/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8b7cff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 3v18M5 7l-3 6a3 3 0 006 0l-3-6zm14 0l-3 6a3 3 0 006 0l-3-6zM5 7h14M4 21h16"/></svg>
+            </span>
+          </div>
+          <h3 class="font-display font-semibold text-[18.5px] mb-2.5" data-i18n="industries.i4.title">Юридические компании и нотариальные конторы</h3>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="industries.i4.text">Бескомпромиссная защита систем электронного документооборота (ЭДО) и закрытых цифровых архивов. Стопроцентное обеспечение тайны сделок, слияний и поглощений (M&amp;A) — там, где утечка данных означает не только финансовые потери, но и необратимый удар по репутации бренда.</p>
+        </div>
+
       </div>
 
-      <!-- 02 -->
-      <div class="product-card">
-        <div class="product-number">02 // B2B ПРОДАЖИ</div>
-        <h3 id="p2-title">Криптографический комплаенс (Продукт №2)</h3>
-        <p class="product-desc" id="p2-desc">Тестирование, аудит и приведение финансовых систем организации в соответствие с международными и государственными стандартами трансграничной безопасности КНР (CIPS).</p>
-        <div class="product-price">
-          <span id="p2-price-label">Фиксированная стоимость:</span>
-          <strong id="p2-price-val">850 000 KGS</strong>
-        </div>
-      </div>
-
-      <!-- 03 -->
-      <div class="product-card">
-        <div class="product-number">03 // B2B ПРОДАЖИ</div>
-        <h3 id="p3-title">Постквантовая защита NIST (Продукт №3)</h3>
-        <p class="product-desc" id="p3-desc">Интеграция передовых алгоритмов постквантового шифрования, одобренных NIST, для защиты критически важной банковской инфраструктуры и данных финансовых организаций.</p>
-        <div class="product-price">
-          <span id="p3-price-label">Стоимость внедрения:</span>
-          <strong id="p3-price-val">2 600 000 KGS</strong>
-        </div>
-      </div>
-
-      <!-- 04 -->
-      <div class="product-card">
-        <div class="product-number">04 // РЕГУЛЯРНЫЙ MRR</div>
-        <h3 id="p4-title">Managed Service & Web3 SaaS</h3>
-        <p class="product-desc" id="p4-desc">Непрерывное техническое сопровождение, точечный аудит безопасности, подписка на облачные сервисы мониторинга угроз и защита по модели Quantum Safe Pass.</p>
-        <div class="product-price">
-          <span id="p4-price-label">Ежемесячная подписка:</span>
-          <strong id="p4-price-val">80 000 – 150 000 KGS / мес</strong>
+      <!-- SMB — full width -->
+      <div class="border border-cyan-400/20 bg-cyan-400/[0.04] rounded-2xl p-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+        <span class="w-11 h-11 rounded-xl bg-cyan-400/10 flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M3 9l1-5h16l1 5M3 9v11h18V9M3 9h18M9 21v-6h6v6"/></svg>
+        </span>
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <h3 class="font-display font-semibold text-[18.5px]" data-i18n="industries.i5.title">Малый и средний бизнес</h3>
+            <span class="font-mono text-[10.5px] text-cyan-400 border border-cyan-400/30 rounded-full px-3 py-1" data-i18n="industries.i5.tag">Продукт №1</span>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="industries.i5.text">Доступный и быстрый экспресс-аудит корпоративных сайтов, CRM-систем и интернет-магазинов. Массовые автоматизированные сканеры хакеров не делают различий между небольшим интернет-магазином и крупным банком — мы помогаем защитить персональные данные клиентов и коммерческую тайну бизнеса без бюджета крупной корпорации.</p>
         </div>
       </div>
     </div>
   </section>
-  <!-- ПОДРОБНАЯ ТАБЛИЦА СРАВНЕНИЯ ТАРИФОВ -->
-  <section>
-    <div class="section-head">
-      <h2>Детальное сравнение планов</h2>
-      <p>Сравните возможности наших продуктов и выберите подходящий уровень защиты</p>
-    </div>
-    
-    <div class="table-scroll">
-      <table class="tariff-table">
-        <thead>
-          <tr>
-            <th>ВОЗМОЖНОСТИ И УСЛУГИ</th>
-            <th>QUANTUM SCAN (01)</th>
-            <th>КОМПЛАЕНС CIPS (02)</th>
-            <th>ЗАЩИТА NIST (03)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="tariff-name">Автоматический аудит инфраструктуры<div class="tariff-desc">Проверка внешних узлов на квантовые уязвимости</div></td>
-            <td class="tariff-price">✓<small>Включено</small></td>
-            <td class="tariff-price">✓<small>Включено</small></td>
-            <td class="tariff-price">✓<small>Включено</small></td>
-          </tr>
-          <tr>
-            <td class="tariff-name">Анализ трансграничных шлюзов<div class="tariff-desc">Проверка на соответствие стандартам платежной системы КНР</div></td>
-            <td class="tariff-price">—</td>
-            <td class="tariff-price">✓<small>Полный аудит</small></td>
-            <td class="tariff-price">✓<small>Полный аудит</small></td>
-          </tr>
-          <tr>
-            <td class="tariff-name">Внедрение постквантовых алгоритмов<div class="tariff-desc">Миграция на шифрование, одобренное NIST</div></td>
-            <td class="tariff-price">—</td>
-            <td class="tariff-price">—</td>
-            <td class="tariff-price">✓<small>Под ключ</small></td>
-          </tr>
-          <tr>
-            <td class="tariff-name">Обучение персонала и регламенты<div class="tariff-desc">Подготовка команды безопасности банка</div></td>
-            <td class="tariff-price">—</td>
-            <td class="tariff-price">✓<small>Документация</small></td>
-            <td class="tariff-price">✓<small>Семинары + Документы</small></td>
-          </tr>
-          <tr>
-            <td class="tariff-name">Юридическое сопровождение<div class="tariff-desc">Подготовка документов для регуляторов (НБКР)</div></td>
-            <td class="tariff-price">—</td>
-            <td class="tariff-price">✓<small>Включено</small></td>
-            <td class="tariff-price">✓<small>Включено</small></td>
-          </tr>
-        </tbody>
-      </table>
+
+  <!-- SERVICES / PRICING -->
+  <section id="services" class="border-b border-white/10 py-24 md:py-28">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-[680px] mb-16">
+        <div class="font-mono text-[12.5px] tracking-[0.14em] uppercase text-cyan-400 flex items-center gap-2.5 mb-5">
+          <span class="w-[22px] h-px bg-cyan-400 inline-block"></span>
+          <span data-i18n="services.eyebrow">Продуктовая линейка</span>
+        </div>
+        <h2 class="font-display font-semibold text-[26px] md:text-[36px] leading-tight mb-4" data-i18n="services.title">Четыре продукта — от бесплатной диагностики до управляемого сервиса безопасности</h2>
+        <p class="text-slate-400 text-[16px]" data-i18n="services.subtitle">Три B2B-продажи и один регулярный SaaS-сервис — каждый этап логически продолжает предыдущий, от разового аудита до непрерывной защиты по подписке.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+        <!-- ============ CARD 1 / 4 — Quantum Scan (B2B, free pilot) ============ -->
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-6 flex flex-col">
+          <span class="font-mono text-xs text-slate-500 tracking-wider mb-4">01 / 04</span>
+          <h3 class="font-display font-semibold text-[17px] mb-2" data-i18n="services.p1.title">Quantum Scan</h3>
+          <p class="font-mono text-[10.5px] text-cyan-400 mb-3" data-i18n="services.p1.tag">B2B · Экспресс-аудит периметра</p>
+          <p class="text-sm text-slate-400 mb-5" data-i18n="services.p1.desc">Дистанционный бесконтактный аудит-сканер публичных интерфейсов (порт 443) без внедрения в контур банка.</p>
+          <ul class="space-y-2.5 mb-6 flex-1">
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-violet-400 mt-2 shrink-0"></span><span data-i18n="services.p1.b1">Анализ параметров TLS 1.2/1.3</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-violet-400 mt-2 shrink-0"></span><span data-i18n="services.p1.b2">Выявление квантово-уязвимой разрядности ключей (RSA-2048, ECDSA)</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-violet-400 mt-2 shrink-0"></span><span data-i18n="services.p1.b3">Официальный PDF-отчёт с верификационным QR-кодом (время GMT+6, Бишкек)</span></li>
+          </ul>
+          <div class="border-t border-white/10 pt-5">
+            <div class="font-display font-semibold text-2xl mb-1" data-i18n="services.p1.price">0 KGS</div>
+            <div class="font-mono text-xs text-slate-500 mb-5" data-i18n="services.p1.duration">Бесплатно · пилотный проект</div>
+            <form id="liveScanForm" class="space-y-3">
+              <input type="text" id="liveScanDomain" required class="w-full bg-white/[0.03] border border-white/15 rounded-[10px] px-4 py-3 text-[14px] outline-none focus:border-cyan-400 focus:bg-cyan-400/[0.04] transition-colors" data-i18n-placeholder="services.p1.scan_placeholder" placeholder="Например, mbank.kg">
+              <button type="submit" id="liveScanBtn" class="block w-full text-center py-3 rounded-full font-semibold text-sm border border-white/15 hover:border-cyan-400 hover:text-cyan-400 transition-colors" data-i18n="services.p1.cta">Запустить сканирование и скачать PDF</button>
+              <p id="liveScanStatus" class="text-xs hidden"></p>
+            </form>
+          </div>
+        </div>
+        <!-- ============ END CARD 1 / 4 ============ -->
+
+        <!-- ============ CARD 2 / 4 — Криптографический комплаенс (B2B) ============ -->
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-6 flex flex-col">
+          <span class="font-mono text-xs text-slate-500 tracking-wider mb-4">02 / 04</span>
+          <h3 class="font-display font-semibold text-[17px] mb-2" data-i18n="services.p2.title">Криптографический комплаенс</h3>
+          <p class="font-mono text-[10.5px] text-cyan-400 mb-3" data-i18n="services.p2.tag">B2B · Изолированный контур / NDA</p>
+          <p class="text-sm text-slate-400 mb-5" data-i18n="services.p2.desc">Внутренний аудит под NDA со 100% соблюдением Закона КР «О банковской тайне» — работа в изолированном контуре (On-Premise).</p>
+          <ul class="space-y-2.5 mb-6 flex-1">
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-cyan-400 mt-2 shrink-0"></span><span data-i18n="services.p2.b1">Инвентаризация активов, поиск уязвимостей (MD5, SHA-1)</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-cyan-400 mt-2 shrink-0"></span><span data-i18n="services.p2.b2">Оценка готовности к CIPS</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-cyan-400 mt-2 shrink-0"></span><span data-i18n="services.p2.b3">Техническая спецификация для закупки HSM-оборудования (Huawei, Sangfor, Thales)</span></li>
+          </ul>
+          <div class="border-t border-white/10 pt-5">
+            <div class="font-display font-semibold text-2xl mb-1">850 000 <span class="text-base font-mono text-slate-400">KGS</span></div>
+            <div class="font-mono text-xs text-slate-500 mb-5" data-i18n="services.p2.duration">Срок: 4–6 недель</div>
+            <a href="#audit-form" class="block text-center py-3 rounded-full font-semibold text-sm border border-white/15 hover:border-cyan-400 hover:text-cyan-400 transition-colors" data-i18n="services.p2.cta">Запросить аудит контура (Подписание NDA)</a>
+          </div>
+        </div>
+        <!-- ============ END CARD 2 / 4 ============ -->
+
+        <!-- ============ CARD 3 / 4 — Квантум Оркестратор (B2B, flagship) ============ -->
+        <div class="relative border border-cyan-400/40 bg-gradient-to-b from-cyan-400/[0.06] to-transparent rounded-2xl p-6 flex flex-col shadow-[0_20px_60px_-20px_rgba(34,211,238,0.25)]">
+          <span class="absolute -top-3 left-6 font-mono text-[10.5px] font-semibold tracking-wide px-3 py-1 rounded-full bg-cyan-400 text-[#04120e]" data-i18n="services.p3.badge">Флагманский продукт</span>
+          <span class="font-mono text-xs text-slate-500 tracking-wider mb-4">03 / 04</span>
+          <h3 class="font-display font-semibold text-[17px] mb-1">Квантум Оркестратор</h3>
+          <p class="font-mono text-[10px] text-slate-500 mb-3" data-i18n="services.p3.subtitle_small">Crypto-Agility Engine</p>
+          <p class="font-mono text-[10.5px] text-cyan-400 mb-3" data-i18n="services.p3.tag">B2B · API Gateway / Proxy</p>
+          <p class="text-sm text-slate-400 mb-5" data-i18n="services.p3.desc">Управляющая платформа класса API Gateway / Proxy для интеграции принципов Crypto-Agility без модификации ядра АБС.</p>
+          <ul class="space-y-2.5 mb-6 flex-1">
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-cyan-400 mt-2 shrink-0"></span><span data-i18n="services.p3.b1">Маршрутизация трафика на основе внутренних политик банка</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-cyan-400 mt-2 shrink-0"></span><span data-i18n="services.p3.b2">Работа поверх уже существующих сертифицированных HSM-шлюзов</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-cyan-400 mt-2 shrink-0"></span><span data-i18n="services.p3.b3">Финальная схема встраивания — валидация в рамках предэксплуатационного аудита регуляторов</span></li>
+          </ul>
+          <div class="border-t border-white/10 pt-5">
+            <div class="font-display font-semibold text-2xl mb-1">2 600 000 <span class="text-base font-mono text-slate-400">KGS</span></div>
+            <div class="font-mono text-xs text-slate-500 mb-5" data-i18n="services.p3.duration">Срок: от 1.5 месяцев</div>
+            <a href="#audit-form" class="block text-center py-3 rounded-full font-semibold text-sm bg-gradient-to-r from-cyan-400 to-teal-400 text-[#04120e] hover:-translate-y-0.5 transition-transform" data-i18n="services.p3.cta">Запросить демо-симуляцию для Правления</a>
+          </div>
+        </div>
+        <!-- ============ END CARD 3 / 4 ============ -->
+
+        <!-- ============ CARD 4 / 4 — Managed Service & Web3 SaaS (MRR) ============ -->
+        <div class="border border-violet-400/30 bg-violet-400/[0.03] rounded-2xl p-6 flex flex-col">
+          <span class="font-mono text-xs text-slate-500 tracking-wider mb-4">04 / 04</span>
+          <h3 class="font-display font-semibold text-[17px] mb-2" data-i18n="services.p4.title">Managed Service &amp; Web3 SaaS</h3>
+          <p class="font-mono text-[10.5px] text-violet-400 mb-3" data-i18n="services.p4.tag">Регулярный MRR · Подписка</p>
+          <p class="text-sm text-slate-400 mb-5" data-i18n="services.p4.desc">Непрерывный аутсорсинг безопасности для финтех-платформ, МСБ и Web3-инфраструктуры (биржи, кастодианы, смарт-контракты).</p>
+          <ul class="space-y-2.5 mb-6 flex-1">
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-violet-400 mt-2 shrink-0"></span><span data-i18n="services.p4.b1">Мониторинг киберугроз в реальном времени</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-violet-400 mt-2 shrink-0"></span><span data-i18n="services.p4.b2">Расчёт индекса устойчивости к алгоритму Шора (Cyber Resilience Score)</span></li>
+            <li class="text-sm flex items-start gap-2.5"><span class="w-[5px] h-[5px] rounded-full bg-violet-400 mt-2 shrink-0"></span><span data-i18n="services.p4.b3">Обучение и сертификация ИБ-офицеров + облачные модули защиты по подписке (Quantum Safe Pass)</span></li>
+          </ul>
+          <div class="border-t border-white/10 pt-5">
+            <div class="font-display font-semibold text-2xl mb-1" data-i18n="services.p4.price">80 000 – 150 000</div>
+            <div class="font-mono text-xs text-slate-500 mb-5" data-i18n="services.p4.duration">KGS / месяц · Подписка</div>
+            <a href="#audit-form" class="block text-center py-3 rounded-full font-semibold text-sm border border-white/15 hover:border-violet-400 hover:text-violet-400 transition-colors" data-i18n="services.p4.cta">Подключить Quantum Safe Pass</a>
+          </div>
+        </div>
+        <!-- ============ END CARD 4 / 4 ============ -->
+
+      </div>
     </div>
   </section>
 
+  <!-- TRUST STRIP -->
+  <section id="trust" class="border-b border-white/10 py-20">
+    <div class="max-w-6xl mx-auto px-6 space-y-6">
+      <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-8 justify-between">
+        <div class="flex items-start gap-5 max-w-2xl">
+          <span class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-violet-400/20 border border-white/10 flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <div>
+            <h3 class="font-display font-semibold text-[19px] mb-2" data-i18n="trust.title">Резидент Парка высоких технологий Кыргызской Республики</h3>
+            <p class="text-sm text-slate-400 leading-relaxed" data-i18n="trust.text">ПВТ КР — прозрачная юрисдикция для глобального технологического экспорта, соответствующая международным стандартам ведения ИТ-бизнеса.</p>
+          </div>
+        </div>
+        <div class="flex gap-3 flex-wrap shrink-0">
+          <span class="font-mono text-xs px-4 py-2 rounded-full border border-white/15 text-slate-300">ПВТ КР</span>
+          <span class="font-mono text-xs px-4 py-2 rounded-full border border-white/15 text-slate-300">NIST</span>
+          <span class="font-mono text-xs px-4 py-2 rounded-full border border-white/15 text-slate-300">SM2 / SM4</span>
+          <span class="font-mono text-xs px-4 py-2 rounded-full border border-white/15 text-slate-300">GDPR</span>
+        </div>
+      </div>
 
-  <section>
-    <div class="section-head">
-      <h2 id="ind-title">Отрасли применения в Кыргызской Республике</h2>
-      <p id="ind-subtitle">Наши решения полностью адаптированы под требования регуляторов и специфику локального рынка</p>
-    </div>
-    <div class="industry-grid">
-      <div class="industry-card">
-        <h4 id="ind1-title">Банки и Финтех</h4>
-        <p id="ind1-desc">Защита межбанковских транзакций, комплаенс CIPS и подготовка систем к постквантовому переходу шифрования.</p>
-      </div>
-      <div class="industry-card">
-        <h4 id="ind2-title">Госсектор и КИИ</h4>
-        <p id="ind2-desc">Безопасность объектов критической информационной инфраструктуры и защита персональных данных граждан.</p>
-      </div>
-      <div class="industry-card">
-        <h4 id="ind3-title">Телекоммуникации</h4>
-        <p id="ind3-desc">Шифрование магистральных каналов связи и защита данных в распредеренных сетях передачи данных.</p>
+      <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8 md:p-10 flex items-start gap-5">
+        <span class="w-12 h-12 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        </span>
+        <div>
+          <h3 class="font-display font-semibold text-[17px] mb-2" data-i18n="trust.legal_title">Архитектурный подход и нормативное соответствие (ГКНБ КР и НБКР)</h3>
+          <p class="text-sm text-slate-400 leading-relaxed" data-i18n="trust.legal_text">Программное обеспечение «Квантум Оркестратор» функционирует в классе шин интеграции (API Gateway / Proxy) и осуществляет интеллектуальную маршрутизацию запросов к внешним сертифицированным аппаратным СКЗИ (HSM / VPN-шлюзам партнёров). Данный подход позволяет банкам внедрять принципы Crypto-Agility без модификации ядра АБС. Финальная схема интеграции и встраивания подлежит валидации в рамках предэксплуатационного аудита регуляторов.</p>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- CONTACTS -->
+  <section id="contacts" class="py-24 md:py-28">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-[680px] mb-16">
+        <div class="font-mono text-[12.5px] tracking-[0.14em] uppercase text-cyan-400 flex items-center gap-2.5 mb-5">
+          <span class="w-[22px] h-px bg-cyan-400 inline-block"></span>
+          <span data-i18n="contacts.eyebrow">Контакты</span>
+        </div>
+        <h2 class="font-display font-semibold text-[26px] md:text-[36px] leading-tight mb-4" data-i18n="contacts.title">Обсудите аудит с нашими архитекторами</h2>
+        <p class="text-slate-400 text-[16px]" data-i18n="contacts.subtitle">Оставьте заявку — эксперт свяжется с вами в течение 24 часов.</p>
+      </div>
+
+      <div class="grid md:grid-cols-[0.9fr_1.1fr] gap-14">
+        <div class="flex flex-col gap-3.5">
+          <a class="flex items-center gap-4 border border-white/10 bg-white/[0.02] rounded-2xl px-5 py-4 hover:border-cyan-400 hover:translate-x-1 transition-all" href="tel:+996777579970">
+            <span class="w-11 h-11 rounded-[11px] bg-white/[0.06] flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#eef1f6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.99.36 1.96.68 2.9a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.18-1.25a2 2 0 012.11-.45c.94.32 1.91.55 2.9.68A2 2 0 0122 16.92z"/></svg>
+            </span>
+            <span>
+              <span class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-0.5" data-i18n="contacts.phone_label">Телефон · Бишкек</span>
+              <span class="block text-[15.5px] font-semibold">+996 777 579 970</span>
+            </span>
+          </a>
+          <a class="flex items-center gap-4 border border-white/10 bg-white/[0.02] rounded-2xl px-5 py-4 hover:border-cyan-400 hover:translate-x-1 transition-all" href="https://t.me/+996777579970" target="_blank" rel="noopener">
+            <span class="w-11 h-11 rounded-[11px] bg-cyan-400/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 4L2.5 11.3c-1 .4-1 1.8.1 2.1l4.7 1.5 1.8 5.6c.3 1 1.6 1.2 2.2.4l2.5-3.3 4.6 3.4c.9.7 2.2.2 2.4-.9L23 5.4c.2-1.1-.9-2-2-1.4z"/></svg>
+            </span>
+            <span>
+              <span class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-0.5" data-i18n="contacts.tg_label">Telegram</span>
+              <span class="block text-[15.5px] font-semibold">+996 777 579 970</span>
+            </span>
+          </a>
+          <a class="flex items-center gap-4 border border-white/10 bg-white/[0.02] rounded-2xl px-5 py-4 hover:border-cyan-400 hover:translate-x-1 transition-all" href="https://wa.me/+996777579970" target="_blank" rel="noopener">
+            <span class="w-11 h-11 rounded-[11px] bg-violet-400/10 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#8b7cff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20.5 11.5a8.5 8.5 0 01-12.4 7.6L4 20l1-4a8.5 8.5 0 1115.5-4.5z"/><path d="M9 10.5c0 3 2.5 5.5 5.5 5.5"/></svg>
+            </span>
+            <span>
+              <span class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-0.5" data-i18n="contacts.wa_label">WhatsApp</span>
+              <span class="block text-[15.5px] font-semibold">+996 777 579 970</span>
+            </span>
+          </a>
+          <a class="flex items-center gap-4 border border-white/10 bg-white/[0.02] rounded-2xl px-5 py-4 hover:border-cyan-400 hover:translate-x-1 transition-all" href="mailto:info@kvantumsafe.tech">
+            <span class="w-11 h-11 rounded-[11px] bg-white/[0.06] flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#eef1f6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </span>
+            <span>
+              <span class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-0.5" data-i18n="contacts.email_label">Email</span>
+              <span class="block text-[15.5px] font-semibold">info@kvantumsafe.tech</span>
+            </span>
+          </a>
+        </div>
+
+        <div class="border border-white/10 bg-white/[0.02] rounded-2xl p-8">
+          <form id="audit-form" action="https://formspree.io/f/xljrvwav" method="POST">
+            <div class="mb-5">
+              <label class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-2" data-i18n="contacts.form_name">Ваше имя</label>
+              <input type="text" name="name" required class="w-full bg-white/[0.03] border border-white/15 rounded-[10px] px-4 py-3 text-[14.5px] outline-none focus:border-cyan-400 focus:bg-cyan-400/[0.04] transition-colors" data-i18n-placeholder="contacts.form_name_ph" placeholder="Как к вам обращаться">
+            </div>
+            <div class="mb-5">
+              <label class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-2" data-i18n="contacts.form_company">Название компании</label>
+              <input type="text" name="company" required class="w-full bg-white/[0.03] border border-white/15 rounded-[10px] px-4 py-3 text-[14.5px] outline-none focus:border-cyan-400 focus:bg-cyan-400/[0.04] transition-colors" data-i18n-placeholder="contacts.form_company_ph" placeholder="Название компании">
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-2" data-i18n="contacts.form_email">Контактный Email</label>
+                <input type="email" name="email" required class="w-full bg-white/[0.03] border border-white/15 rounded-[10px] px-4 py-3 text-[14.5px] outline-none focus:border-cyan-400 focus:bg-cyan-400/[0.04] transition-colors" data-i18n-placeholder="contacts.form_email_ph" placeholder="you@company.com">
+              </div>
+              <div>
+                <label class="block font-mono text-[11px] uppercase tracking-wider text-slate-500 mb-2" data-i18n="contacts.form_phone">Телефон</label>
+                <input type="tel" name="phone" required class="w-full bg-white/[0.03] border border-white/15 rounded-[10px] px-4 py-3 text-[14.5px] outline-none focus:border-cyan-400 focus:bg-cyan-400/[0.04] transition-colors" data-i18n-placeholder="contacts.form_phone_ph" placeholder="+996 700 000 000">
+              </div>
+            </div>
+            <button type="submit" id="formSubmitBtn" class="w-full py-3.5 rounded-full font-semibold text-sm bg-gradient-to-r from-cyan-400 to-teal-400 text-[#04120e] hover:-translate-y-0.5 transition-transform" data-i18n="contacts.form_submit">Отправить заявку под NDA</button>
+            <p id="formStatus" class="mt-4 text-sm hidden"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
-<footer>
-  <div class="wrap footer-inner">
-    <div id="footer-text">Квантум Сейф — резидент ПВТ Киргизской Республики. Постквантовая кибербезопасность для финансового сектора.</div>
-    <div id="footer-copy">© 2026 Квантум Сейф. Все права защищены.</div>
+<footer class="border-t border-white/10 py-14">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-wrap gap-3 mb-10">
+      <span class="font-mono text-xs text-slate-500 border border-white/10 px-3.5 py-1.5 rounded-full" data-i18n="footer.tag1">ИБ-аудит для банков</span>
+      <span class="font-mono text-xs text-slate-500 border border-white/10 px-3.5 py-1.5 rounded-full" data-i18n="footer.tag2">Крипто-комплаенс СНГ</span>
+      <span class="font-mono text-xs text-slate-500 border border-white/10 px-3.5 py-1.5 rounded-full" data-i18n="footer.tag3">ПВТ КР резидент</span>
+      <span class="font-mono text-xs text-slate-500 border border-white/10 px-3.5 py-1.5 rounded-full" data-i18n="footer.tag4">Постквантовая безопасность</span>
+      <span class="font-mono text-xs text-slate-500 border border-white/10 px-3.5 py-1.5 rounded-full" data-i18n="footer.tag5">NIST / GDPR</span>
+    </div>
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-6 border-t border-white/10 text-[13px] text-slate-500">
+      <span data-i18n="footer.copyright">© 2026 KvantumSafe. Все права защищены. Резидент ПВТ КР.</span>
+      <span data-i18n="footer.byline">KvantumSafe — Бишкек, Кыргызская Республика</span>
+    </div>
   </div>
 </footer>
 
+<!-- AI CHATBOT WIDGET -->
+<div id="chatWidget" class="fixed right-5 bottom-5 md:right-6 md:bottom-6 z-[999]">
+  <button id="chatToggleBtn" class="relative w-[62px] h-[62px] rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center shadow-[0_8px_30px_-6px_rgba(34,211,238,0.5)] hover:-translate-y-0.5 hover:shadow-[0_14px_36px_-6px_rgba(139,124,255,0.55)] transition-all" aria-label="Open AI assistant">
+    <svg id="chatIconOpen" viewBox="0 0 24 24" fill="none" stroke="#04120e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-[26px] h-[26px]"><path d="M12 2a7 7 0 00-7 7c0 2.4 1.2 4.5 3 5.8V18l2.6-1.4c.45.1.92.15 1.4.15a7 7 0 000-14z"/><circle cx="9" cy="9.5" r="1"/><circle cx="12" cy="9.5" r="1"/><circle cx="15" cy="9.5" r="1"/></svg>
+    <svg id="chatIconClose" viewBox="0 0 24 24" fill="none" stroke="#04120e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-[26px] h-[26px] hidden"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    <span class="absolute -inset-1.5 rounded-full border-[1.5px] border-cyan-400 opacity-55 animate-chat-pulse pointer-events-none"></span>
+  </button>
+
+  <div id="chatWindow" class="hidden absolute right-0 bottom-[78px] w-[370px] max-w-[calc(100vw-40px)] h-[500px] max-h-[70vh] bg-gradient-to-b from-[#0b1119] to-[#070b10] border border-white/15 rounded-[20px] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.65)] flex flex-col overflow-hidden">
+    <div class="flex items-center gap-3 px-[18px] py-[18px] border-b border-white/10 bg-white/[0.02]">
+      <span class="w-[38px] h-[38px] rounded-[10px] bg-cyan-400/10 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-[19px] h-[19px]"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      </span>
+      <div class="flex flex-col gap-1 flex-1 min-w-0">
+        <span class="font-display font-semibold text-[14.5px]" data-i18n="chatbot.title">KvantumSafe AI Assistant</span>
+        <span class="font-mono text-[11px] text-slate-500 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]"></span><span data-i18n="chatbot.status">на связи</span></span>
+      </div>
+      <button id="chatCloseBtn" class="w-[30px] h-[30px] rounded-lg flex items-center justify-center text-slate-400 hover:bg-white/[0.06] hover:text-white transition-colors shrink-0" aria-label="Close chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-[15px] h-[15px]"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div id="chatMessages" class="flex-1 overflow-y-auto scrollbar-thin px-[18px] py-5 flex flex-col gap-3.5"></div>
+
+    <div class="flex items-center gap-2.5 px-4 py-3.5 border-t border-white/10 bg-white/[0.015]">
+      <input type="text" id="chatInput" class="flex-1 bg-white/[0.03] border border-white/15 rounded-full px-4 py-2.5 text-sm outline-none focus:border-cyan-400 transition-colors" data-i18n-placeholder="chatbot.placeholder" placeholder="Задайте вопрос...">
+      <button id="chatSendBtn" class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center shrink-0 hover:scale-105 transition-transform" aria-label="Send message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04120e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-[17px] h-[17px]"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
+/* =====================================================
+   TRANSLATIONS — full RU / EN dictionaries
+===================================================== */
 const translations = {
   ru: {
-    site_title: "Продуктовая линейка безопасности",
-    site_subtitle: "Решения для защиты банковского и корпоративного секторов Кыргызской Республики",
-    p1_title: "Сканирование на уязвимости (Quantum Scan)",
-    p1_desc: "Автоматическая проверка инфраструктуры на готовность к постквантовым угрозам и аудит текущих криптографических алгоритмов.",
-    p1_pl: "Стоимость одной проверки:",
+    header: {
+      residency_badge: "РЕЗИДЕНТ ПВТ КР"
+    },
+    nav: {
+      services: "Услуги",
+      threats: "Угрозы",
+      industries: "Отрасли",
+      trust: "Комплаенс",
+      contacts: "Контакты",
+      cta: "Связаться"
+    },
+    hero: {
+      eyebrow: "РЕЗИДЕНТ ПВТ КР • КИБЕРБЕЗОПАСНОСТЬ НОВОГО ПОКОЛЕНИЯ",
+      title: 'Криптографический комплаенс КНР <span class="text-slate-400 text-[0.7em] font-mono align-middle">(SM2/SM4)</span> и постквантовая безопасность <span class="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">NIST</span>.',
+      subtitle: "Профессиональный аудит ИТ-периметра, инвентаризация крипто-активов под NDA (On-Premise) и поддержка национальных китайских алгоритмов шифрования SM2/SM4 и постквантовых протоколов защиты NIST (ML-KEM).",
+      cta_primary: "Запросить Экспресс-Аудит Инфраструктуры",
+      footnote: "* Вся входящая информация обрабатывается инженерами компании в закрытом локальном контуре строго в соответствии с Законом КР «О банковской тайне» (24–48 часов).",
+      services_link: "Смотреть пакеты и цены →",
+      badge3: "Резидент ПВТ КР",
+      badge4: "Закрытый контур · NDA"
+    },
+    threats: {
+      eyebrow: "Почему сейчас",
+      title: "Угроза Harvest Now, Decrypt Later и крипто-гибкость бизнеса",
+      text: "Иностранные разведки и киберпреступные группировки уже перехватывают и сохраняют зашифрованный трафик банков и финтех-компаний — чтобы расшифровать его через 3–5 лет, когда квантовые компьютеры станут достаточно мощными для алгоритма Шора. Если ваша инфраструктура не обладает крипто-гибкостью (Crypto-Agility) — способностью быстро заменить устаревшие алгоритмы на квантово-устойчивые — коммерческая и клиентская тайна вашей компании будет раскрыта.",
+      f1: { title: "Harvest-Now-Decrypt-Later", text: "Данные, украденные сегодня, будут расшифрованы позже — как только появятся достаточно мощные квантовые компьютеры." },
+      f2: { title: "Crypto-Agility", text: "Способность инфраструктуры быстро и без сбоев переходить на новые криптографические стандарты по мере их появления." },
+      f3: { title: "NIST PQC (ML-KEM / FIPS 203)", text: "Официальные квантово-устойчивые алгоритмы, на которые переходят регуляторы и глобальные банки." }
+    },
+    tlscheck: {
+      title: "Экспресс-проверка уязвимости TLS",
+      text: "Узнайте за 48 часов, использует ли ваш периметр устаревшие алгоритмы шифрования (RSA/ECC) и подвержены ли ваши SSL/TLS-сертификаты риску Harvest-Now-Decrypt-Later.",
+      cta: "Запросить проверку"
+    },
+    industries: {
+      eyebrow: "Кому мы помогаем",
+      title: "Экспертиза для всех, кто управляет цифровыми активами и коммерческой тайной",
+      subtitle: "Продукт №1 (Внешний сканер периметра) и Продукт №2 (Внутренний аудит под NDA) адаптируются под специфику каждой отрасли — от системообразующих банков до частных юридических практик.",
+      i1: { tag: "Продукт №1 + Продукт №2", title: "Банки и необанки", text: "Мониторинг внешнего периметра в режиме постоянного наблюдения и полная инвентаризация криптографии внутри контура под соглашением о неразглашении (NDA). Отдельное направление — защита транзакционных каналов SWIFT и подготовка ИТ-инфраструктуры к обязательной глобальной миграции на постквантовые стандарты шифрования." },
+      i2: { tag: "Продукт №1 + Продукт №2", title: "Финтех и платёжные системы", text: "Глубокий аудит безопасности платёжных шлюзов и высоконагруженных API-интеграций, через которые ежедневно проходят тысячи транзакций. Отдельно проверяем защиту электронных кошельков клиентов и криптографическую стойкость каналов передачи данных от перехвата хакерами." },
+      i3: { title: "Крипто-индустрия и Web3", subtitle: "Биржи · Обменники · Кастодианы", text: "Инвентаризация и аудит классических квантово-уязвимых алгоритмов цифровой подписи (ECDSA/RSA), защищающих доступ к холодным и горячим кошелькам, смарт-контрактам и seed-фразам. Отдельно оцениваем устойчивость инфраструктуры к атакам класса SNDL (Store Now, Decrypt Later) — хищению зашифрованных данных сегодня с расчётом на их расшифровку квантовым компьютером завтра." },
+      i4: { title: "Юридические компании и нотариальные конторы", text: "Бескомпромиссная защита систем электронного документооборота (ЭДО) и закрытых цифровых архивов. Стопроцентное обеспечение тайны сделок, слияний и поглощений (M&amp;A) — там, где утечка данных означает не только финансовые потери, но и необратимый удар по репутации бренда." },
+      i5: { tag: "Продукт №1", title: "Малый и средний бизнес", text: "Доступный и быстрый экспресс-аудит корпоративных сайтов, CRM-систем и интернет-магазинов. Массовые автоматизированные сканеры хакеров не делают различий между небольшим интернет-магазином и крупным банком — мы помогаем защитить персональные данные клиентов и коммерческую тайну бизнеса без бюджета крупной корпорации." }
+    },
+    services: {
+      eyebrow: "Продуктовая линейка",
+      title: "Четыре продукта — от бесплатной диагностики до управляемого сервиса безопасности",
+      subtitle: "Три B2B-продажи и один регулярный SaaS-сервис — каждый этап логически продолжает предыдущий, от разового аудита до непрерывной защиты по подписке.",
+      p1: { title: "Quantum Scan", tag: "B2B · Экспресс-аудит периметра", desc: "Дистанционный бесконтактный аудит-сканер публичных интерфейсов (порт 443) без внедрения в контур банка.", b1: "Анализ параметров TLS 1.2/1.3", b2: "Выявление квантово-уязвимой разрядности ключей (RSA-2048, ECDSA)", b3: "Официальный PDF-отчёт с верификационным QR-кодом (время GMT+6, Бишкек)", price: "0 KGS", duration: "Бесплатно · пилотный проект", cta: "Запустить сканирование и скачать PDF", scan_placeholder: "Например, mbank.kg", scan_loading: "Сканирование периметра...", scan_success: "Готово! PDF-отчёт загружен.", scan_error: "Не удалось выполнить сканирование. Попробуйте позже или напишите нам напрямую." },
+      p2: { title: "Криптографический комплаенс", tag: "B2B · Изолированный контур / NDA", desc: "Внутренний аудит под NDA со 100% соблюдением Закона КР «О банковской тайне» — работа в изолированном контуре (On-Premise).", b1: "Инвентаризация активов, поиск уязвимостей (MD5, SHA-1)", b2: "Оценка готовности к CIPS", b3: "Техническая спецификация для закупки HSM-оборудования (Huawei, Sangfor, Thales)", duration: "Срок: 4–6 недель", cta: "Запросить аудит контура (Подписание NDA)" },
+      p3: { badge: "Флагманский продукт", subtitle_small: "Crypto-Agility Engine", tag: "B2B · API Gateway / Proxy", desc: "Управляющая платформа класса API Gateway / Proxy для интеграции принципов Crypto-Agility без модификации ядра АБС.", b1: "Маршрутизация трафика на основе внутренних политик банка", b2: "Работа поверх уже существующих сертифицированных HSM-шлюзов", b3: "Финальная схема встраивания — валидация в рамках предэксплуатационного аудита регуляторов", duration: "Срок: от 1.5 месяцев", cta: "Запросить демо-симуляцию для Правления" },
+      p4: { title: "Managed Service &amp; Web3 SaaS", tag: "Регулярный MRR · Подписка", desc: "Непрерывный аутсорсинг безопасности для финтех-платформ, МСБ и Web3-инфраструктуры (биржи, кастодианы, смарт-контракты).", b1: "Мониторинг киберугроз в реальном времени", b2: "Расчёт индекса устойчивости к алгоритму Шора (Cyber Resilience Score)", b3: "Обучение и сертификация ИБ-офицеров + облачные модули защиты по подписке (Quantum Safe Pass)", price: "80 000 – 150 000", duration: "KGS / месяц · Подписка", cta: "Подключить Quantum Safe Pass" }
+    },
+    trust: {
+      title: "Резидент Парка высоких технологий Кыргызской Республики",
+      text: "ПВТ КР — прозрачная юрисдикция для глобального технологического экспорта, соответствующая международным стандартам ведения ИТ-бизнеса.",
+      legal_title: "Архитектурный подход и нормативное соответствие (ГКНБ КР и НБКР)",
+      legal_text: "Программное обеспечение «Квантум Оркестратор» функционирует в классе шин интеграции (API Gateway / Proxy) и осуществляет интеллектуальную маршрутизацию запросов к внешним сертифицированным аппаратным СКЗИ (HSM / VPN-шлюзам партнёров). Данный подход позволяет банкам внедрять принципы Crypto-Agility без модификации ядра АБС. Финальная схема интеграции и встраивания подлежит валидации в рамках предэксплуатационного аудита регуляторов."
+    },
+    contacts: {
+      eyebrow: "Контакты",
+      title: "Обсудите аудит с нашими архитекторами",
+      subtitle: "Оставьте заявку — эксперт свяжется с вами в течение 24 часов.",
+      phone_label: "Телефон · Бишкек",
+      tg_label: "Telegram",
+      wa_label: "WhatsApp",
+      email_label: "Email",
+      form_name: "Ваше имя",
+      form_name_ph: "Как к вам обращаться",
+      form_company: "Название компании",
+      form_company_ph: "Название компании",
+      form_email: "Контактный Email",
+      form_email_ph: "you@company.com",
+      form_phone: "Телефон",
+      form_phone_ph: "+996 700 000 000",
+      form_submit: "Отправить заявку под NDA",
+      form_sending: "Отправка...",
+      form_success: "Спасибо! Заявка отправлена — мы свяжемся с вами в течение 24 часов.",
+      form_error: "Не удалось отправить заявку. Пожалуйста, напишите нам напрямую на info@kvantumsafe.tech."
+    },
+    footer: {
+      tag1: "ИБ-аудит для банков",
+      tag2: "Крипто-комплаенс СНГ",
+      tag3: "ПВТ КР резидент",
+      tag4: "Постквантовая безопасность",
+      tag5: "NIST / GDPR",
+      copyright: "© 2026 KvantumSafe. Все права защищены. Резидент ПВТ КР.",
+      byline: "KvantumSafe — Бишкек, Кыргызская Республика"
+    },
+    chatbot: {
+      title: "KvantumSafe AI Assistant",
+      status: "на связи",
+      placeholder: "Задайте вопрос...",
+      greeting: "Здравствуйте. Я ИБ-архитектор KvantumSafe — консультирую CTO и CISO банков, финтех-компаний и крупного бизнеса по постквантовой безопасности и крипто-комплаенсу. Уточните ваш вопрос.",
+      reply_about: "KvantumSafe — консалтинг по постквантовой кибербезопасности для банков, финтех-компаний и крупного бизнеса в СНГ и Центральной Азии. Наш профиль — криптографический аудит, анализ кода и подготовка инфраструктуры к постквантовому шифрованию.",
+      reply_ddos: "Мы не являемся провайдером противодействия DDoS (как Cloudflare). Мы фокусируемся на защите самих данных — проводим аудит криптографии и внедряем квантово-устойчивые алгоритмы для предотвращения расшифровки трафика в будущем.",
+      reply_express: "«Экспресс-Аудит Периметра» — 180 000 KGS, срок 3–5 дней. Включает внешнее сканирование SSL/TLS, анализ рисков Harvest-Now-Decrypt-Later и быстрый отчёт с приоритетами.",
+      reply_full: "«Комплексный Крипто-Аудит & Crypto-Agility» — 850 000 KGS, срок 4–6 недель. Проводится под NDA и включает Cryptographic Discovery (инвентаризацию алгоритмов внутри контура), аудит исходного кода (SAST) и тест готовности к стандартам NIST/ML-KEM.",
+      reply_migration: "«PQC Миграция & Международный Комплаенс» — 1 400 000 KGS, срок 1.5–2 месяца. Включает разработку дорожной карты перехода на гибридное шифрование, юридический пакет под GDPR/NIST для международной экспансии и обучение ИТ-команды банка.",
+      reply_hndl: "Harvest-Now-Decrypt-Later — атака, при которой злоумышленники и иностранные разведки уже сегодня перехватывают и сохраняют зашифрованный трафик банков и финтеха, чтобы расшифровать его через 3–5 лет, когда квантовый компьютер с помощью алгоритма Шора взломает используемые сегодня алгоритмы RSA и ECC. Защищаться нужно уже сейчас.",
+      reply_agility: "Crypto-Agility (крипто-гибкость) — способность ИТ-инфраструктуры быстро и без сбоев заменять устаревшие криптографические алгоритмы на новые, квантово-устойчивые, по мере появления новых стандартов и угроз.",
+      reply_standards: "Мы тестируем готовность инфраструктуры к официальным стандартам NIST: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA) и FIPS 205 (SLH-DSA) — они основаны на криптографии на решётках и уже принимаются регуляторами и глобальными банками.",
+      reply_residency: "KvantumSafe — резидент Парка высоких технологий Кыргызской Республики (ПВТ КР). Это прозрачная юрисдикция для глобального технологического экспорта и работы с международными клиентами.",
+      reply_price: "Наши пакеты: «Экспресс-Аудит Периметра» — 180 000 KGS (3–5 дней); «Комплексный Крипто-Аудит & Crypto-Agility» — 850 000 KGS (4–6 недель); «PQC Миграция & Международный Комплаенс» — 1 400 000 KGS (1.5–2 месяца).",
+      reply_contacts: "Написать нам можно в Telegram и WhatsApp по номеру +996 777 579 970, позвонить в наш офис в Бишкеке или на почту info@kvantumsafe.tech.",
+      reply_default: "KvantumSafe — консалтинг по кибербезопасности и постквантовым технологиям для банков, финтеха и крупного бизнеса в СНГ и Центральной Азии. Уточните ваш вопрос — отвечу по существу.",
+      cta: 'Чтобы обсудить аудит или получить расчёт под вашу инфраструктуру, оставьте заявку в форме на сайте, укажите ваши контакты прямо в этом чате, или напишите нашим архитекторам в <a href="https://t.me" target="_blank" rel="noopener">Telegram</a>, <a href="https://wa.me" target="_blank" rel="noopener">WhatsApp</a> по номеру +996 777 579 970, на почту <a href="mailto:info@kvantumsafe.tech">info@kvantumsafe.tech</a> — мы свяжемся с вами для проведения Экспресс-Аудита Периметра.'
+    }
+  },
+
+  en: {
+    header: {
+      residency_badge: "KYRGYZ HTP RESIDENT"
+    },
+    nav: {
+      services: "Services",
+      threats: "Threats",
+      industries: "Industries",
+      trust: "Compliance",
+      contacts: "Contacts",
+      cta: "Get in touch"
+    },
+    hero: {
+      eyebrow: "KYRGYZ HTP RESIDENT • NEXT-GEN CYBERSECURITY",
+      title: 'Cryptographic Compliance With China <span class="text-slate-400 text-[0.7em] font-mono align-middle">(SM2/SM4)</span> and Post-Quantum Security <span class="bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">NIST</span>.',
+      subtitle: "Professional IT perimeter audits, crypto-asset inventory under NDA (On-Premise), and support for national Chinese encryption algorithms (SM2/SM4) alongside NIST post-quantum protection protocols (ML-KEM).",
+      cta_primary: "Request an Infrastructure Express Audit",
+      footnote: "* All incoming information is processed by our engineers in a closed local circuit, strictly in accordance with the Kyrgyz Republic's Law \"On Banking Secrecy\" (24–48 hours).",
+      services_link: "View packages and pricing →",
+      badge3: "Kyrgyz HTP Resident",
+      badge4: "Closed Circuit · NDA"
+    },
+    threats: {
+      eyebrow: "Why Now",
+      title: "The Harvest Now, Decrypt Later Threat and Business Crypto-Agility",
+      text: "Foreign intelligence services and cybercriminal groups are already intercepting and storing encrypted traffic from banks and fintech companies — planning to decrypt it in 3–5 years, once quantum computers become powerful enough for Shor's algorithm. If your infrastructure lacks Crypto-Agility — the ability to quickly replace outdated algorithms with quantum-resistant ones — your company's trade secrets and customer data will be exposed.",
+      f1: { title: "Harvest-Now-Decrypt-Later", text: "Data stolen today will be decrypted later, once sufficiently powerful quantum computers become available." },
+      f2: { title: "Crypto-Agility", text: "The ability of an infrastructure to switch to new cryptographic standards quickly and without disruption as they emerge." },
+      f3: { title: "NIST PQC (ML-KEM / FIPS 203)", text: "Official quantum-resistant algorithms that regulators and global banks are already adopting." }
+    },
+    tlscheck: {
+      title: "Express TLS Vulnerability Check",
+      text: "Find out within 48 hours whether your perimeter uses outdated encryption algorithms (RSA/ECC) and whether your SSL/TLS certificates are exposed to Harvest-Now-Decrypt-Later risk.",
+      cta: "Request a Check"
+    },
+    industries: {
+      eyebrow: "Who We Serve",
+      title: "Expertise for Everyone Who Manages Digital Assets and Trade Secrets",
+      subtitle: "Product #1 (External Perimeter Scanner) and Product #2 (Internal Audit under NDA) are adapted to the specifics of each industry — from systemically important banks to individual legal practices.",
+      i1: { tag: "Product #1 + Product #2", title: "Banks & Neobanks", text: "Continuous monitoring of the external perimeter and a full in-house cryptography inventory under a non-disclosure agreement (NDA). A dedicated track covers SWIFT transaction channel protection and preparing IT infrastructure for the mandatory global migration to post-quantum encryption standards." },
+      i2: { tag: "Product #1 + Product #2", title: "Fintech & Payment Systems", text: "In-depth security audits of payment gateways and high-load API integrations processing thousands of transactions daily. We separately verify the protection of customer e-wallets and the cryptographic strength of data channels against interception by attackers." },
+      i3: { title: "Crypto Industry & Web3", subtitle: "Exchanges · Exchangers · Custodians", text: "Inventory and audit of classical, quantum-vulnerable digital signature algorithms (ECDSA/RSA) protecting access to hot and cold wallets, smart contracts, and seed phrases. We separately assess infrastructure resilience against SNDL (Store Now, Decrypt Later) attacks — theft of encrypted data today for decryption by a quantum computer tomorrow." },
+      i4: { title: "Law Firms & Notary Offices", text: "Uncompromising protection of electronic document management systems (EDMS) and confidential digital archives. Absolute secrecy for deals, mergers and acquisitions (M&amp;A) — where a data leak means not only financial losses but irreversible damage to brand reputation." },
+      i5: { tag: "Product #1", title: "Small & Medium Businesses", text: "Affordable, fast express audits of corporate websites, CRM systems, and online stores. Mass automated hacker scanners don't distinguish between a small online store and a major bank — we help protect your customers' personal data and your business's trade secrets without an enterprise-sized budget." }
+    },
+    services: {
+      eyebrow: "Product Lineup",
+      title: "Four Products — From Free Diagnostics to a Managed Security Service",
+      subtitle: "Three B2B sales products and one recurring SaaS service — each stage logically continues the previous one, from a one-time audit to continuous protection by subscription.",
+      p1: { title: "Quantum Scan", tag: "B2B · Express Perimeter Audit", desc: "A remote, contactless audit scanner for public interfaces (port 443) that requires no deployment inside the bank's circuit.", b1: "Analysis of TLS 1.2/1.3 parameters", b2: "Detection of quantum-vulnerable key sizes (RSA-2048, ECDSA)", b3: "Official PDF report with a verification QR code (GMT+6, Bishkek time)", price: "0 KGS", duration: "Free · Pilot Project", cta: "Run an Express Scan & Download PDF", scan_placeholder: "e.g. mbank.kg", scan_loading: "Scanning perimeter...", scan_success: "Done! Your PDF report has downloaded.", scan_error: "The scan couldn't be completed. Please try again later or contact us directly." },
+      p2: { title: "Cryptographic Compliance", tag: "B2B · Isolated Circuit / NDA", desc: "An internal audit under NDA with 100% compliance with the Kyrgyz Republic's Law \"On Banking Secrecy\" — carried out in an isolated circuit (On-Premise).", b1: "Asset inventory, detection of vulnerabilities (MD5, SHA-1)", b2: "CIPS readiness assessment", b3: "Technical specification for procuring HSM hardware (Huawei, Sangfor, Thales)", duration: "Timeline: 4–6 weeks", cta: "Request a Circuit Audit (Sign an NDA)" },
+      p3: { badge: "Flagship Product", subtitle_small: "Crypto-Agility Engine", tag: "B2B · API Gateway / Proxy", desc: "A management platform in the API Gateway / Proxy class for integrating Crypto-Agility principles without modifying the core banking system.", b1: "Traffic routing based on the bank's internal policies", b2: "Operates on top of already-existing certified HSM gateways", b3: "The final deployment scheme is subject to validation during regulators' pre-operational audit", duration: "Timeline: from 1.5 months", cta: "Request a Boardroom Demo Simulation" },
+      p4: { title: "Managed Service &amp; Web3 SaaS", tag: "Recurring MRR · Subscription", desc: "Continuous security outsourcing for fintech platforms, SMBs, and Web3 infrastructure (exchanges, custodians, smart contracts).", b1: "Real-time cyber threat monitoring", b2: "Calculation of resilience against Shor's algorithm (Cyber Resilience Score)", b3: "IT security officer training and certification, plus cloud-based quantum-resistant protection modules by subscription (Quantum Safe Pass)", price: "80,000 – 150,000", duration: "KGS / month · Subscription", cta: "Subscribe to Quantum Safe Pass" }
+    },
+    trust: {
+      title: "Resident of the Kyrgyz High-Tech Park",
+      text: "The Kyrgyz HTP is a transparent jurisdiction for global technology export, aligned with international standards for running an IT business.",
+      legal_title: "Architectural Approach & Regulatory Alignment (GKNB KR & NBKR)",
+      legal_text: "The Quantum Orchestrator software operates as an integration bus (API Gateway / Proxy) and intelligently routes requests to external certified hardware cryptographic protection tools (HSM / partner VPN gateways). This approach lets banks adopt Crypto-Agility principles without modifying their core banking system. The final integration and deployment scheme is subject to validation during regulators' pre-operational audit."
+    },
+    contacts: {
+      eyebrow: "Contacts",
+      title: "Discuss Your Audit With Our Architects",
+      subtitle: "Leave a request — an expert will contact you within 24 hours.",
+      phone_label: "Phone · Bishkek",
+      tg_label: "Telegram",
+      wa_label: "WhatsApp",
+      email_label: "Email",
+      form_name: "Your Name",
+      form_name_ph: "How should we address you",
+      form_company: "Company Name",
+      form_company_ph: "Company name",
+      form_email: "Contact Email",
+      form_email_ph: "you@company.com",
+      form_phone: "Phone",
+      form_phone_ph: "+996 700 000 000",
+      form_submit: "Submit Request Under NDA",
+      form_sending: "Sending...",
+      form_success: "Thank you! Your request has been sent — we'll contact you within 24 hours.",
+      form_error: "We couldn't send your request. Please email us directly at info@kvantumsafe.tech."
+    },
+    footer: {
+      tag1: "IT Security Audits for Banks",
+      tag2: "CIS Crypto-Compliance",
+      tag3: "Kyrgyz HTP Resident",
+      tag4: "Post-Quantum Security",
+      tag5: "NIST / GDPR",
+      copyright: "© 2026 KvantumSafe. All rights reserved. Kyrgyz High-Tech Park resident.",
+      byline: "KvantumSafe — Bishkek, Kyrgyz Republic"
+    },
+    chatbot: {
+      title: "KvantumSafe AI Assistant",
+      status: "online",
+      placeholder: "Ask a question...",
+      greeting: "Hello! I'm the KvantumSafe AI assistant — a premium B2B cybersecurity and post-quantum technology consultancy for banks, fintechs, and large businesses across the CIS and Central Asia. How can I help?",
+      reply_about: "KvantumSafe is a high-tech consultancy in quantum cybersecurity. We run security audits and ensure crypto-compliance for banks, fintech companies, and large businesses across the CIS and Central Asia, helping them prepare for the post-quantum era and expand into international markets.",
+      reply_express: "The \"Express Perimeter Audit\" costs 180,000 KGS with a 3–5 day timeline. It includes external SSL/TLS scanning, Harvest-Now-Decrypt-Later risk analysis, and a fast report with prioritized findings.",
+      reply_full: "The \"Comprehensive Crypto-Audit & Crypto-Agility\" package costs 850,000 KGS with a 4–6 week timeline. It's conducted under NDA and includes Cryptographic Discovery (an in-house algorithm inventory), source code audit (SAST), and NIST/ML-KEM readiness testing.",
+      reply_migration: "The \"PQC Migration & International Compliance\" package costs 1,400,000 KGS with a 1.5–2 month timeline. It includes a roadmap for migrating to hybrid encryption, a legal compliance package for GDPR/NIST international expansion, and training for the bank's IT team.",
+      reply_hndl: "Harvest-Now-Decrypt-Later is an attack in which malicious actors and foreign intelligence services are already intercepting and storing encrypted traffic from banks and fintechs today, planning to decrypt it in 3–5 years using a quantum computer and Shor's algorithm. You need to start protecting yourself now.",
+      reply_agility: "Crypto-Agility is the ability of an IT infrastructure to quickly and seamlessly replace outdated cryptographic algorithms with new, quantum-resistant ones as new standards and threats emerge.",
+      reply_standards: "We test infrastructure readiness against the official NIST standards: FIPS 203 (ML-KEM), FIPS 204 (ML-DSA), and FIPS 205 (SLH-DSA) — all based on lattice-based cryptography and already being adopted by regulators and global banks.",
+      reply_residency: "KvantumSafe is a resident of the Kyrgyz High-Tech Park (HTP). It's a transparent jurisdiction for global technology export and working with international clients.",
+      reply_price: "Our packages: \"Express Perimeter Audit\" — 180,000 KGS (3–5 days); \"Comprehensive Crypto-Audit & Crypto-Agility\" — 850,000 KGS (4–6 weeks); \"PQC Migration & International Compliance\" — 1,400,000 KGS (1.5–2 months).",
+      reply_contacts: "You can reach us on Telegram and WhatsApp at +996 777 579 970, call our office in Bishkek, or email info@kvantumsafe.tech.",
+      reply_default: "KvantumSafe is a cybersecurity and post-quantum technology consultancy for banks, fintechs, and large businesses across the CIS and Central Asia. Ask me anything and I'll go into more detail.",
+      cta: 'To discuss an audit or get an exact quote for your infrastructure, please contact our architects on <a href="https://t.me" target="_blank" rel="noopener">Telegram</a>, <a href="https://wa.me" target="_blank" rel="noopener">WhatsApp</a> at +996 777 579 970, or via email <a href="mailto:info@kvantumsafe.tech">info@kvantumsafe.tech</a>.'
+    }
+  }
+};
+
+/* =====================================================
+   i18n ENGINE
+===================================================== */
+function getByPath(obj, path){
+  return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined) ? acc[key] : null, obj);
+}
+
+let currentLang = 'ru';
+
+function applyLanguage(lang){
+  currentLang = lang;
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const value = getByPath(translations[lang], key);
+    if (value !== null && value !== undefined){
+      el.innerHTML = value;
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    const value = getByPath(translations[lang], key);
+    if (value !== null && value !== undefined){
+      el.setAttribute('placeholder', value);
+    }
+  });
+
+  const toggleBtn = document.getElementById('langToggle');
+  toggleBtn.textContent = (lang === 'ru') ? 'EN' : 'RU';
+}
+
+document.getElementById('langToggle').addEventListener('click', () => {
+  applyLanguage(currentLang === 'ru' ? 'en' : 'ru');
+});
+
+/* Mobile nav toggle */
+const navToggle = document.getElementById('navToggle');
+const mobileNav = document.getElementById('mobileNav');
+navToggle.addEventListener('click', () => {
+  mobileNav.classList.toggle('hidden');
+  mobileNav.classList.toggle('flex');
+});
+document.querySelectorAll('#mobileNav a').forEach(a => {
+  a.addEventListener('click', () => {
+    mobileNav.classList.add('hidden');
+    mobileNav.classList.remove('flex');
+  });
+});
+
+/* =====================================================
+   CONTACT FORM — Formspree AJAX submission
+===================================================== */
+const contactForm = document.getElementById('audit-form');
+const formSubmitBtn = document.getElementById('formSubmitBtn');
+const formStatus = document.getElementById('formStatus');
+
+contactForm.addEventListener('submit', function(e){
+  e.preventDefault();
+
+  const formData = new FormData(contactForm);
+  const originalLabel = formSubmitBtn.textContent;
+  formSubmitBtn.disabled = true;
+  formSubmitBtn.textContent = translations[currentLang].contacts.form_sending;
+  formStatus.classList.add('hidden');
+
+  fetch(contactForm.action, {
+    method: contactForm.method,
+    headers: { 'Accept': 'application/json' },
+    body: formData
+  })
+  .then(response => {
+    if (response.ok){
+      formStatus.textContent = translations[currentLang].contacts.form_success;
+      formStatus.className = 'mt-4 text-sm text-cyan-400';
+      contactForm.reset();
+    } else {
+      throw new Error('Formspree submission failed');
+    }
+  })
+  .catch(() => {
+    formStatus.textContent = translations[currentLang].contacts.form_error;
+    formStatus.className = 'mt-4 text-sm text-red-400';
+  })
+  .finally(() => {
+    formSubmitBtn.disabled = false;
+    formSubmitBtn.textContent = originalLabel;
+  });
+});
+
+/* =====================================================
+   LIVE PERIMETER SCAN (Product #1 — Quantum Scan)
+   Calls the live FastAPI backend on Render and triggers
+   a browser download of the PDF report it returns.
+===================================================== */
+
+// ⚠️ ЗАМЕНИТЕ на реальный адрес вашего сервиса на Render.
+// "https://onrender.com" — это домен самого хостинга Render (его
+// собственный сайт), а НЕ адрес вашего бэкенда. Каждому развёрнутому
+// сервису Render присваивает собственный поддомен вида
+// https://<имя-вашего-сервиса>.onrender.com — именно его нужно
+// подставить сюда. Также убедитесь, что в вашем FastAPI-приложении
+// настроен CORS (CORSMiddleware) с разрешением origin, на котором
+// размещён этот сайт, иначе браузер заблокирует запрос.
+const SCAN_API_BASE_URL = "https://REPLACE-WITH-YOUR-SERVICE-NAME.onrender.com";
+
+const liveScanForm = document.getElementById('liveScanForm');
+const liveScanDomain = document.getElementById('liveScanDomain');
+const liveScanBtn = document.getElementById('liveScanBtn');
+const liveScanStatus = document.getElementById('liveScanStatus');
+
+if (liveScanForm){
+  liveScanForm.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const domain = liveScanDomain.value.trim();
+    if (!domain) return;
+
+    const originalLabel = liveScanBtn.textContent;
+    liveScanBtn.disabled = true;
+    liveScanBtn.textContent = translations[currentLang].services.p1.scan_loading;
+    liveScanStatus.classList.add('hidden');
+
+    // Предположение о контракте бэкенда: POST /scan с JSON {domain},
+    // в ответ — бинарный PDF (application/pdf). Если ваш реальный
+    // эндпоинт называется иначе или ожидает другой формат тела
+    // запроса (например, form-data), поправьте путь и body ниже.
+    fetch(`${SCAN_API_BASE_URL}/scan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ domain: domain })
+    })
+    .then(response => {
+      if (!response.ok){
+        throw new Error('Scan request failed with status ' + response.status);
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `quantum_report_${domain}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+
+      liveScanStatus.textContent = translations[currentLang].services.p1.scan_success;
+      liveScanStatus.className = 'text-xs text-cyan-400';
+      liveScanStatus.classList.remove('hidden');
+      liveScanForm.reset();
+    })
+    .catch(() => {
+      liveScanStatus.textContent = translations[currentLang].services.p1.scan_error;
+      liveScanStatus.className = 'text-xs text-red-400';
+      liveScanStatus.classList.remove('hidden');
+    })
+    .finally(() => {
+      liveScanBtn.disabled = false;
+      liveScanBtn.textContent = originalLabel;
+    });
+  });
+}
+
+/* =====================================================
+   LATTICE CANVAS — signature background animation
+===================================================== */
+function initLattice(canvasId, opts){
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, nodes;
+  const maxDist = opts.maxDist || 140;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth * devicePixelRatio;
+    h = canvas.height = canvas.offsetHeight * devicePixelRatio;
+    canvas.style.width = canvas.offsetWidth + 'px';
+    nodes = [];
+    const n = Math.max(30, Math.min(140, Math.round((w*h)/28000)));
+    for (let i=0; i<n; i++){
+      nodes.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        vx: (Math.random()-0.5) * 0.25 * devicePixelRatio,
+        vy: (Math.random()-0.5) * 0.25 * devicePixelRatio
+      });
+    }
+  }
+
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    for (const n of nodes){
+      if (!reduceMotion){
+        n.x += n.vx; n.y += n.vy;
+        if (n.x < 0 || n.x > w) n.vx *= -1;
+        if (n.y < 0 || n.y > h) n.vy *= -1;
+      }
+    }
+    for (let i=0;i<nodes.length;i++){
+      for (let j=i+1;j<nodes.length;j++){
+        const a = nodes[i], b = nodes[j];
+        const dx = a.x-b.x, dy = a.y-b.y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        const md = maxDist * devicePixelRatio;
+        if (dist < md){
+          const alpha = (1 - dist/md) * 0.5;
+          ctx.strokeStyle = `rgba(34,211,238,${alpha*0.5})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y);
+          ctx.lineTo(b.x,b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    for (const n of nodes){
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 1.6*devicePixelRatio, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(139,124,255,0.9)';
+      ctx.fill();
+    }
+    if (!reduceMotion) requestAnimationFrame(step);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  step();
+}
+
+initLattice('latticeCanvas', { maxDist: 150 });
+initLattice('latticeCanvasFixed', { maxDist: 170 });
+
+/* =====================================================
+   AI CHATBOT WIDGET — simulated expert assistant
+===================================================== */
+const chatWidget = document.getElementById('chatWidget');
+const chatWindow = document.getElementById('chatWindow');
+const chatToggleBtn = document.getElementById('chatToggleBtn');
+const chatIconOpen = document.getElementById('chatIconOpen');
+const chatIconClose = document.getElementById('chatIconClose');
+const chatCloseBtn = document.getElementById('chatCloseBtn');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const chatSendBtn = document.getElementById('chatSendBtn');
+
+let chatOpened = false;
+let chatIsOpen = false;
+
+function openChat(){
+  chatIsOpen = true;
+  chatWindow.classList.remove('hidden');
+  chatIconOpen.classList.add('hidden');
+  chatIconClose.classList.remove('hidden');
+  if (!chatOpened){
+    chatOpened = true;
+    addBotMessage(translations[currentLang].chatbot.greeting);
+  }
+  setTimeout(() => chatInput.focus(), 200);
+}
+
+function closeChat(){
+  chatIsOpen = false;
+  chatWindow.classList.add('hidden');
+  chatIconOpen.classList.remove('hidden');
+  chatIconClose.classList.add('hidden');
+}
+
+chatToggleBtn.addEventListener('click', () => {
+  chatIsOpen ? closeChat() : openChat();
+});
+chatCloseBtn.addEventListener('click', closeChat);
+
+function scrollChatToBottom(){
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function addUserMessage(text){
+  const el = document.createElement('div');
+  el.className = 'animate-chat-fade self-end max-w-[84%] text-sm leading-relaxed px-4 py-2.5 rounded-2xl rounded-br-[4px] bg-gradient-to-br from-cyan-400/20 to-violet-400/20 border border-cyan-400/30';
+  el.textContent = text;
+  chatMessages.appendChild(el);
+  scrollChatToBottom();
+}
+
+function addBotMessage(html){
+  const el = document.createElement('div');
+  el.className = 'animate-chat-fade self-start max-w-[84%] text-sm leading-relaxed px-4 py-2.5 rounded-2xl rounded-bl-[4px] bg-white/[0.045] border border-white/10';
+  el.innerHTML = html;
+  chatMessages.appendChild(el);
+  scrollChatToBottom();
+}
+
+function showTypingIndicator(){
+  const el = document.createElement('div');
+  el.id = 'chatTypingIndicator';
+  el.className = 'self-start flex items-center gap-1.5 px-4 py-3.5 rounded-2xl rounded-bl-[4px] bg-white/[0.045] border border-white/10';
+  el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-500 typing-dot"></span><span class="w-1.5 h-1.5 rounded-full bg-slate-500 typing-dot"></span><span class="w-1.5 h-1.5 rounded-full bg-slate-500 typing-dot"></span>';
+  chatMessages.appendChild(el);
+  scrollChatToBottom();
+}
+
+function removeTypingIndicator(){
+  const el = document.getElementById('chatTypingIndicator');
+  if (el) el.remove();
+}
+
+/* Keyword-based intent detection (works regardless of the language
+   the visitor types in; the reply is always given in the site's
+   currently selected language). Order matters — more specific
+   categories are checked before general ones. */
+function detectIntent(message){
+  const msg = message.toLowerCase();
+
+  const hndl        = ['harvest','день y','day y','harvest-now','собери сейчас','decrypt later','шор','shor'];
+  const standards   = ['fips','ml-kem','ml-dsa','slh-dsa','lattice','решетк','решёт','стандарт nist','nist standard'];
+  const agility     = ['crypto-agility','крипто-гибкост','крипто гибкост','agility'];
+  const express     = ['экспресс','express audit','перимет','perimeter','180 000','180000'];
+  const full        = ['комплексный','sast','discovery','нда','nda','850 000','850000','исходного кода','source code'];
+  const migration   = ['pqc миграц','pqc migration','дорожная карта','roadmap','гибридн','hybrid encryption','1 400 000','1400000','международный комплаенс','international compliance'];
+  const residency   = ['резидентств','residency','пвт','htp','high-tech park','юрисдикц','jurisdiction'];
+  const about       = ['кто вы','о компании','о вас','who are you','about you','about your company','what do you do','чем вы занимаетесь'];
+  const price       = ['цена','цены','стоимост','тариф','price','cost','pricing','kgs','сом','сколько сто','budget','бюджет','how much'];
+  const contacts    = ['контакт','телефон','номер','phone','contact','почта','email','связ','reach','написать','бишкек','bishkek','get in touch'];
+
+  const matches = (arr) => arr.some(k => msg.includes(k));
+
+  if (matches(hndl)) return 'reply_hndl';
+  if (matches(standards)) return 'reply_standards';
+  if (matches(agility)) return 'reply_agility';
+  if (matches(express)) return 'reply_express';
+  if (matches(full)) return 'reply_full';
+  if (matches(migration)) return 'reply_migration';
+  if (matches(residency)) return 'reply_residency';
+  if (matches(about)) return 'reply_about';
+  if (matches(price)) return 'reply_price';
+  if (matches(contacts)) return 'reply_contacts';
+  return 'reply_default';
+}
+
+/* Builds the final HTML for a bot reply: the matched knowledge-base
+   answer, plus the standard "contact our architects" call-to-action,
+   appended at the end of every single answer. */
+function buildBotReply(lang, intentKey){
+  const dict = translations[lang].chatbot;
+  const base = dict[intentKey];
+  return base + '<br><br>' + dict.cta;
+}
+
+function handleUserMessage(){
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  addUserMessage(text);
+  chatInput.value = '';
+
+  const intentKey = detectIntent(text);
+
+  showTypingIndicator();
+  const delay = 700 + Math.random() * 500;
+  setTimeout(() => {
+    removeTypingIndicator();
+    addBotMessage(buildBotReply(currentLang, intentKey));
+  }, delay);
+}
+
+chatSendBtn.addEventListener('click', handleUserMessage);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter'){
+    e.preventDefault();
+    handleUserMessage();
+  }
+});
+
+/* Initial language render */
+applyLanguage('ru');
+</script>
+
+</body>
+</html>

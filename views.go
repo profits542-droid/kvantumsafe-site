@@ -47,8 +47,25 @@ func GetRussianTemplate() string {
 				<a href="#" class="btn-menu" style="background:#38bdf8;">🏪 Маркетплейс ИИ-решений</a>
 			</div>
 		</div>
+		<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('lang') === 'en') {
+        document.body.innerHTML = document.body.innerHTML
+            .replace("Экспресс-Аудит Сетевого Периметра (Внешний ИИ-Сканер)", "Network Perimeter Express Audit (External AI Scanner)")
+            .replace("Запустить сканирование", "Run Scan")
+            .replace("доступны новые ИИ-модули комплаенса для коммерческих банков КР:", "New AI compliance modules are available for commercial banks of the KR:")
+            .replace("Запустить ИИ-Комплаенс (до 4 колена) →", "Launch AI Compliance (up to 4th generation) →")
+            .replace("ПРОФИЛЬ ДЕЯТЕЛЬНОСТИ РЕЗИДЕНТА ПВТ КР ОсОО Квантум Сейф:", "BUSINESS PROFILE OF HTP KR RESIDENT Kvantum Safe LLC:")
+            .replace("Комплексная разработка специализированного программного обеспечения, проектирование интеллектуальных ИИ-ассистентов и автономных ИИ-агентов, сквозной нормативно-правовой и технологический комплаенс-контроль, а также оказание профильной юридической помощи для финансовых организаций, распределенных ИТ-систем и Web3-инфраструктуры.", "Comprehensive development of specialized software, design of intelligent AI assistants and autonomous AI agents, end-to-end regulatory and technological compliance control, as well as specialized legal assistance for financial institutions, distributed IT systems, and Web3 infrastructure.")
+            .replace("Введите домен или IP для сканирования...", "Enter bank domain or IP for scanning...")
+            .replace("Спецификация ПО и Финансовая Выгода", "Software Specification & Financial Benefit")
+            .replace("Маркетплейс ИИ-решений", "AI Solutions Marketplace");
+    }
+</script>
+
 	</body>
 	</html>`
+
 }
 
 // GetComplianceTemplate возвращает новую финтех-страницу для банков КР

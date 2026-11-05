@@ -4,68 +4,46 @@ package main
 func GetRussianTemplate() string {
 	return `
 	<!DOCTYPE html>
-	<html lang="ru">
+	<html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Экспресс-Аудит Сетевого Пеминетра | ОсОО Квантум Сейф</title>
+		<title>Quantum Safe - AI Scanner</title>
 		<style>
-			body { font-family: 'Segoe UI', sans-serif; background: #0b1329; padding: 40px; color: #f4f6f9; line-height: 1.6; }
-			.container { max-width: 1000px; margin: 0 auto; }
-			.profile-box { background: #1c2541; border: 1px solid #3a506b; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 30px; font-size: 15px; }
-			.scanner-box { background: #1c2541; padding: 35px; border-radius: 12px; text-align: center; border: 1px solid #3a506b; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-			.nav-panel { background: #1e3a8a; padding: 15px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-			.nav-link { color: white; text-decoration: none; font-weight: bold; background: #10b981; padding: 10px 20px; border-radius: 6px; transition: background 0.2s; }
-			.nav-link:hover { background: #059669; }
-			h2 { color: white; font-size: 24px; margin-bottom: 25px; }
-			.input-field { width: 55%; padding: 12px 20px; background: #0b1329; border: 1px solid #3a506b; color: white; border-radius: 6px; font-size: 16px; margin-right: 15px; }
-			.btn-scan { background: #38bdf8; color: #0b1329; padding: 12px 28px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; font-size: 16px; transition: background 0.2s; }
-			.btn-scan:hover { background: #0ea5e9; }
-			.btn-menu { display: inline-block; background: #f59e0b; color: #0b1329; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; margin-right: 15px; margin-top: 25px; }
+			body { font-family: sans-serif; background-color: #0d1b2a; color: #ffffff; padding: 40px; }
+			.container { max-width: 800px; margin: 0 auto; background: #1b263b; padding: 30px; border-radius: 8px; }
+			.btn { background: #00b4d8; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+			.profile-box { background: #14213d; padding: 20px; border-radius: 6px; border-left: 4px solid #00b4d8; margin-bottom: 30px; font-style: italic; }
+			.input-field { padding: 12px; width: 60%; border-radius: 4px; border: none; margin-right: 10px; font-size: 16px; }
+			.nav-link { color: white; text-decoration: none; font-weight: bold; background: #10b981; padding: 10px 20px; border-radius: 4px; }
+			.nav-panel { background: #1b263b; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
 		</style>
 	</head>
 	<body>
 		<div class="container">
-			<!-- Навигационная плашка перехода к банковскому контуру -->
 			<div class="nav-panel">
-				<span>🏛️ Доступны новые ИИ-модули комплаенса для коммерческих банков КР:</span>
-				<a href="/compliance" class="nav-link">Запустить ИИ-Комплаенс (до 4 колена) →</a>
+				<span>New AI compliance modules are available for commercial banks of the KR: </span>
+				<a href="/compliance" class="nav-link">Launch AI Compliance (up to 4th generation) →</a>
 			</div>
 
-			<!-- ПРОФИЛЬ ДЕЯТЕЛЬНОСТИ РЕЗИДЕНТА ПВТ -->
 			<div class="profile-box">
-				📌 <strong>ПРОФИЛЬ ДЕЯТЕЛЬНОСТИ РЕЗИДЕНТА ПВТ КР ОсОО Квантум Сейф:</strong> Комплексная разработка специализированного программного обеспечения, проектирование интеллектуальных ИИ-ассистентов и автономных ИИ-агентов, сквозной нормативно-правовой и технологический комплаенс-контроль, а также оказание профильной юридической помощи для финансовых организаций, распределенных ИТ-систем и Web3-инфраструктуры.
+				📌 BUSINESS PROFILE OF HTP KR RESIDENT Kvantum Safe LLC: Comprehensive development of specialized software, design of intelligent AI assistants and autonomous AI agents, end-to-end regulatory and technological compliance control, as well as specialized legal assistance for financial institutions, distributed IT systems, and Web3 infrastructure.
 			</div>
-
-			<!-- БЛОК СКАНИРОВАНИЯ СЕТЕВОГО ПЕРИМЕТРА -->
-			<div class="scanner-box">
-				<h2>🔍 Экспресс-Аудит Сетевого Периметра (Внешний ИИ-Сканер)</h2>
-				<input type="text" class="input-field" placeholder="Введите домен или IP для сканирования...">
-				<button class="btn-scan" onclick="alert('Локальное ИИ-сканирование сетевого контура запущено...')">Запустить сканирование</button>
-				
-				<br>
-				<a href="#" class="btn-menu">🏆 Спецификация ПО и Финансовая Выгода</a>
-				<a href="#" class="btn-menu" style="background:#38bdf8;">🏪 Маркетплейс ИИ-решений</a>
+			
+			<h1>🔍 Network Perimeter Express Audit (External AI Scanner)</h1>
+			
+			<form action="/report/mbank" method="GET" style="margin-top: 20px;">
+				<input type="text" name="domain" class="input-field" placeholder="Enter bank domain or IP for scanning...">
+				<button type="submit" class="btn">🚀 Run Scan</button>
+			</form>
+			
+			<div style="margin-top: 30px;">
+				<button type="button" class="btn" style="background: #f59e0b; color: #0b1329; margin-right: 10px;">🏆 Software Specification & Financial Benefit</button>
+				<button type="button" class="btn" style="background: #38bdf8; color: #0b1329;">🏪 AI Solutions Marketplace</button>
 			</div>
 		</div>
-		<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    	<script>
-		const urlParams = new URLSearchParams(window.location.search);
-		if (urlParams.get('lang') === 'en') {
-			document.body.innerHTML = document.body.innerHTML
-				.replace(/Запустить ИИ-Комплаенс \(до 4 колена\) →/g, "Launch AI Compliance (up to 4th generation) →")
-				.replace(/ПРОФИЛЬ ДЕЯТЕЛЬНОСТИ РЕЗИДЕНТА ПВТ КР ОсОО Квантум Сейф:/g, "BUSINESS PROFILE OF HTP KR RESIDENT Kvantum Safe LLC:")
-				.replace(/Комплексная разработка специализированного программного обеспечения, проектирование интеллектуальных ИИ-ассистентов и автономных ИИ-агентов, сквозной нормативно-правовой и технологический комплаенс-контроль, а также оказание профильной юридической помощи для финансовых организаций, распределенных ИТ-систем и Web3-инфраструктуры./g, "Comprehensive development of specialized software, design of intelligent AI assistants and autonomous AI agents, end-to-end regulatory and technological compliance control, as well as specialized legal assistance for financial institutions, distributed IT systems, and Web3 infrastructure.")
-				.replace(/Экспресс-Аудит Сетевого Периметра \(Внешний ИИ-Сканер\)/g, "Network Perimeter Express Audit (External AI Scanner)")
-				.replace(/Введите домен или IP для сканирования.../g, "Enter bank domain or IP for scanning...")
-				.replace(/Запустить сканирование/g, "Run Scan")
-				.replace(/Спецификация ПО и Финансовая Выгода/g, "Software Specification & Financial Benefit")
-				.replace(/Маркетплейс ИИ-решений/g, "AI Solutions Marketplace");
-		}
-	</script>
 	</body>
-	</html>`
-
+	</html>
+	`
 }
 
 // GetComplianceTemplate возвращает новую финтех-страницу для банков КР

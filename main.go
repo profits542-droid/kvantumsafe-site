@@ -33,19 +33,25 @@ func getLanguage(r *http.Request) string {
 }
 
 func main() {
-	// 1. ГЛАВНАЯ СТРАНИЦА: Наш оригинальный синий ИИ-Сканер сетевого периметра ПВТ КР
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Строгая проверка, чтобы корневой маршрут не перехватывал другие пути
-		if r.URL.Path != "/" {
-			http.NotFound(w, r)
-			return
-		}
-
-		lang := getLanguage(r)
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(translations[lang]["home"]))
-	})
-
+		// 1. ГЛАВНАЯ СТРАНИЦА: Наш оригинальный синий ИИ-Сканер сетевого периметра ПВТ КР
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			// Строгая проверка, чтобы корневой маршрут не перехватывал другие пути
+			if r.URL.Path != "/" {
+				http.NotFound(w, r)
+				return
+			}
+	
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			
+			// Прямая проверка параметра в ссылке: если ?lang=en, то отдаем английский шаблон
+			if r.URL.Query().Get("lang") == "en" {
+				w.Write([]byte(GetEnglishTemplate()))
+			} else {
+				// В противном случае отдаем стандартный русский шаблон
+				w.Write([]byte(GetRussianTemplate()))
+			}
+		})
+	
 	// 2. ВКЛАДКА КОМПЛАЕНСА: Презентация ИИ-Судьи чеков и проверки до 4 колена Минюста КР
 	http.HandleFunc("/compliance", func(w http.ResponseWriter, r *http.Request) {
 		lang := getLanguage(r)

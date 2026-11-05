@@ -5,36 +5,58 @@ import (
 	"net/http"
 )
 
+// Определение структуры для перевода страниц
+type PageTranslation struct {
+	Lang    string
+	Content string
+}
+
+// Карта для хранения контента на разных языках
+var translations = map[string]map[string]string{
+	"ru": {
+		"home":       GetRussianTemplate(),
+		"compliance": GetRussianComplianceTemplate(), // Презентация ИИ-Судьи чеков и проверки Минюста КР
+	},
+	"en": {
+		"home":       GetEnglishTemplate(),
+		"compliance": GetEnglishComplianceTemplate(), // Английская версия комплаенс-модуля
+	},
+}
+
+// Функция для определения языка пользователя (из URL ?lang=en или по умолчанию ru)
+func getLanguage(r *http.Request) string {
+	lang := r.URL.Query().Get("lang")
+	if lang == "en" {
+		return "en"
+	}
+	return "ru" // Язык по умолчанию
+}
+
 func main() {
-	// 1. Маршрут для русскоязычной версии (Банки КР и СНГ)
+	// 1. ГЛАВНАЯ СТРАНИЦА: Наш оригинальный синий ИИ-Сканер сетевого периметра ПВТ КР
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Строгая проверка, чтобы роут не перехватывал другие несуществующие пути
+		// Строгая проверка, чтобы корневой маршрут не перехватывал другие пути
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
 			return
 		}
+
+		lang := getLanguage(r)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(GetRussianTemplate()))
+		w.Write([]byte(translations[lang]["home"]))
 	})
 
-	// 2. Маршрут для англоязычной версии (Специально для гранта .TECH)
-	http.HandleFunc("/en", func(w http.ResponseWriter, r *http.Request) {
+	// 2. ВКЛАДКА КОМПЛАЕНСА: Презентация ИИ-Судьи чеков и проверки до 4 колена Минюста КР
+	http.HandleFunc("/compliance", func(w http.ResponseWriter, r *http.Request) {
+		lang := getLanguage(r)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(GetEnglishTemplate()))
+		w.Write([]byte(translations[lang]["compliance"]))
 	})
 
-	// 3. Запуск веб-сервера сайта на стандартном порту 80
-	// Если порт 80 занят в системе, можно временно переключить на ":8081"
-	port := ":80"
-	log.Printf("🌍 Официальный сайт Quantum Safe успешно запущен на http://localhost%s", port)
-	
-	err := http.ListenAndServe(port, nil)
-	if err != nil {
-		log.Printf("⚠️ Порт 80 занят, переключаемся на резервный порт 8081...")
-		port = ":8081"
-		log.Printf("🌍 Сайт Quantum Safe запущен на http://localhost%s", port)
-		if errRetry := http.ListenAndServe(port, nil); errRetry != nil {
-			log.Fatalf("🚨 Критическая ошибка запуска веб-сервера: %v", errRetry)
-		}
+	// Запуск веб-ядра Квантум Сейф
+	log.Println("[SUCCESS] Квантум Сейф Веб-Ядро запущено на порту: 8080")
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatalf("[ERROR] Не удалось запустить сервер: %v", err)
 	}
 }
+

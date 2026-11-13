@@ -89,14 +89,16 @@ func (a *App) EditProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	item := store.Product{
-		ID:     id,
-		NameRU: strings.TrimSpace(r.PostFormValue("name_ru")),
-		NameEN: strings.TrimSpace(r.PostFormValue("name_en")),
-		DescRU: strings.TrimSpace(r.PostFormValue("desc_ru")),
-		DescEN: strings.TrimSpace(r.PostFormValue("desc_en")),
-		Price:  strings.TrimSpace(r.PostFormValue("price")),
-		Status: strings.TrimSpace(r.PostFormValue("status")),
+		ID:      id,
+		NameRU:  strings.TrimSpace(r.PostFormValue("name_ru")),
+		NameEN:  strings.TrimSpace(r.PostFormValue("name_en")),
+		DescRU:  strings.TrimSpace(r.PostFormValue("desc_ru")),
+		DescEN:  strings.TrimSpace(r.PostFormValue("desc_en")),
+		PriceRU: strings.TrimSpace(r.PostFormValue("price_ru")),
+		PriceEN: strings.TrimSpace(r.PostFormValue("price_en")),
+		Status:  strings.TrimSpace(r.PostFormValue("status")),
 	}
+	item.Price = item.PriceEN
 	if !validProduct(item) {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
@@ -113,7 +115,7 @@ func (a *App) EditProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func validProduct(item store.Product) bool {
-	fields := []string{item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.Price, item.Status}
+	fields := []string{item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.PriceRU, item.PriceEN, item.Status}
 	for _, field := range fields {
 		if field == "" || len(field) > 4000 {
 			return false

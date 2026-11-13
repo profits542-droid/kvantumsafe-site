@@ -14,7 +14,7 @@
       <p class="module">{{.Key}}</p>
       <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
       <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>
-      <p class="price">{{if eq $.Lang "en"}}Price{{else}}Цена{{end}}: {{.Price}}</p>
+      <p class="price">{{if eq $.Lang "en"}}{{.PriceEN}}{{else}}{{.PriceRU}}{{end}}</p>
     </article>
     {{else}}
     <p class="empty">{{if eq .Lang "en"}}No products in the database yet.{{else}}В базе пока нет продуктов.{{end}}</p>

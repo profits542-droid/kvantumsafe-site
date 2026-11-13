@@ -14,14 +14,16 @@ type Block struct {
 }
 
 type Product struct {
-	ID     int64
-	Key    string
-	NameRU string
-	NameEN string
-	DescRU string
-	DescEN string
-	Price  string
-	Status string
+	ID      int64
+	Key     string
+	NameRU  string
+	NameEN  string
+	DescRU  string
+	DescEN  string
+	Price   string
+	PriceRU string
+	PriceEN string
+	Status  string
 }
 
 func (s *Store) migrateContent() error {
@@ -50,7 +52,16 @@ func (s *Store) migrateContent() error {
 		return err
 	}
 	_, err = s.db.Exec(`CREATE UNIQUE INDEX IF NOT EXISTS products_product_key ON products(product_key) WHERE product_key IS NOT NULL AND product_key <> ''`)
-	return err
+	if err != nil {
+		return err
+	}
+	if _, err = s.db.Exec(`ALTER TABLE products ADD COLUMN price_ru TEXT`); err != nil && !strings.Contains(err.Error(), "duplicate column") {
+		return err
+	}
+	if _, err = s.db.Exec(`ALTER TABLE products ADD COLUMN price_en TEXT`); err != nil && !strings.Contains(err.Error(), "duplicate column") {
+		return err
+	}
+	return nil
 }
 
 func (s *Store) seedIfEmpty(ctx context.Context) error {
@@ -60,7 +71,41 @@ func (s *Store) seedIfEmpty(ctx context.Context) error {
 	if err := s.refreshOfficialLegal(ctx); err != nil {
 		return err
 	}
+	if err := s.refreshCatalogCopy(ctx); err != nil {
+		return err
+	}
 	return s.seedProducts(ctx)
+}
+
+func (s *Store) refreshCatalogCopy(ctx context.Context) error {
+	keep := map[string]bool{
+		"hero_lead":         true,
+		"crypto_stack":      true,
+		"products_title":    true,
+		"about_lead":        true,
+		"about_role_1_text": true,
+		"marketplace_lead":  true,
+	}
+	for _, row := range contentSeed() {
+		if !keep[row.key] {
+			continue
+		}
+		res, err := s.db.ExecContext(ctx, `UPDATE content SET value = ? WHERE "key" = ? AND lang = ?`, row.value, row.key, row.lang)
+		if err != nil {
+			return err
+		}
+		n, err := res.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if n > 0 {
+			continue
+		}
+		if _, err := s.db.ExecContext(ctx, `INSERT OR IGNORE INTO content ("key", lang, value) VALUES (?, ?, ?)`, row.key, row.lang, row.value); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s *Store) refreshOfficialLegal(ctx context.Context) error {
@@ -113,6 +158,22 @@ func (s *Store) seedProducts(ctx context.Context) error {
 	}
 	defer tx.Rollback()
 
+	legacyNames := map[string]string{
+		"external_scanner":        "External infrastructure scanner",
+		"internal_scanner":        "Internal compliance scanner",
+		"quantum_bridge":          "Post-quantum crypto bridge",
+		"compliance_orchestrator": "AI Compliance & Anti-Fraud Orchestrator",
+	}
+	for key, name := range legacyNames {
+		if _, err := tx.ExecContext(ctx, `
+			UPDATE products SET product_key = ?
+			WHERE (product_key IS NULL OR product_key = '') AND name_en = ?`,
+			key, name,
+		); err != nil {
+			return err
+		}
+	}
+
 	for _, item := range productSeed() {
 		if _, err := tx.ExecContext(ctx, `
 			UPDATE products SET product_key = ?
@@ -126,12 +187,20 @@ func (s *Store) seedProducts(ctx context.Context) error {
 			return err
 		}
 		if n > 0 {
+			if _, err := tx.ExecContext(ctx, `
+				UPDATE products
+				SET name_ru = ?, name_en = ?, desc_ru = ?, desc_en = ?, price = ?, price_ru = ?, price_en = ?, status = ?
+				WHERE product_key = ?`,
+				item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.PriceEN, item.PriceRU, item.PriceEN, item.Status, item.Key,
+			); err != nil {
+				return err
+			}
 			continue
 		}
 		if _, err := tx.ExecContext(ctx, `
-			INSERT INTO products (product_key, name_ru, name_en, desc_ru, desc_en, price, status)
-			VALUES (?, ?, ?, ?, ?, ?, ?)`,
-			item.Key, item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.Price, item.Status,
+			INSERT INTO products (product_key, name_ru, name_en, desc_ru, desc_en, price, price_ru, price_en, status)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			item.Key, item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.PriceEN, item.PriceRU, item.PriceEN, item.Status,
 		); err != nil {
 			return err
 		}
@@ -192,7 +261,8 @@ func (s *Store) UpdateContent(ctx context.Context, key, lang, value string) erro
 
 func (s *Store) ListProducts(ctx context.Context) ([]Product, error) {
 	rows, err := s.db.QueryContext(ctx, `
-		SELECT id, COALESCE(product_key, ''), name_ru, name_en, desc_ru, desc_en, price, status
+		SELECT id, COALESCE(product_key, ''), name_ru, name_en, desc_ru, desc_en, price,
+			COALESCE(NULLIF(price_ru, ''), price), COALESCE(NULLIF(price_en, ''), price), status
 		FROM products ORDER BY id`)
 	if err != nil {
 		return nil, err
@@ -202,7 +272,7 @@ func (s *Store) ListProducts(ctx context.Context) ([]Product, error) {
 	var out []Product
 	for rows.Next() {
 		var item Product
-		if err := rows.Scan(&item.ID, &item.Key, &item.NameRU, &item.NameEN, &item.DescRU, &item.DescEN, &item.Price, &item.Status); err != nil {
+		if err := rows.Scan(&item.ID, &item.Key, &item.NameRU, &item.NameEN, &item.DescRU, &item.DescEN, &item.Price, &item.PriceRU, &item.PriceEN, &item.Status); err != nil {
 			return nil, err
 		}
 		out = append(out, item)
@@ -213,9 +283,9 @@ func (s *Store) ListProducts(ctx context.Context) ([]Product, error) {
 func (s *Store) UpdateProduct(ctx context.Context, item Product) error {
 	res, err := s.db.ExecContext(ctx, `
 		UPDATE products
-		SET name_ru = ?, name_en = ?, desc_ru = ?, desc_en = ?, price = ?, status = ?
+		SET name_ru = ?, name_en = ?, desc_ru = ?, desc_en = ?, price = ?, price_ru = ?, price_en = ?, status = ?
 		WHERE id = ?`,
-		item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.Price, item.Status, item.ID,
+		item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.PriceEN, item.PriceRU, item.PriceEN, item.Status, item.ID,
 	)
 	if err != nil {
 		return err
@@ -247,18 +317,18 @@ func contentSeed() []seedRow {
 		{key: "hero_kicker", lang: "en", value: "Kvantum Safe Pro · .tech"},
 		{key: "hero_title", lang: "ru", value: "Постквантовая экосистема кибербезопасности нового поколения"},
 		{key: "hero_title", lang: "en", value: "Next-Gen Post-Quantum Cybersecurity Ecosystem"},
-		{key: "hero_lead", lang: "ru", value: "Kvantum Safe Pro — модульная платформа защиты финансового сектора и инфраструктуры Web3. Она закрывает сегодняшние угрозы периметру банка и заранее учитывает нагрузку квантовых вычислений на криптографию, которая уже стоит в промышленном контуре."},
-		{key: "hero_lead", lang: "en", value: "Kvantum Safe Pro is a modular protection platform for banks and Web3 infrastructure. It addresses present-day threats to the financial perimeter and the coming pressure of quantum computing on cryptography now in production."},
-		{key: "crypto_stack", lang: "ru", value: "Криптографический профиль поставки: гибрид NIST ML-KEM-768 и GmSSL SM4-GCM для сообщений SWIFT и XML."},
-		{key: "crypto_stack", lang: "en", value: "Delivery cryptographic profile: a hybrid of NIST ML-KEM-768 and GmSSL SM4-GCM for SWIFT and XML messages."},
+		{key: "hero_lead", lang: "ru", value: "Kvantum Safe Pro — модульная платформа защиты финансового сектора и инфраструктуры Web3. Она закрывает вход банка, проверяет целостность сообщений SWIFT и XML и проводит ИИ-аудит комплаенса."},
+		{key: "hero_lead", lang: "en", value: "Kvantum Safe Pro is a modular protection platform for banks and Web3 infrastructure. It guards the bank entrance, checks that SWIFT and XML messages stay intact, and runs an AI compliance audit."},
+		{key: "crypto_stack", lang: "ru", value: "Профиль защиты: архитектурная защита шлюзов, проверка целостности сообщений SWIFT и XML, ИИ-аудит комплаенса."},
+		{key: "crypto_stack", lang: "en", value: "Protection profile: architectural gateway protection, SWIFT and XML message-integrity checks, and an AI compliance audit."},
 		{key: "intake_label", lang: "ru", value: "Домен организации"},
 		{key: "intake_label", lang: "en", value: "Institution domain"},
 		{key: "intake_button", lang: "ru", value: "Запустить сканирование периметра"},
 		{key: "intake_button", lang: "en", value: "Run Perimeter Scan"},
 		{key: "intake_hint", lang: "ru", value: "Открывает экспресс-отчёт по указанному домену."},
 		{key: "intake_hint", lang: "en", value: "Opens the express report for the domain you enter."},
-		{key: "products_title", lang: "ru", value: "Продуктовая триада"},
-		{key: "products_title", lang: "en", value: "Core products"},
+		{key: "products_title", lang: "ru", value: "Продукты"},
+		{key: "products_title", lang: "en", value: "Products"},
 		{key: "deploy_title", lang: "ru", value: "Архитектура и внедрение"},
 		{key: "deploy_title", lang: "en", value: "Architecture and deployment"},
 		{key: "gateway_title", lang: "ru", value: "Автономный бронированный шлюз"},
@@ -281,8 +351,8 @@ func contentSeed() []seedRow {
 		{key: "about_kicker", lang: "en", value: "Kvantum Safe LLC"},
 		{key: "about_title", lang: "ru", value: "О компании"},
 		{key: "about_title", lang: "en", value: "About the company"},
-		{key: "about_lead", lang: "ru", value: "Kvantum Safe разрабатывает модульную защиту для банков и инфраструктуры Web3: периметр, комплаенс и постквантовый контур поставок."},
-		{key: "about_lead", lang: "en", value: "Kvantum Safe builds modular protection for banks and Web3 infrastructure: the perimeter, compliance, and the post-quantum delivery profile."},
+		{key: "about_lead", lang: "ru", value: "Kvantum Safe разрабатывает модульную защиту для банков и инфраструктуры Web3: периметр, поиск забытых секретных файлов, шлюз переводов и аудит комплаенса."},
+		{key: "about_lead", lang: "en", value: "Kvantum Safe builds modular protection for banks and Web3 infrastructure: the perimeter, a search for forgotten secret files, the transfer gateway, and a compliance audit."},
 		{key: "about_residency_title", lang: "ru", value: "Резидентство ПВТ КР"},
 		{key: "about_residency_title", lang: "en", value: "HTP residency"},
 		{key: "about_residency", lang: "ru", value: officialLegalRU},
@@ -297,8 +367,8 @@ func contentSeed() []seedRow {
 		{key: "about_team_title", lang: "en", value: "Team"},
 		{key: "about_role_1_title", lang: "ru", value: "Инженерная группа"},
 		{key: "about_role_1_title", lang: "en", value: "Engineering"},
-		{key: "about_role_1_text", lang: "ru", value: "Собирает сканер периметра, внутренний контроль файлов и криптографический мост в поставляемые модули."},
-		{key: "about_role_1_text", lang: "en", value: "Builds the perimeter scanner, the internal file control, and the cryptographic bridge into deliverable modules."},
+		{key: "about_role_1_text", lang: "ru", value: "Собирает сканер периметра, поиск забытых секретных файлов и шлюз банковских переводов в поставляемые модули."},
+		{key: "about_role_1_text", lang: "en", value: "Builds the perimeter scanner, the search for forgotten secret files, and the bank-transfer gateway into deliverable modules."},
 		{key: "about_role_2_title", lang: "ru", value: "Комплаенс"},
 		{key: "about_role_2_text", lang: "ru", value: "Сверяет контур поставки с санкционными требованиями и правилами доступа к материалам банка."},
 		{key: "about_role_2_title", lang: "en", value: "Compliance"},
@@ -311,48 +381,52 @@ func contentSeed() []seedRow {
 		{key: "marketplace_kicker", lang: "en", value: "Kvantum Safe Pro"},
 		{key: "marketplace_title", lang: "ru", value: "Маркетплейс ИИ-решений"},
 		{key: "marketplace_title", lang: "en", value: "AI solutions marketplace"},
-		{key: "marketplace_lead", lang: "ru", value: "Карточки продуктов, их спецификации и цены берутся из базы. Статус и стоимость правятся в админке вместе с текстами."},
-		{key: "marketplace_lead", lang: "en", value: "Product cards, specifications, and prices come from the database. Status and price are edited in the admin desk together with the copy."},
+		{key: "marketplace_lead", lang: "ru", value: "Карточки продуктов и их описание берутся из базы. Условие поставки указано на каждой карточке."},
+		{key: "marketplace_lead", lang: "en", value: "Product cards and their descriptions come from the database. The supply term is shown on each card."},
 	}
 }
 
 func productSeed() []Product {
 	return []Product{
 		{
-			Key:    "external_scanner",
-			NameRU: "Внешний инфраструктурный сканер",
-			NameEN: "External infrastructure scanner",
-			DescRU: "Модуль scanner.go. Бесплатный аудит внешних TLS-шлюзов банка: сертификат, протокол на входе и то, что организация показывает в интернет.",
-			DescEN: "Module scanner.go. A no-fee review of a bank’s public TLS gateways: the certificate, the protocol at the edge, and what the institution exposes to the internet.",
-			Price:  "0",
-			Status: "active",
+			Key:     "external_scanner",
+			NameRU:  "Внешний сканер периметра",
+			NameEN:  "External perimeter scanner",
+			DescRU:  "Смотрит на банк снаружи. Показывает, как устроен вход через интернет и нет ли открытого периметра.",
+			DescEN:  "Looks at the bank from the outside. Shows how the internet entrance is set up and whether the perimeter is left open.",
+			PriceRU: "Бесплатный экспресс-аудит",
+			PriceEN: "Free Express Audit",
+			Status:  "active",
 		},
 		{
-			Key:    "internal_scanner",
-			NameRU: "Внутренний сканер комплаенса",
-			NameEN: "Internal compliance scanner",
-			DescRU: "Модуль internal_fs.go. Ищет внутри контура банка материалы, которым не место в открытом доступе: выгрузки баз, SQL-дампы и приватные ключи Web3. Найденное изолируется правами 0600 — чтение и запись только у владельца.",
-			DescEN: "Module internal_fs.go. Looks inside the bank’s own environment for material that should not sit in the open: database exports, SQL dumps, and Web3 private keys. What it finds is locked to mode 0600, readable and writable by the owner alone.",
-			Price:  "included",
-			Status: "active",
+			Key:     "internal_scanner",
+			NameRU:  "Внутренний сканер забытых секретных файлов",
+			NameEN:  "Internal scanner of forgotten secret files",
+			DescRU:  "Ищет внутри банка забытые секретные файлы, которым не место в открытом доступе. Находку видит только владелец.",
+			DescEN:  "Looks inside the bank for forgotten secret files that should not sit in the open. Only the owner can see what it finds.",
+			PriceRU: "Включено в базовый контур",
+			PriceEN: "Included in Core Suite",
+			Status:  "active",
 		},
 		{
-			Key:    "quantum_bridge",
-			NameRU: "Постквантовый крипто-мост",
-			NameEN: "Post-quantum crypto bridge",
-			DescRU: "Модуль quantum_bridge.go. Сквозная защита сообщений SWIFT и XML. В профиле поставки — гибрид стандартов NIST ML-KEM-768 и GmSSL SM4-GCM.",
-			DescEN: "Module quantum_bridge.go. End-to-end protection for SWIFT and XML payment messages. The delivery profile uses the hybrid of NIST ML-KEM-768 and GmSSL SM4-GCM.",
-			Price:  "35000 USD / year",
-			Status: "active",
+			Key:     "quantum_bridge",
+			NameRU:  "Защищенный шлюз банковских переводов",
+			NameEN:  "Protected bank-transfer gateway",
+			DescRU:  "Стоит на пути банковского перевода. Проверяет, что сообщение SWIFT или XML не изменено по дороге, и проводит его через защищенный шлюз.",
+			DescEN:  "Stands on the path of a bank transfer. Checks that a SWIFT or XML message was not changed on the way, and passes it through a protected gateway.",
+			PriceRU: "По запросу",
+			PriceEN: "Custom Quote",
+			Status:  "active",
 		},
 		{
-			Key:    "compliance_orchestrator",
-			NameRU: "ИИ-Оркестратор Комплаенса и Антифрода",
-			NameEN: "AI Compliance & Anti-Fraud Orchestrator",
-			DescRU: "Модуль комплексной защиты для банков и криптобирж. Включает ИИ-Судью P2P-чеков для предотвращения мошенничества и автоматический AML-скрининг по базам OFAC/Минюста КР до 4-го поколения родственников для защиты от вторичных санкций.",
-			DescEN: "Comprehensive enterprise security module for commercial banks and crypto exchanges. Features an AI Receipt Judge to prevent P2P fraud and automated AML screening via OFAC/MoJ registries up to the 4th generation of kinship to eliminate secondary sanction risks.",
-			Price:  "$25,000 / year",
-			Status: "active",
+			Key:     "compliance_orchestrator",
+			NameRU:  "Умный контролер антифрода и санкций",
+			NameEN:  "Smart anti-fraud and sanctions controller",
+			DescRU:  "Умный контролер для банков и криптобирж. Замечает мошенничество в переводах между людьми и проверяет, можно ли проводить платёж по правилам санкций.",
+			DescEN:  "A smart controller for banks and crypto exchanges. It notices fraud in person-to-person transfers and checks whether a payment is allowed under sanctions rules.",
+			PriceRU: "По запросу",
+			PriceEN: "Custom Quote",
+			Status:  "active",
 		},
 	}
 }

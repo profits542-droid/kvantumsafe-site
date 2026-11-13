@@ -48,8 +48,10 @@
     <textarea name="desc_ru" rows="4" required maxlength="4000">{{.DescRU}}</textarea>
     <label>{{if eq $.Lang "en"}}Description, English{{else}}Описание, EN{{end}}</label>
     <textarea name="desc_en" rows="4" required maxlength="4000">{{.DescEN}}</textarea>
-    <label>{{if eq $.Lang "en"}}Price{{else}}Цена{{end}}</label>
-    <input name="price" required maxlength="4000" value="{{.Price}}">
+    <label>{{if eq $.Lang "en"}}Supply term, Russian{{else}}Условие поставки, RU{{end}}</label>
+    <input name="price_ru" required maxlength="4000" value="{{.PriceRU}}">
+    <label>{{if eq $.Lang "en"}}Supply term, English{{else}}Условие поставки, EN{{end}}</label>
+    <input name="price_en" required maxlength="4000" value="{{.PriceEN}}">
     <label>{{if eq $.Lang "en"}}Status{{else}}Статус{{end}}</label>
     <input name="status" required maxlength="32" value="{{.Status}}">
     <input type="hidden" name="id" value="{{.ID}}">

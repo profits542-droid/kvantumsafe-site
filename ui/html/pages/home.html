@@ -36,7 +36,7 @@
         <p class="module">{{.Key}}</p>
         <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
         <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>
-        <p class="price">{{.Price}}</p>
+        <p class="price">{{if eq $.Lang "en"}}{{.PriceEN}}{{else}}{{.PriceRU}}{{end}}</p>
       </article>
       {{end}}
     </div>

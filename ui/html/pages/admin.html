@@ -1,0 +1,41 @@
+{{define "title"}}{{if eq .Lang "en"}}Admin desk{{else}}Админ-панель{{end}}{{end}}
+
+{{define "main"}}
+<section class="desk">
+  <div class="desk-head">
+    <div>
+      <p class="eyebrow">{{if eq .Lang "en"}}Signed in as{{else}}Вы вошли как{{end}} {{.Username}}</p>
+      <h1>{{if eq .Lang "en"}}Submitted bank domains{{else}}Отправленные домены банков{{end}}</h1>
+      <p class="lede tight">{{if eq .Lang "en"}}The latest 50 entries from the local SQLite database.{{else}}Последние 50 записей из локальной базы SQLite.{{end}}</p>
+      <p class="hint"><a href="/admin/dashboard{{if eq .Lang "en"}}?lang=en{{end}}">{{if eq .Lang "en"}}Edit page copy{{else}}Править тексты страниц{{end}}</a></p>
+    </div>
+    <form method="post" action="/admin/logout?lang={{.Lang}}">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <button class="ghost" type="submit">{{if eq .Lang "en"}}Sign out{{else}}Выйти{{end}}</button>
+    </form>
+  </div>
+
+  {{if .Checks}}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>{{if eq .Lang "en"}}Domain{{else}}Домен{{end}}</th>
+          <th>{{if eq .Lang "en"}}Received{{else}}Получен{{end}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Checks}}
+        <tr>
+          <td class="mono">{{.Domain}}</td>
+          <td>{{.When}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <p class="empty">{{if eq .Lang "en"}}No domains yet. The public form on the home page will land here.{{else}}Доменов пока нет. Они появятся здесь после отправки формы на главной странице.{{end}}</p>
+  {{end}}
+</section>
+{{end}}

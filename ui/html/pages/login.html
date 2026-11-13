@@ -1,0 +1,28 @@
+{{define "title"}}{{if eq .Lang "en"}}Staff sign-in{{else}}Служебный вход{{end}}{{end}}
+
+{{define "main"}}
+<section class="narrow">
+  <form class="panel" method="post" action="/admin/login?lang={{.Lang}}">
+    <div class="panel-top">
+      <span class="scan-dot" aria-hidden="true"></span>
+      <span>{{if eq .Lang "en"}}Protected desk{{else}}Закрытый стол{{end}}</span>
+    </div>
+    {{if eq .Lang "en"}}
+    <h1>Sign in to the admin desk.</h1>
+    <p class="lede tight">Only a staff account can open submitted bank domains. The session stays in an HttpOnly cookie and expires after 12 hours.</p>
+    {{else}}
+    <h1>Вход в админ-панель.</h1>
+    <p class="lede tight">Список отправленных доменов банков открывается только служебной учётной записи. Сессия хранится в cookie HttpOnly и истекает через 12 часов.</p>
+    {{end}}
+    <label for="username">{{if eq .Lang "en"}}Username{{else}}Имя{{end}}</label>
+    <input id="username" name="username" type="text" autocomplete="username" required maxlength="64">
+    <label for="password">{{if eq .Lang "en"}}Password{{else}}Пароль{{end}}</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <input type="hidden" name="csrf" value="{{.CSRF}}">
+    {{if eq .ErrorCode "invalid_login"}}
+    <p class="form-error" role="alert">{{if eq .Lang "en"}}Incorrect username or password.{{else}}Неверное имя или пароль.{{end}}</p>
+    {{end}}
+    <button type="submit">{{if eq .Lang "en"}}Sign in{{else}}Войти{{end}}</button>
+  </form>
+</section>
+{{end}}

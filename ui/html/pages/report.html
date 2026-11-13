@@ -1,0 +1,98 @@
+{{define "title"}}{{if eq .Lang "en"}}Critical Security Issues{{else}}Критические находки{{end}} — {{.Domain}}{{end}}
+
+{{define "main"}}
+<div class="container" style="max-width: 800px; margin: 0 auto; padding: 30px; font-family: sans-serif;">
+
+    <p><a href="/?lang={{.Lang}}" style="color: #00b4d8; text-decoration: none; font-weight: bold;">← {{if eq .Lang "en"}}Check another domain{{else}}Проверить другой домен{{end}}</a></p>
+
+    <section style="background: #0a0f1d; border: 1px solid #163228; border-radius: 10px; padding: 18px 20px; margin: 0 0 28px;">
+        <p style="margin: 0 0 12px; color: #8ea0b8; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;">{{if eq .Lang "en"}}AI scanner network log{{else}}Сетевые логи ИИ-сканера{{end}}</p>
+        <div style="color: #3ddc97; font-family: Consolas, 'Cascadia Mono', monospace; font-size: 13.5px; line-height: 1.75;">
+            {{if eq .Lang "en"}}
+            <div>[INFO] Preparing the express-review log for {{.Domain}}...</div>
+            <div>[INFO] Review topic: the public edge of the site and the TLS service at the door.</div>
+            <div style="color: #d6b25e;">[WARN] An open edge can leave a customer session behind after a payment, like keys left on the cashier's desk.</div>
+            <div style="color: #ff8b98;">[CRIT] This report treats RAM Memory Protection and sanctions screening as missing from automatic mode. It explains the risk. It does not show that the domain was broken into or that data was stolen.</div>
+            {{else}}
+            <div>[INFO] Подготовка журнала экспресс-разбора для домена {{.Domain}}...</div>
+            <div>[INFO] Тема разбора: открытый контур сайта и служба TLS на входе.</div>
+            <div style="color: #d6b25e;">[WARN] Открытый контур может оставить сессию клиента после операции — как ключи, забытые на столе кассира.</div>
+            <div style="color: #ff8b98;">[CRIT] В этом отчёте защита RAM Memory Protection и санкционный скрининг показаны как отсутствующие в автоматическом режиме. Это разбор риска, а не подтверждение взлома и компрометации данных.</div>
+            {{end}}
+        </div>
+    </section>
+
+    <h1 style="color: #ffffff; font-size: 28px; margin-bottom: 5px;">
+        {{if eq .Lang "en"}}Critical Security Issues for {{.Domain}}{{else}}Критические находки для {{.Domain}}{{end}}
+    </h1>
+    <p style="color: #a0aec0; margin-top: 0; margin-bottom: 30px;">
+        {{if eq .Lang "en"}}Scan Status: Verified (Handshake OK) | Security Level: CRITICAL RISK{{else}}Статус сканирования: Успешно (Handshake OK) | Уровень угрозы: КРИТИЧЕСКИЙ РИСК{{end}}
+    </p>
+
+    <div style="background: #1b263b; border-left: 4px solid #e63946; padding: 20px; border-radius: 6px; margin-bottom: 25px; color: #ffffff;">
+        <h3 style="margin-top: 0; color: #e63946; font-size: 18px;">
+            🚨 {{if eq .Lang "en"}}RAM Memory Protection (AI-AntiHacker Module){{else}}Защита оперативной памяти (ИИ-Модуль АнтиХакер){{end}}
+        </h3>
+        <p style="line-height: 1.6; font-size: 15px;">
+            <strong>{{if eq .Lang "en"}}In simple terms:{{else}}Простыми словами:{{end}}</strong>
+            {{if eq .Lang "en"}}
+            Imagine a bank vault where the cashier leaves the keys on the desk after opening the safe. A hacker can sneak in and steal active customer login sessions and funds. Currently, your server RAM is fully exposed to stealth memory-injection attacks.
+            {{else}}
+            Представьте, что банк — это защищенный сейф, но кассир забыл закрыть за собой дверь и оставил ключи прямо на столе. Хакер может незаметно зайти и забрать все пароли клиентов и доступы к деньгам. Сейчас оперативная память вашего сервера полностью открыта для скрытых атак.
+            {{end}}
+        </p>
+        <p style="line-height: 1.6; font-size: 15px; color: #10b981;">
+            <strong>{{if eq .Lang "en"}}Kvantum Safe Solution:{{else}}Решение Kvantum Safe:{{end}}</strong>
+            {{if eq .Lang "en"}}
+            Our low-layer Go/Rust AntiHacker guard acts as an invisible controller. It instantly clears session keys from memory (Stealth RAM Isolation) immediately after a transaction, blocking hackers completely.
+            {{else}}
+            Наш защитный модуль АнтиХакер (на базе Go и низкоуровневого Rust) работает как умный охранник. Он мгновенно прячет все ключи доступа из оперативной памяти сразу после совершения операции, делая атаку невозможной.
+            {{end}}
+        </p>
+    </div>
+
+    <div style="background: #1b263b; border-left: 4px solid #e63946; padding: 20px; border-radius: 6px; margin-bottom: 35px; color: #ffffff;">
+        <h3 style="margin-top: 0; color: #e63946; font-size: 18px;">
+            🚨 {{if eq .Lang "en"}}Sanction Screening & Compliance (Graph AI Engine){{else}}Санкционный скрининг и комплаенс (ИИ-Граф связей){{end}}
+        </h3>
+        <p style="line-height: 1.6; font-size: 15px;">
+            <strong>{{if eq .Lang "en"}}In simple terms:{{else}}Простыми словами:{{end}}</strong>
+            {{if eq .Lang "en"}}
+            The bank processes international wire transfers blindly without identifying hidden owners. If money accidentally flows to an OFAC/SDN sanctioned entity, international correspondent accounts will be blocked instantly. Checking just the basic tax ID does not show hidden shell networks.
+            {{else}}
+            Банк делает переводы «вслепую», не проверяя, кому именно уходят деньги. Если банк случайно переведет деньги компании под международными санкциями (OFAC/SDN), его счета за рубежом заблокируют. Обычная проверка по ИНН не видит скрытых подставных фирм.
+            {{end}}
+        </p>
+        <p style="line-height: 1.6; font-size: 15px; color: #10b981;">
+            <strong>{{if eq .Lang "en"}}Kvantum Safe Solution:{{else}}Решение Kvantum Safe:{{end}}</strong>
+            {{if eq .Lang "en"}}
+            Our platform automatically builds a Graph AI connection network up to the 4th generation of kinship using local Ministry of Justice registries and OFAC lists, automatically screening transactions before deployment.
+            {{else}}
+            Наш ИИ-помощник за 0.5 секунды строит цифровой граф связей компании по базам Минюста КР и Госфинразведки до 4-го колена родственников. Система находит скрытых бенефициаров и блокирует перевод до отправки денег.
+            {{end}}
+        </p>
+    </div>
+
+    <div style="background: #14213d; border: 1px solid #00b4d8; padding: 25px; border-radius: 8px; color: #ffffff;">
+        <h2 style="margin-top: 0; color: #00b4d8; font-size: 20px;">
+            📊 {{if eq .Lang "en"}}B2B Product Specification & Monetization (SaaS Model){{else}}Спецификация ПО и Коммерциализация (Модель SaaS){{end}}
+        </h2>
+        <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1;">
+            {{if eq .Lang "en"}}
+            Developed by <strong>Kvantum Safe LLC</strong> (Official HTP Resident applicant, Patent Registration No. 1295). We deliver secure, compiled SDK binaries with Hardware Fingerprinting binding for enterprise infrastructures.
+            {{else}}
+            Разработано компанией <strong>ОсОО «Квантум Сейф»</strong> (Заявка на резидентство ПВТ КР, патент Кыргызпатента № 1295). Продукт поставляется в виде защищенного скомпилированного SDK с привязкой к оборудованию сервера (Hardware ID).
+            {{end}}
+        </p>
+        <ul style="padding-left: 20px; font-size: 14px; line-height: 1.8; color: #e2e8f0;">
+            <li><strong>{{if eq .Lang "en"}}Compliance Pro (Internal Audit):{{else}}Compliance Pro (Внутренний аудит):{{end}}</strong> {{if eq .Lang "en"}}$15,000 / year per server license.{{else}}$15,000 в год за серверную лицензию.{{end}}</li>
+            <li><strong>{{if eq .Lang "en"}}Quantum Web3 Bridge (Core Crypto-Gate):{{else}}Quantum Web3 Bridge (Крипто-мост):{{end}}</strong> {{if eq .Lang "en"}}$35,000 / year for ultimate post-quantum SWIFT & block-node screening.{{else}}$35,000 в год за сквозную постквантовую защиту SWIFT и Web3-нод.{{end}}</li>
+            <li><strong>{{if eq .Lang "en"}}AI P2P Referee App:{{else}}ИИ-Арбитр P2P-сделок:{{end}}</strong> {{if eq .Lang "en"}}$0.10 - $0.50 transactional fee per verified support ticket.{{else}}$0.10 – $0.50 транзакционной комиссии за один разобранный спор.{{end}}</li>
+        </ul>
+        <p style="font-size: 13px; color: #a0aec0; margin-bottom: 0; text-align: center; font-style: italic;">
+            {{if eq .Lang "en"}}Corporate tier pricing is calculated individually based on Core CPU count, RAM bandwidth, and physical USB token deployment.{{else}}Стоимость Enterprise-контура рассчитывается индивидуально на основе количества ядер процессора (CPU), объема оперативной памяти (RAM) и выпуска USB-токенов защиты.{{end}}
+        </p>
+    </div>
+
+</div>
+{{end}}

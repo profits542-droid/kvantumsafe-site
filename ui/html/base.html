@@ -1,0 +1,45 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="{{.Lang}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{template "title" .}} — Kvantum Safe</title>
+  <meta name="description" content="{{if eq .Lang "en"}}Kvantum Safe helps the .tech community review the public domains of banks.{{else}}Kvantum Safe помогает сообществу .tech проверять публичные домены банков.{{end}}">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-bar">
+      <a class="brand" href="/?lang={{.Lang}}">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>
+          <span class="brand-name">Kvantum Safe</span>
+          <span class="brand-tag">{{if eq .Lang "en"}}Digital trust{{else}}Цифровое доверие{{end}}</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="{{if eq .Lang "en"}}Pages{{else}}Страницы{{end}}">
+        <a href="/?lang={{.Lang}}" class="{{if eq .Path "/"}}is-active{{end}}">{{if eq .Lang "en"}}Home{{else}}Главная{{end}}</a>
+        <a href="/about?lang={{.Lang}}" class="{{if eq .Path "/about"}}is-active{{end}}">{{if eq .Lang "en"}}About{{else}}О компании{{end}}</a>
+        <a href="/marketplace?lang={{.Lang}}" class="{{if eq .Path "/marketplace"}}is-active{{end}}">{{if eq .Lang "en"}}Marketplace{{else}}Маркетплейс{{end}}</a>
+      </nav>
+      <nav class="lang-switch" aria-label="{{if eq .Lang "en"}}Language{{else}}Язык{{end}}">
+        <a href="{{.Path}}?lang=ru{{if .Domain}}&domain={{.Domain}}{{end}}" class="{{if ne .Lang "en"}}is-active{{end}}" lang="ru" hreflang="ru">RU</a>
+        <a href="{{.Path}}?lang=en{{if .Domain}}&domain={{.Domain}}{{end}}" class="{{if eq .Lang "en"}}is-active{{end}}" lang="en" hreflang="en">EN</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell page">
+    {{template "main" .}}
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-bar">
+      <p>© {{.Year}} Kvantum Safe. {{if eq .Lang "en"}}Built for the .tech community.{{else}}Сделано для сообщества .tech.{{end}}</p>
+      <a href="/admin/login?lang={{.Lang}}">{{if eq .Lang "en"}}Staff sign-in{{else}}Служебный вход{{end}}</a>
+    </div>
+  </footer>
+</body>
+</html>
+{{end}}

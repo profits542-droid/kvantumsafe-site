@@ -1,0 +1,35 @@
+{{define "title"}}{{index .Text "about_title"}}{{end}}
+
+{{define "main"}}
+<div class="pro">
+  <section>
+    <p class="eyebrow">{{index .Text "about_kicker"}}</p>
+    <h1>{{index .Text "about_title"}}</h1>
+    <p class="lede">{{index .Text "about_lead"}}</p>
+  </section>
+
+  <section class="mandate">
+    <h2>{{index .Text "about_legal_title"}}</h2>
+    <p>{{index .Text "about_legal"}}</p>
+    <a class="doc-link" href="/static/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{index .Text "htp_certificate_label"}}</a>
+  </section>
+
+  <section class="pro-block" aria-labelledby="team-title">
+    <h2 id="team-title">{{index .Text "about_team_title"}}</h2>
+    <div class="triad">
+      <article class="triad-card">
+        <h3>{{index .Text "about_role_1_title"}}</h3>
+        <p>{{index .Text "about_role_1_text"}}</p>
+      </article>
+      <article class="triad-card">
+        <h3>{{index .Text "about_role_2_title"}}</h3>
+        <p>{{index .Text "about_role_2_text"}}</p>
+      </article>
+      <article class="triad-card">
+        <h3>{{index .Text "about_role_3_title"}}</h3>
+        <p>{{index .Text "about_role_3_text"}}</p>
+      </article>
+    </div>
+  </section>
+</div>
+{{end}}

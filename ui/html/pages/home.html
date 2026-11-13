@@ -1,0 +1,67 @@
+{{define "title"}}Kvantum Safe Pro{{end}}
+
+{{define "main"}}
+<div class="pro">
+  <section class="pro-hero">
+    <div>
+      <p class="eyebrow">{{index .Text "hero_kicker"}}</p>
+      <h1>{{index .Text "hero_title"}}</h1>
+      <p class="lede">{{index .Text "hero_lead"}}</p>
+      <p class="lede tight">{{index .Text "crypto_stack"}}</p>
+    </div>
+
+    <form class="intake" method="get" action="/report">
+      <div class="panel-top">
+        <span class="scan-dot" aria-hidden="true"></span>
+        <span>Domain intake</span>
+      </div>
+      <label for="domain">{{index .Text "intake_label"}}</label>
+      <div class="intake-row">
+        <input id="domain" name="domain" type="text" inputmode="url" autocomplete="off" spellcheck="false" required maxlength="253" placeholder="bakai.kg" value="{{.Domain}}">
+        <button type="submit">{{index .Text "intake_button"}}</button>
+      </div>
+      <input type="hidden" name="lang" value="{{.Lang}}">
+      {{if eq .ErrorCode "invalid_domain"}}
+      <p class="form-error" role="alert">{{if eq .Lang "en"}}Enter the institution domain, for example bakai.kg.{{else}}Укажите домен организации, например bakai.kg.{{end}}</p>
+      {{end}}
+      <p class="hint">{{index .Text "intake_hint"}}</p>
+    </form>
+  </section>
+
+  <section class="pro-block" aria-labelledby="products-title">
+    <h2 id="products-title">{{index .Text "products_title"}}</h2>
+    <div class="triad">
+      {{range .Products}}
+      <article class="triad-card" tabindex="0">
+        <p class="module">{{.Key}}</p>
+        <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
+        <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>
+        <p class="price">{{.Price}}</p>
+      </article>
+      {{end}}
+    </div>
+  </section>
+
+  <section class="pro-block" aria-labelledby="deploy-title">
+    <h2 id="deploy-title">{{index .Text "deploy_title"}}</h2>
+    <div class="deploy">
+      <article>
+        <p class="module">DMZ</p>
+        <h3>{{index $.Text "gateway_title"}}</h3>
+        <p>{{index $.Text "gateway_text"}}</p>
+      </article>
+      <article>
+        <p class="module">SDK</p>
+        <h3>{{index $.Text "sdk_title"}}</h3>
+        <p>{{index $.Text "sdk_text"}}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="mandate" aria-labelledby="legal-title">
+    <h2 id="legal-title">{{index .Text "legal_title"}}</h2>
+    <p>{{index .Text "legal_company"}}</p>
+    <a class="doc-link" href="/static/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{index .Text "htp_certificate_label"}}</a>
+  </section>
+</div>
+{{end}}

@@ -1,0 +1,62 @@
+{{define "title"}}{{if eq .Lang "en"}}Content desk{{else}}Управление контентом{{end}}{{end}}
+
+{{define "main"}}
+<section class="desk cms">
+  <div class="desk-head">
+    <div>
+      <p class="eyebrow">{{if eq .Lang "en"}}Signed in as{{else}}Вы вошли как{{end}} {{.Username}}</p>
+      <h1>{{if eq .Lang "en"}}Content and products{{else}}Тексты и продукты{{end}}</h1>
+      <p class="lede tight">{{if eq .Lang "en"}}Each block is stored in SQLite. Russian and English are saved separately. The public home page reads the language selected in the address bar.{{else}}Каждый блок хранится в SQLite. Русская и английская версии сохраняются отдельно. Главная страница берёт язык из адреса.{{end}}</p>
+    </div>
+    <form method="post" action="/admin/logout?lang={{.Lang}}">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <button class="ghost" type="submit">{{if eq .Lang "en"}}Sign out{{else}}Выйти{{end}}</button>
+    </form>
+  </div>
+
+  {{if .Saved}}
+  <p class="form-ok" role="status">{{if eq .Lang "en"}}Saved.{{else}}Сохранено.{{end}}</p>
+  {{end}}
+
+  <p class="hint"><a href="/admin{{if eq .Lang "en"}}?lang=en{{end}}">{{if eq .Lang "en"}}Submitted domains{{else}}Отправленные домены{{end}}</a></p>
+
+  <h2>{{if eq .Lang "en"}}Page copy{{else}}Тексты страниц{{end}}</h2>
+  {{range .Blocks}}
+  <form class="cms-card" method="post" action="/admin/edit-content">
+    <div class="cms-meta">
+      <span class="mono">{{.Key}}</span>
+      <span class="badge">{{.Lang}}</span>
+    </div>
+    <textarea name="value" rows="4" required maxlength="8000">{{.Value}}</textarea>
+    <input type="hidden" name="key" value="{{.Key}}">
+    <input type="hidden" name="lang" value="{{.Lang}}">
+    <input type="hidden" name="ui_lang" value="{{$.Lang}}">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <button type="submit">{{if eq $.Lang "en"}}Save{{else}}Сохранить{{end}}</button>
+  </form>
+  {{end}}
+
+  <h2>{{if eq .Lang "en"}}AI product marketplace{{else}}Маркетплейс ИИ-решений{{end}}</h2>
+  {{range .Products}}
+  <form class="cms-card" method="post" action="/admin/edit-product">
+    <p class="cms-meta"><span class="mono">{{.Key}}</span> <span class="badge">{{.Status}}</span></p>
+    <label>{{if eq $.Lang "en"}}Name, Russian{{else}}Название, RU{{end}}</label>
+    <input name="name_ru" required maxlength="4000" value="{{.NameRU}}">
+    <label>{{if eq $.Lang "en"}}Name, English{{else}}Название, EN{{end}}</label>
+    <input name="name_en" required maxlength="4000" value="{{.NameEN}}">
+    <label>{{if eq $.Lang "en"}}Description, Russian{{else}}Описание, RU{{end}}</label>
+    <textarea name="desc_ru" rows="4" required maxlength="4000">{{.DescRU}}</textarea>
+    <label>{{if eq $.Lang "en"}}Description, English{{else}}Описание, EN{{end}}</label>
+    <textarea name="desc_en" rows="4" required maxlength="4000">{{.DescEN}}</textarea>
+    <label>{{if eq $.Lang "en"}}Price{{else}}Цена{{end}}</label>
+    <input name="price" required maxlength="4000" value="{{.Price}}">
+    <label>{{if eq $.Lang "en"}}Status{{else}}Статус{{end}}</label>
+    <input name="status" required maxlength="32" value="{{.Status}}">
+    <input type="hidden" name="id" value="{{.ID}}">
+    <input type="hidden" name="ui_lang" value="{{$.Lang}}">
+    <input type="hidden" name="csrf" value="{{$.CSRF}}">
+    <button type="submit">{{if eq $.Lang "en"}}Save{{else}}Сохранить{{end}}</button>
+  </form>
+  {{end}}
+</section>
+{{end}}

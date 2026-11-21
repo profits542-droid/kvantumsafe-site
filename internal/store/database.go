@@ -186,6 +186,24 @@ func (s *Store) seedProducts(ctx context.Context) error {
 		if err := tx.QueryRowContext(ctx, `SELECT COUNT(*) FROM products WHERE product_key = ?`, item.Key).Scan(&n); err != nil {
 			return err
 		}
+		if item.Key == "bankshield_studio" {
+			if _, err := tx.ExecContext(ctx, `
+				INSERT OR IGNORE INTO products (product_key, name_ru, name_en, desc_ru, desc_en, price, price_ru, price_en, status)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				item.Key, item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.PriceEN, item.PriceRU, item.PriceEN, item.Status,
+			); err != nil {
+				return err
+			}
+			if _, err := tx.ExecContext(ctx, `
+				UPDATE products
+				SET name_ru = ?, name_en = ?, desc_ru = ?, desc_en = ?, price = ?, price_ru = ?, price_en = ?, status = ?
+				WHERE product_key = ?`,
+				item.NameRU, item.NameEN, item.DescRU, item.DescEN, item.PriceEN, item.PriceRU, item.PriceEN, item.Status, item.Key,
+			); err != nil {
+				return err
+			}
+			continue
+		}
 		if n > 0 {
 			if _, err := tx.ExecContext(ctx, `
 				UPDATE products
@@ -263,7 +281,8 @@ func (s *Store) ListProducts(ctx context.Context) ([]Product, error) {
 	rows, err := s.db.QueryContext(ctx, `
 		SELECT id, COALESCE(product_key, ''), name_ru, name_en, desc_ru, desc_en, price,
 			COALESCE(NULLIF(price_ru, ''), price), COALESCE(NULLIF(price_en, ''), price), status
-		FROM products ORDER BY id`)
+		FROM products
+		ORDER BY CASE WHEN product_key = 'bankshield_studio' THEN 0 ELSE 1 END, id`)
 	if err != nil {
 		return nil, err
 	}
@@ -353,6 +372,8 @@ func contentSeed() []seedRow {
 		{key: "about_title", lang: "en", value: "About the company"},
 		{key: "about_lead", lang: "ru", value: "Kvantum Safe разрабатывает модульную защиту для банков и инфраструктуры Web3: периметр, поиск забытых секретных файлов, шлюз переводов и аудит комплаенса."},
 		{key: "about_lead", lang: "en", value: "Kvantum Safe builds modular protection for banks and Web3 infrastructure: the perimeter, a search for forgotten secret files, the transfer gateway, and a compliance audit."},
+		{key: "about_rnd", lang: "ru", value: "ОсОО «Квантум Сейф» (резидент ПВТ КР, Свидетельство № 799/10-С-26) ведёт научные и инженерные разработки (R&D) в области безопасности ИИ и открыта к технологическим грантам и партнёрским программам."},
+		{key: "about_rnd", lang: "en", value: "Kvantum Safe LLC (resident of the High Technology Park of the Kyrgyz Republic, Certificate No. 799/10-С-26) carries out scientific and engineering R&D in AI safety and is open to technology grants and partnership programs."},
 		{key: "about_residency_title", lang: "ru", value: "Резидентство ПВТ КР"},
 		{key: "about_residency_title", lang: "en", value: "HTP residency"},
 		{key: "about_residency", lang: "ru", value: officialLegalRU},
@@ -388,6 +409,16 @@ func contentSeed() []seedRow {
 
 func productSeed() []Product {
 	return []Product{
+		{
+			Key:     "bankshield_studio",
+			NameRU:  "KVANTUM AGENT STUDIO (с модулем BankShield)",
+			NameEN:  "KVANTUM AGENT STUDIO (BankShield Edition)",
+			DescRU:  "Универсальная среда разработки и проверки безопасности ИИ-агентов для любой сферы бизнеса — от банков и финтеха до медицины, логистики и клиентского сервиса. Позволяет собирать ИИ-ассистентов в визуальном конструкторе блоков или на языке Go, работать внутри закрытой сети без утечки данных в интернет (Zero-Data-Leak), проверять ботов на 15 сценариев ошибок и взлома (включая поддельные чеки и правила НБКР от 1 млн сом) и выгружать готовые PDF-протоколы. Включает пополняемую базу знаний сценариев атак и архив протоколов аудита, которая постоянно обновляется под новые угрозы и требования регуляторов.",
+			DescEN:  "Universal desktop IDE for building and auditing AI agents across any industry — from banking and fintech to healthcare, logistics, and customer support. Allows teams to build AI assistants via a visual block constructor or Go code, operate completely inside a closed network with zero external data transfer (Zero-Data-Leak), test bots against 15 error and fraud scenarios (including fake receipts and compliance rules), and export ready-to-use PDF audit reports. Includes a continuously updated knowledge base of attack scenarios and audit logs that evolves against emerging AI threats and regulatory requirements.",
+			PriceRU: "Корпоративная лицензия и подписка на базу угроз (По запросу)",
+			PriceEN: "Enterprise License & Threat Base Subscription (Custom Quote)",
+			Status:  "active",
+		},
 		{
 			Key:     "external_scanner",
 			NameRU:  "Внешний сканер периметра",

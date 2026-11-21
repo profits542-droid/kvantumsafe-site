@@ -10,7 +10,7 @@
 
   <section class="triad">
     {{range .Products}}
-    <article class="triad-card">
+    <article class="triad-card{{if eq .Key "bankshield_studio"}} is-flagship{{end}}">
       <p class="module">{{.Key}}</p>
       <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
       <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>

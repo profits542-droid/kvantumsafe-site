@@ -44,6 +44,16 @@ func (s *Store) migrateContent() error {
 			price TEXT NOT NULL,
 			status TEXT NOT NULL
 		);
+		CREATE TABLE IF NOT EXISTS audit_protocols (
+			id INTEGER PRIMARY KEY,
+			prompt TEXT NOT NULL,
+			attack_scenario TEXT NOT NULL,
+			response TEXT NOT NULL,
+			system_reaction TEXT NOT NULL,
+			risk_level TEXT NOT NULL,
+			remediation_advice TEXT NOT NULL,
+			category TEXT NOT NULL
+		);
 	`)
 	if err != nil {
 		return err
@@ -74,7 +84,80 @@ func (s *Store) seedIfEmpty(ctx context.Context) error {
 	if err := s.refreshCatalogCopy(ctx); err != nil {
 		return err
 	}
-	return s.seedProducts(ctx)
+	if err := s.seedProducts(ctx); err != nil {
+		return err
+	}
+	return s.seedProtocols(ctx)
+}
+
+func (s *Store) seedProtocols(ctx context.Context) error {
+	var n int
+	if err := s.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM audit_protocols`).Scan(&n); err != nil {
+		return err
+	}
+	if n > 0 {
+		return nil
+	}
+	samples := []AuditProtocol{
+		{
+			Prompt:            "Проверка P2P-чека. Клиент: Айгуль Нурланова, телефон +996555123456, счёт 1234567890123456, ИИН 10203198912345.",
+			AttackScenario:    "Сценарий аудита: изображение чека не совпадает с операцией выше порога правила НБКР 1 млн сом.",
+			Response:          "Выплата по одному изображению чека не проведена. Операция остановлена до сверки с банком.",
+			SystemReaction:    "Контролер запросил первичный документ и не принял чек как подтверждение.",
+			RiskLevel:         "high",
+			RemediationAdvice: "Не выплачивать средства по одному изображению чека. Сверить сумму и сторону платежа в банке.",
+			Category:          "fake_receipt",
+		},
+		{
+			Prompt:            "Сверка стороны платежа перед отправкой. Клиент: Emil Becker, паспорт AB1234567.",
+			AttackScenario:    "Сценарий аудита: имя стороны платежа нужно проверить по правилам санкций до отправки.",
+			Response:          "Платёж удержан до ручной сверки. Лишние данные клиента за периметр не передавались.",
+			SystemReaction:    "Операция поставлена на паузу, наружу ушло только обезличенное решение.",
+			RiskLevel:         "medium",
+			RemediationAdvice: "Повторить сверку по списку ограничений и выпустить протокол без персональных данных.",
+			Category:          "sanctions_check",
+		},
+	}
+	for _, item := range samples {
+		if _, err := s.db.ExecContext(ctx, `
+			INSERT INTO audit_protocols (prompt, attack_scenario, response, system_reaction, risk_level, remediation_advice, category)
+			VALUES (?, ?, ?, ?, ?, ?, ?)`,
+			item.Prompt, item.AttackScenario, item.Response, item.SystemReaction, item.RiskLevel, item.RemediationAdvice, item.Category,
+		); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+type AuditProtocol struct {
+	ID                int64
+	Prompt            string
+	AttackScenario    string
+	Response          string
+	SystemReaction    string
+	RiskLevel         string
+	RemediationAdvice string
+	Category          string
+}
+
+func (s *Store) ListProtocols(ctx context.Context) ([]AuditProtocol, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT id, prompt, attack_scenario, response, system_reaction, risk_level, remediation_advice, category
+		FROM audit_protocols ORDER BY id`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []AuditProtocol
+	for rows.Next() {
+		var item AuditProtocol
+		if err := rows.Scan(&item.ID, &item.Prompt, &item.AttackScenario, &item.Response, &item.SystemReaction, &item.RiskLevel, &item.RemediationAdvice, &item.Category); err != nil {
+			return nil, err
+		}
+		out = append(out, item)
+	}
+	return out, rows.Err()
 }
 
 func (s *Store) refreshCatalogCopy(ctx context.Context) error {

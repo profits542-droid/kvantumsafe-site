@@ -32,22 +32,29 @@ type App struct {
 	pages     map[string]*template.Template
 	hits      *rateGate
 	dummyHash []byte
+	exportDir string
 }
 
 type viewData struct {
-	Lang      string
-	Year      int
-	CSRF      string
-	Domain    string
-	Sent      bool
-	Saved     bool
-	ErrorCode string
-	Username  string
-	Path      string
-	Checks    []checkRow
-	Text      map[string]string
-	Blocks    []store.Block
-	Products  []store.Product
+	Lang         string
+	Year         int
+	CSRF         string
+	Domain       string
+	Sent         bool
+	Saved        bool
+	ErrorCode    string
+	Username     string
+	Path         string
+	Checks       []checkRow
+	Text         map[string]string
+	Blocks       []store.Block
+	Products     []store.Product
+	Protocols    []store.AuditProtocol
+	ExportName   string
+	Generated    string
+	Engine       string
+	Model        string
+	StudioNotice string
 }
 
 type checkRow struct {
@@ -60,6 +67,7 @@ func New(st *store.Store, root string) (*App, error) {
 		"home":        "home.html",
 		"about":       "about.html",
 		"marketplace": "marketplace.html",
+		"studio":      "studio.html",
 		"report":      "report.html",
 		"login":       "login.html",
 		"admin":       "admin.html",
@@ -87,6 +95,7 @@ func New(st *store.Store, root string) (*App, error) {
 		pages:     parsed,
 		hits:      newRateGate(8, time.Minute),
 		dummyHash: dummy,
+		exportDir: filepath.Join(root, "data", "exports"),
 	}, nil
 }
 
@@ -302,10 +311,12 @@ func (a *App) render(w http.ResponseWriter, page string, data viewData) {
 }
 
 func requestLang(r *http.Request) string {
-	if r.URL.Query().Get("lang") == "en" {
-		return "en"
+	switch r.URL.Query().Get("lang") {
+	case "en", "de", "fr", "ru":
+		return r.URL.Query().Get("lang")
+	default:
+		return "ru"
 	}
-	return "ru"
 }
 
 func adminPath(lang string) string {

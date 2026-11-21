@@ -1,0 +1,97 @@
+{{define "title"}}{{if eq .Lang "en"}}Agent Studio{{else if eq .Lang "de"}}Agentenstudio{{else if eq .Lang "fr"}}Studio des agents{{else}}Студия агентов{{end}}{{end}}
+
+{{define "main"}}
+<div class="pro studio">
+  <section>
+    <p class="eyebrow">KVANTUM AGENT STUDIO</p>
+    {{if eq .Lang "en"}}
+    <h1>Protocol archive and block builder</h1>
+    <p class="lede">Export checks as an AI dataset, or assemble an assistant block. Sensitive numbers and names are masked before anything leaves the page.</p>
+    {{else if eq .Lang "de"}}
+    <h1>Protokollarchiv und Blockbaukasten</h1>
+    <p class="lede">Prüfungen als KI-Datensatz exportieren oder einen Assistentenblock bauen. Sensible Nummern und Namen werden vorher maskiert.</p>
+    {{else if eq .Lang "fr"}}
+    <h1>Archive des protocoles et constructeur de blocs</h1>
+    <p class="lede">Exportez les contrôles en jeu de données IA, ou assemblez un bloc d’assistant. Les numéros et noms sensibles sont masqués avant toute sortie.</p>
+    {{else}}
+    <h1>Архив протоколов и конструктор блоков</h1>
+    <p class="lede">Выгрузите проверки как AI-датасет или соберите блок ассистента. Номера и имена маскируются до того, как данные покинут страницу.</p>
+    {{end}}
+  </section>
+
+  <section class="pro-block" aria-labelledby="archive-title">
+    <div class="desk-head">
+      <h2 id="archive-title">{{if eq .Lang "en"}}Protocol archive{{else if eq .Lang "de"}}Protokollarchiv{{else if eq .Lang "fr"}}Archive des protocoles{{else}}Архив протоколов{{end}}</h2>
+      <form method="post" action="/studio/export?lang={{.Lang}}">
+        <input type="hidden" name="csrf" value="{{.CSRF}}">
+        <button class="ghost" type="submit">{{if eq .Lang "en"}}Export AI dataset (JSONL){{else if eq .Lang "de"}}KI-Datensatz exportieren (JSONL){{else if eq .Lang "fr"}}Exporter le jeu de données IA (JSONL){{else}}Экспорт AI-датасета (JSONL){{end}}</button>
+      </form>
+    </div>
+    {{if .ExportName}}
+    <p class="form-ok" role="status">
+      {{if eq .Lang "en"}}Dataset saved.{{else if eq .Lang "de"}}Datensatz gespeichert.{{else if eq .Lang "fr"}}Jeu de données enregistré.{{else}}Датасет сохранён.{{end}}
+      <a href="/studio/download?file={{.ExportName}}">data/exports/{{.ExportName}}</a>
+    </p>
+    {{end}}
+    <h3>{{if eq .Lang "en"}}Red-team audit results{{else if eq .Lang "de"}}Ergebnisse des Red-Team-Audits{{else if eq .Lang "fr"}}Résultats de l’audit Red Team{{else}}Результаты Red-Team аудита{{end}}</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{if eq .Lang "en"}}Category{{else if eq .Lang "de"}}Kategorie{{else if eq .Lang "fr"}}Catégorie{{else}}Категория{{end}}</th>
+            <th>{{if eq .Lang "en"}}Risk{{else if eq .Lang "de"}}Risiko{{else if eq .Lang "fr"}}Risque{{else}}Риск{{end}}</th>
+            <th>{{if eq .Lang "en"}}Audit scenario{{else if eq .Lang "de"}}Prüfszenario{{else if eq .Lang "fr"}}Scénario d’audit{{else}}Сценарий проверки{{end}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Protocols}}
+          <tr>
+            <td class="mono">{{.Category}}</td>
+            <td>{{.RiskLevel}}</td>
+            <td>{{.AttackScenario}}</td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="pro-block" aria-labelledby="builder-title">
+    <h2 id="builder-title">{{if eq .Lang "en"}}Block builder{{else if eq .Lang "de"}}Blockbaukasten{{else if eq .Lang "fr"}}Constructeur de blocs{{else}}Визуальный конструктор блоков{{end}}</h2>
+    <div class="builder">
+      <article class="triad-card">
+        <p class="module">Ollama</p>
+        <h3>{{if eq .Lang "en"}}Local model{{else if eq .Lang "de"}}Lokales Modell{{else if eq .Lang "fr"}}Modèle local{{else}}Локальная модель{{end}}</h3>
+        <p>{{if eq .Lang "en"}}Stays on this machine. Nothing is sent outside.{{else if eq .Lang "de"}}Bleibt auf diesem Rechner. Nichts geht nach außen.{{else if eq .Lang "fr"}}Reste sur cette machine. Rien ne sort.{{else}}Остаётся на этом компьютере. Наружу ничего не уходит.{{end}}</p>
+      </article>
+      <article class="triad-card is-flagship">
+        <p class="module">xAI</p>
+        <h3>xAI Grok Connector</h3>
+        <p>{{if eq .Lang "en"}}External gateway. Client data is masked before the request.{{else if eq .Lang "de"}}Externes Gateway. Kundendaten werden vor der Anfrage maskiert.{{else if eq .Lang "fr"}}Passerelle externe. Les données clients sont masquées avant l’envoi.{{else}}Внешний шлюз. Данные клиента маскируются до запроса.{{end}}</p>
+      </article>
+    </div>
+    <form class="cms-card" method="post" action="/studio/codegen?lang={{.Lang}}">
+      <label for="engine">{{if eq .Lang "en"}}Engine{{else if eq .Lang "de"}}Engine{{else if eq .Lang "fr"}}Moteur{{else}}Движок{{end}}</label>
+      <select id="engine" name="engine">
+        <option value="ollama" {{if eq .Engine "ollama"}}selected{{end}}>{{if eq .Lang "en"}}Local loop (Ollama — Zero-Data-Leak){{else if eq .Lang "de"}}Lokaler Kreis (Ollama — Zero-Data-Leak){{else if eq .Lang "fr"}}Circuit local (Ollama — Zero-Data-Leak){{else}}Локальный контур (Ollama — Zero-Data-Leak){{end}}</option>
+        <option value="xai" {{if eq .Engine "xai"}}selected{{end}}>{{if eq .Lang "en"}}External xAI Grok API gateway (data masked first){{else if eq .Lang "de"}}Externes xAI-Grok-API-Gateway (Daten vorher maskiert){{else if eq .Lang "fr"}}Passerelle externe xAI Grok API (données masquées d’abord){{else}}Внешний шлюз xAI Grok API (с предварительной анонимизацией данных){{end}}</option>
+      </select>
+      <label for="model">{{if eq .Lang "en"}}Model{{else if eq .Lang "de"}}Modell{{else if eq .Lang "fr"}}Modèle{{else}}Модель{{end}}</label>
+      <select id="model" name="model">
+        <option value="grok-3" {{if eq .Model "grok-3"}}selected{{end}}>grok-3</option>
+        <option value="grok-beta" {{if eq .Model "grok-beta"}}selected{{end}}>grok-beta</option>
+      </select>
+      <label for="api_key">{{if eq .Lang "en"}}xAI API key{{else if eq .Lang "de"}}xAI-API-Schlüssel{{else if eq .Lang "fr"}}Clé API xAI{{else}}API-ключ xAI{{end}}</label>
+      <input id="api_key" name="api_key" type="password" autocomplete="off" placeholder="XAI_API_KEY">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <button type="submit">{{if eq .Lang "en"}}Generate Go code{{else if eq .Lang "de"}}Go-Code erzeugen{{else if eq .Lang "fr"}}Générer le code Go{{else}}Собрать Go-код{{end}}</button>
+    </form>
+    {{if eq .StudioNotice "key"}}
+    <p class="hint">{{if eq .Lang "en"}}The key was not saved and was not written into the code. Put it in the XAI_API_KEY environment variable.{{else if eq .Lang "de"}}Der Schlüssel wurde nicht gespeichert und nicht in den Code geschrieben. Legen Sie ihn in die Variable XAI_API_KEY.{{else if eq .Lang "fr"}}La clé n’a pas été enregistrée ni écrite dans le code. Placez-la dans la variable XAI_API_KEY.{{else}}Ключ не сохранён и не записан в код. Положите его в переменную окружения XAI_API_KEY.{{end}}</p>
+    {{end}}
+    {{if .Generated}}
+    <pre class="code-out">{{.Generated}}</pre>
+    {{end}}
+  </section>
+</div>
+{{end}}

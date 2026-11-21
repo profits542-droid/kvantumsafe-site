@@ -324,6 +324,19 @@ tr:last-child td { border-bottom: 0; }
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 .triad-card.is-flagship { grid-column: 1 / -1; }
+.studio select, .studio .code-out {
+  width: 100%;
+  margin-top: 6px;
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  border-radius: 12px;
+  background: #0a0f1d;
+  color: #d7fff0;
+  font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
+}
+.studio select { padding: 12px; }
+.studio .code-out { padding: 16px; overflow: auto; white-space: pre-wrap; }
+.builder { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 800px) { .builder { grid-template-columns: 1fr; } }
 .triad-card:hover, .triad-card:focus {
   border-color: #00b4d8;
   transform: translateY(-3px);

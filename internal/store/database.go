@@ -44,6 +44,13 @@ func (s *Store) migrateContent() error {
 			price TEXT NOT NULL,
 			status TEXT NOT NULL
 		);
+		CREATE TABLE IF NOT EXISTS agent_requests (
+			id INTEGER PRIMARY KEY,
+			company TEXT NOT NULL,
+			contact TEXT NOT NULL,
+			task TEXT NOT NULL,
+			created_at TEXT NOT NULL
+		);
 		CREATE TABLE IF NOT EXISTS audit_protocols (
 			id INTEGER PRIMARY KEY,
 			prompt TEXT NOT NULL,
@@ -160,8 +167,17 @@ func (s *Store) ListProtocols(ctx context.Context) ([]AuditProtocol, error) {
 	return out, rows.Err()
 }
 
+func (s *Store) SaveAgentRequest(ctx context.Context, company, contact, task, createdAt string) error {
+	_, err := s.db.ExecContext(ctx, `
+		INSERT INTO agent_requests (company, contact, task, created_at)
+		VALUES (?, ?, ?, ?)`, company, contact, task, createdAt)
+	return err
+}
+
 func (s *Store) refreshCatalogCopy(ctx context.Context) error {
 	keep := map[string]bool{
+		"hero_kicker":       true,
+		"hero_title":        true,
 		"hero_lead":         true,
 		"crypto_stack":      true,
 		"products_title":    true,
@@ -192,21 +208,29 @@ func (s *Store) refreshCatalogCopy(ctx context.Context) error {
 }
 
 func (s *Store) refreshOfficialLegal(ctx context.Context) error {
+	official := map[string]bool{
+		"legal_title": true, "legal_company": true, "legal_patent": true,
+		"about_title": true, "about_kicker": true, "about_residency_title": true,
+		"about_residency": true, "about_legal_title": true, "about_legal": true,
+		"about_patent": true, "about_activities_title": true, "about_activities": true,
+		"htp_certificate_label": true,
+	}
 	for _, row := range contentSeed() {
-		switch row.key {
-		case "legal_company", "legal_patent", "about_residency", "about_legal", "about_patent", "htp_certificate_label":
-		default:
+		if !official[row.key] {
 			continue
 		}
-		var current string
-		err := s.db.QueryRowContext(ctx, `SELECT value FROM content WHERE "key" = ? AND lang = ?`, row.key, row.lang).Scan(&current)
+		res, err := s.db.ExecContext(ctx, `UPDATE content SET value = ? WHERE "key" = ? AND lang = ?`, row.value, row.key, row.lang)
 		if err != nil {
+			return err
+		}
+		n, err := res.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if n > 0 {
 			continue
 		}
-		if current == row.value || strings.Contains(current, "799-28-10-2026") {
-			continue
-		}
-		if _, err := s.db.ExecContext(ctx, `UPDATE content SET value = ? WHERE "key" = ? AND lang = ?`, row.value, row.key, row.lang); err != nil {
+		if _, err := s.db.ExecContext(ctx, `INSERT OR IGNORE INTO content ("key", lang, value) VALUES (?, ?, ?)`, row.key, row.lang, row.value); err != nil {
 			return err
 		}
 	}
@@ -409,18 +433,22 @@ type seedRow struct {
 }
 
 const (
-	officialLegalRU = "Официальный резидент Парка высоких технологий Кыргызской Республики (Свидетельство № 799/10-С-26 от 28.10.2026, рег. № в реестре резидентов 799-28-10-2026). ОсОО «Квантум Сейф», ИНН 00209202610130, ОКПО 35220502. Государственное правовое депонирование ПО: патент Кыргызпатента № 1295 от 01.10.2026 г."
-	officialLegalEN = "Official Resident of the High Technology Park of the Kyrgyz Republic (Certificate No. 799/10-С-26 dated Oct 28, 2026, Registry ID 799-28-10-2026). Quantum Safe LLC, TIN 00209202610130. State IP Deposit: Kyrgyzpatent Certificate No. 1295 dated Oct 01, 2026."
+	residencyRU     = "Официальный резидент Парка высоких технологий Кыргызской Республики (Свидетельство № 799/10-С-26 от 28.10.2026, рег. № в реестре резидентов 799-28-10-2026)."
+	residencyEN     = "Official resident of the High Technology Park of the Kyrgyz Republic (Certificate No. 799/10-С-26 dated 28 October 2026, registry No. 799-28-10-2026)."
+	requisitesRU    = "ОсОО «Квантум Сейф» (\"Kvantum Safe\" LLC), ИНН 00209202610130, ОКПО 35220502, рег. номер Минюста КР 333504-3310-000 от 02.09.2026. Генеральный директор: Сарыбаев Нурлан Абдылдаевич."
+	requisitesEN    = "Kvantum Safe LLC, TIN 00209202610130, OKPO 35220502, Ministry of Justice of the Kyrgyz Republic registration No. 333504-3310-000 dated 2 September 2026. General Director: Sarybaev Nurlan Abdyldaevich."
+	officialLegalRU = residencyRU + " Свидетельство оформлено на кыргызском, русском и английском языках. " + requisitesRU
+	officialLegalEN = residencyEN + " The certificate is issued in Kyrgyz, Russian, and English. " + requisitesEN
 )
 
 func contentSeed() []seedRow {
 	return []seedRow{
-		{key: "hero_kicker", lang: "ru", value: "Kvantum Safe Pro · .tech"},
-		{key: "hero_kicker", lang: "en", value: "Kvantum Safe Pro · .tech"},
-		{key: "hero_title", lang: "ru", value: "Постквантовая экосистема кибербезопасности нового поколения"},
-		{key: "hero_title", lang: "en", value: "Next-Gen Post-Quantum Cybersecurity Ecosystem"},
-		{key: "hero_lead", lang: "ru", value: "Kvantum Safe Pro — модульная платформа защиты финансового сектора и инфраструктуры Web3. Она закрывает вход банка, проверяет целостность сообщений SWIFT и XML и проводит ИИ-аудит комплаенса."},
-		{key: "hero_lead", lang: "en", value: "Kvantum Safe Pro is a modular protection platform for banks and Web3 infrastructure. It guards the bank entrance, checks that SWIFT and XML messages stay intact, and runs an AI compliance audit."},
+		{key: "hero_kicker", lang: "ru", value: "ОсОО «Квантум Сейф» · резидент ПВТ КР № 799/10-С-26"},
+		{key: "hero_kicker", lang: "en", value: "Kvantum Safe LLC · HTP Resident No. 799/10-С-26"},
+		{key: "hero_title", lang: "ru", value: "Автономная платформа разработки ИИ-агентов, Red-Team аудита и распределённых GPU/CPU вычислений"},
+		{key: "hero_title", lang: "en", value: "Autonomous Platform for AI Agent Development, Red-Team Auditing & Distributed GPU/CPU Compute"},
+		{key: "hero_lead", lang: "ru", value: "Собираем и обучаем защищённых ИИ-агентов под ключ с постоянным обновлением базы знаний, проводим непрерывную симуляцию атак и предоставляем почасовую аренду GPU и CPU в Центральной Азии (на 30–50% дешевле облаков ЕС и ОАЭ)."},
+		{key: "hero_lead", lang: "en", value: "We build and train turnkey AI agents with live knowledge synchronization, run continuous adversarial simulations, and provide hourly GPU & CPU rental across Central Asia at 30–50% lower cost than EU & MENA clouds."},
 		{key: "crypto_stack", lang: "ru", value: "Профиль защиты: архитектурная защита шлюзов, проверка целостности сообщений SWIFT и XML, ИИ-аудит комплаенса."},
 		{key: "crypto_stack", lang: "en", value: "Protection profile: architectural gateway protection, SWIFT and XML message-integrity checks, and an AI compliance audit."},
 		{key: "intake_label", lang: "ru", value: "Домен организации"},
@@ -429,8 +457,8 @@ func contentSeed() []seedRow {
 		{key: "intake_button", lang: "en", value: "Run Perimeter Scan"},
 		{key: "intake_hint", lang: "ru", value: "Открывает экспресс-отчёт по указанному домену."},
 		{key: "intake_hint", lang: "en", value: "Opens the express report for the domain you enter."},
-		{key: "products_title", lang: "ru", value: "Продукты"},
-		{key: "products_title", lang: "en", value: "Products"},
+		{key: "products_title", lang: "ru", value: "Отраслевые модули защиты и комплаенса"},
+		{key: "products_title", lang: "en", value: "Industry protection and compliance modules"},
 		{key: "deploy_title", lang: "ru", value: "Архитектура и внедрение"},
 		{key: "deploy_title", lang: "en", value: "Architecture and deployment"},
 		{key: "gateway_title", lang: "ru", value: "Автономный бронированный шлюз"},
@@ -445,28 +473,32 @@ func contentSeed() []seedRow {
 		{key: "legal_title", lang: "en", value: "Legal mandate and compliance"},
 		{key: "legal_company", lang: "ru", value: officialLegalRU},
 		{key: "legal_company", lang: "en", value: officialLegalEN},
-		{key: "legal_patent", lang: "ru", value: "Государственное правовое депонирование ПО: патент Кыргызпатента № 1295 от 01.10.2026 г."},
-		{key: "legal_patent", lang: "en", value: "State IP Deposit: Kyrgyzpatent Certificate No. 1295 dated Oct 01, 2026."},
+		{key: "legal_patent", lang: "ru", value: "Заявка в Кыргызпатент № 1295."},
+		{key: "legal_patent", lang: "en", value: "Kyrgyzpatent application No. 1295."},
 		{key: "htp_certificate_label", lang: "ru", value: "Открыть Свидетельство резидента ПВТ (PDF)"},
 		{key: "htp_certificate_label", lang: "en", value: "View HTP Resident Certificate (PDF)"},
 		{key: "about_kicker", lang: "ru", value: "ОсОО «Квантум Сейф»"},
 		{key: "about_kicker", lang: "en", value: "Kvantum Safe LLC"},
-		{key: "about_title", lang: "ru", value: "О компании"},
-		{key: "about_title", lang: "en", value: "About the company"},
+		{key: "about_title", lang: "ru", value: "О компании и статус резидента ПВТ КР"},
+		{key: "about_title", lang: "en", value: "About the company and HTP residency"},
 		{key: "about_lead", lang: "ru", value: "Kvantum Safe разрабатывает модульную защиту для банков и инфраструктуры Web3: периметр, поиск забытых секретных файлов, шлюз переводов и аудит комплаенса."},
 		{key: "about_lead", lang: "en", value: "Kvantum Safe builds modular protection for banks and Web3 infrastructure: the perimeter, a search for forgotten secret files, the transfer gateway, and a compliance audit."},
 		{key: "about_rnd", lang: "ru", value: "ОсОО «Квантум Сейф» (резидент ПВТ КР, Свидетельство № 799/10-С-26) ведёт научные и инженерные разработки (R&D) в области безопасности ИИ и открыта к технологическим грантам и партнёрским программам."},
 		{key: "about_rnd", lang: "en", value: "Kvantum Safe LLC (resident of the High Technology Park of the Kyrgyz Republic, Certificate No. 799/10-С-26) carries out scientific and engineering R&D in AI safety and is open to technology grants and partnership programs."},
 		{key: "about_residency_title", lang: "ru", value: "Резидентство ПВТ КР"},
 		{key: "about_residency_title", lang: "en", value: "HTP residency"},
-		{key: "about_residency", lang: "ru", value: officialLegalRU},
-		{key: "about_residency", lang: "en", value: officialLegalEN},
+		{key: "about_residency", lang: "ru", value: residencyRU},
+		{key: "about_residency", lang: "en", value: residencyEN},
 		{key: "about_legal_title", lang: "ru", value: "Юридические реквизиты"},
 		{key: "about_legal_title", lang: "en", value: "Legal details"},
-		{key: "about_legal", lang: "ru", value: officialLegalRU},
-		{key: "about_legal", lang: "en", value: officialLegalEN},
-		{key: "about_patent", lang: "ru", value: "Государственное правовое депонирование ПО: патент Кыргызпатента № 1295 от 01.10.2026 г."},
-		{key: "about_patent", lang: "en", value: "State IP Deposit: Kyrgyzpatent Certificate No. 1295 dated Oct 01, 2026."},
+		{key: "about_legal", lang: "ru", value: requisitesRU},
+		{key: "about_legal", lang: "en", value: requisitesEN},
+		{key: "about_patent", lang: "ru", value: "Заявка в Кыргызпатент № 1295."},
+		{key: "about_patent", lang: "en", value: "Kyrgyzpatent application No. 1295."},
+		{key: "about_activities_title", lang: "ru", value: "Официальные направления деятельности резидента ПВТ КР"},
+		{key: "about_activities_title", lang: "en", value: "Official lines of activity of an HTP resident"},
+		{key: "about_activities", lang: "ru", value: "Согласно договору с Дирекцией ПВТ: проектирование и разработка индивидуального и тиражного ПО; автоматизированные системы управления; деятельность по обработке данных и облачным вычислениям; прикладные исследования и экспериментальные разработки (R&D)."},
+		{key: "about_activities", lang: "en", value: "Under the agreement with the HTP Directorate: design and development of custom and packaged software; automated control systems; data processing and cloud computing; applied research and experimental development (R&D)."},
 		{key: "about_team_title", lang: "ru", value: "Команда"},
 		{key: "about_team_title", lang: "en", value: "Team"},
 		{key: "about_role_1_title", lang: "ru", value: "Инженерная группа"},
@@ -536,8 +568,8 @@ func productSeed() []Product {
 			Key:     "compliance_orchestrator",
 			NameRU:  "Умный контролер антифрода и санкций",
 			NameEN:  "Smart anti-fraud and sanctions controller",
-			DescRU:  "Умный контролер для банков и криптобирж. Замечает мошенничество в переводах между людьми и проверяет, можно ли проводить платёж по правилам санкций.",
-			DescEN:  "A smart controller for banks and crypto exchanges. It notices fraud in person-to-person transfers and checks whether a payment is allowed under sanctions rules.",
+			DescRU:  "Умный контролер для банков и криптобирж. Замечает мошенничество в переводах между людьми, отдельно смотрит операции от 1 млн сом и проверяет, можно ли проводить платёж по правилам санкций.",
+			DescEN:  "A smart controller for banks and crypto exchanges. It notices fraud in person-to-person transfers, reviews operations from 1 million soms, and checks whether a payment is allowed under sanctions rules.",
 			PriceRU: "По запросу",
 			PriceEN: "Custom Quote",
 			Status:  "active",

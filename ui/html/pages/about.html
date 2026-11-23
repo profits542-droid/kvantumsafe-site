@@ -4,15 +4,44 @@
 <div class="pro">
   <section>
     <p class="eyebrow">{{index .Text "about_kicker"}}</p>
-    <h1>{{index .Text "about_title"}}</h1>
+    <h1>{{if eq .Lang "en"}}About the company and HTP residency{{else}}О компании и статус резидента ПВТ КР{{end}}</h1>
     <p class="lede">{{index .Text "about_lead"}}</p>
-    <p class="lede">{{index .Text "about_rnd"}}</p>
+  </section>
+
+  <section class="mandate" aria-labelledby="residency-title">
+    <h2 id="residency-title">{{index .Text "about_residency_title"}}</h2>
+    <p>{{index .Text "about_residency"}}</p>
+    <p class="hint">{{if eq .Lang "en"}}The resident certificate is issued in Kyrgyz, Russian, and English.{{else}}Свидетельство резидента оформлено на кыргызском, русском и английском языках.{{end}}</p>
+    <div class="doc-actions">
+      <a class="doc-link" href="/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View certificate (KG/RU){{else}}Смотреть свидетельство (KG/RU){{end}}</a>
+      <a class="doc-link" href="/docs/htp_certificate.pdf?download=1">{{if eq .Lang "en"}}Download (KG/RU){{else}}Скачать (KG/RU){{end}}</a>
+      <a class="doc-link" href="/docs/htp_certificate_en.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View certificate (EN){{else}}Смотреть свидетельство (EN){{end}}</a>
+      <a class="doc-link" href="/docs/htp_certificate_en.pdf?download=1">{{if eq .Lang "en"}}Download (EN){{else}}Скачать (EN){{end}}</a>
+    </div>
+  </section>
+
+  <section class="pro-block" aria-labelledby="activities-title">
+    <h2 id="activities-title">{{if eq .Lang "en"}}Official lines of activity of an HTP resident{{else}}Официальные направления деятельности резидента ПВТ КР{{end}}</h2>
+    <p>{{if eq .Lang "en"}}Under the agreement with the HTP Directorate:{{else}}Согласно договору с Дирекцией ПВТ:{{end}}</p>
+    <ul class="points">
+      {{if eq .Lang "en"}}
+      <li>Design and development of custom and packaged software.</li>
+      <li>Automated control systems.</li>
+      <li>Data processing and cloud computing.</li>
+      <li>Applied research and experimental development (R&D).</li>
+      {{else}}
+      <li>Проектирование и разработка индивидуального и тиражного ПО.</li>
+      <li>Автоматизированные системы управления.</li>
+      <li>Деятельность по обработке данных и облачным вычислениям.</li>
+      <li>Прикладные исследования и экспериментальные разработки (R&D).</li>
+      {{end}}
+    </ul>
   </section>
 
   <section class="mandate">
     <h2>{{index .Text "about_legal_title"}}</h2>
     <p>{{index .Text "about_legal"}}</p>
-    <a class="doc-link" href="/static/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{index .Text "htp_certificate_label"}}</a>
+    <p>{{index .Text "about_patent"}}</p>
   </section>
 
   <section class="pro-block" aria-labelledby="team-title">

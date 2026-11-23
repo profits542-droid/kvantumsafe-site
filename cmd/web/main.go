@@ -42,6 +42,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", app.Home)
+	mux.HandleFunc("POST /order", app.OrderAgent)
 	mux.HandleFunc("GET /about", app.About)
 	mux.HandleFunc("GET /marketplace", app.Marketplace)
 	mux.HandleFunc("GET /studio", app.Studio)
@@ -57,6 +58,7 @@ func main() {
 	mux.HandleFunc("POST /admin/edit-product", app.EditProduct)
 	mux.HandleFunc("GET /admin", app.Admin)
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir(filepath.Join(root, "ui", "static")))))
+	mux.Handle("GET /docs/", docsHandler(filepath.Join(root, "ui", "static", "docs")))
 
 	server := &http.Server{
 		Addr:              ":8080",
@@ -126,6 +128,24 @@ type statusRecorder struct {
 func (s *statusRecorder) WriteHeader(code int) {
 	s.status = code
 	s.ResponseWriter.WriteHeader(code)
+}
+
+func docsHandler(dir string) http.Handler {
+	allowed := map[string]bool{
+		"htp_certificate.pdf":    true,
+		"htp_certificate_en.pdf": true,
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		name := strings.TrimPrefix(r.URL.Path, "/docs/")
+		if !allowed[name] || strings.Contains(name, "/") {
+			http.NotFound(w, r)
+			return
+		}
+		if r.URL.Query().Get("download") == "1" {
+			w.Header().Set("Content-Disposition", "attachment; filename=\""+name+"\"")
+		}
+		http.ServeFile(w, r, filepath.Join(dir, name))
+	})
 }
 
 func withAccessLog(next http.Handler) http.Handler {

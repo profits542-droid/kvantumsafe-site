@@ -1,15 +1,59 @@
-{{define "title"}}Kvantum Safe Pro{{end}}
+{{define "title"}}Kvantum Safe{{end}}
 
 {{define "main"}}
 <div class="pro">
-  <section class="pro-hero">
-    <div>
-      <p class="eyebrow">{{index .Text "hero_kicker"}}</p>
-      <h1>{{index .Text "hero_title"}}</h1>
-      <p class="lede">{{index .Text "hero_lead"}}</p>
-      <p class="lede tight">{{index .Text "crypto_stack"}}</p>
+  <section class="pro-hero pro-hero-lead">
+    <p class="eyebrow">{{index .Text "hero_kicker"}}</p>
+    <h1>{{index .Text "hero_title"}}</h1>
+    <p class="lede">{{index .Text "hero_lead"}}</p>
+    <div class="hero-actions">
+      <a class="cta" href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Rent GPU / CPU (Cloud){{else}}Арендовать GPU / CPU (Cloud){{end}}</a>
+      <a class="cta cta-line" href="#order">{{if eq .Lang "en"}}Order a turnkey AI agent{{else}}Заказать ИИ-агента под ключ{{end}}</a>
     </div>
+  </section>
 
+  <section class="pro-block" aria-labelledby="ecosystem-title">
+    <h2 id="ecosystem-title">{{if eq .Lang "en"}}Export ecosystem{{else}}Экспортная экосистема{{end}}</h2>
+    <div class="triad triad-3">
+      <article class="triad-card">
+        <p class="module">01 · Studio</p>
+        <h3>KVANTUM AGENT STUDIO</h3>
+        {{if eq .Lang "en"}}
+        <p>A team of four built-in AI agents (Architect, Pentester, Defender, Compliance Auditor), an evolutionary duel across four threat classes (tool calling, calculation accuracy, multi-step traps, dirty or fake data), and AI dataset export (JSONL).</p>
+        <p class="hint"><a href="/studio?lang=en">Open studio</a></p>
+        {{else}}
+        <p>Команда из 4 встроенных ИИ-агентов (Архитектор, Пентестер, Защитник, Комплаенс-Аудитор), эволюционная дуэль по 4 классам угроз (Tool Calling, точность расчётов, многошаговые ловушки, грязные и поддельные данные) и экспорт AI-датасетов (JSONL).</p>
+        <p class="hint"><a href="/studio?lang={{.Lang}}">Открыть студию</a></p>
+        {{end}}
+      </article>
+      <article class="triad-card">
+        <p class="module">02 · Cloud</p>
+        <h3>KVANTUM CLOUD GRID</h3>
+        {{if eq .Lang "en"}}
+        <p>An hourly exchange of GPUs (24+ GB VRAM) and many-core CPUs for AI training and tests, plus passive income for hardware owners through the kvantum-worker client agent. cloud.kvantumsafe.tech</p>
+        <p class="hint"><a href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">Open the cloud grid</a></p>
+        {{else}}
+        <p>Почасовая биржа GPU (24+ ГБ VRAM) и многоядерных CPU для обучения и тестов ИИ, а также пассивный заработок для владельцев оборудования через клиентский агент kvantum-worker. cloud.kvantumsafe.tech</p>
+        <p class="hint"><a href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">Открыть биржу</a></p>
+        {{end}}
+      </article>
+      <article class="triad-card">
+        <p class="module">03 · Sync</p>
+        <h3>{{if eq .Lang "en"}}Turnkey AI agents with live training{{else}}ИИ-агенты под ключ с живым обучением{{end}}</h3>
+        {{if eq .Lang "en"}}
+        <p>Kvantum Sync Engine delivers a finished compiled file with an official PDF safety protocol, then keeps the AI-Firewall rules and the knowledge base up to date by subscription.</p>
+        <p class="hint"><a href="#order">Request an agent</a></p>
+        {{else}}
+        <p>Kvantum Sync Engine передаёт готовый скомпилированный файл с официальным PDF-протоколом безопасности и автоматически обновляет правила AI-Firewall и базу знаний по подписке.</p>
+        <p class="hint"><a href="#order">Оставить заявку</a></p>
+        {{end}}
+      </article>
+    </div>
+  </section>
+
+  <section class="pro-block" aria-labelledby="products-title">
+    <h2 id="products-title">{{index .Text "products_title"}}</h2>
+    <p class="lede tight">{{index .Text "crypto_stack"}}</p>
     <form class="intake" method="get" action="/report">
       <div class="panel-top">
         <span class="scan-dot" aria-hidden="true"></span>
@@ -26,21 +70,19 @@
       {{end}}
       <p class="hint">{{index .Text "intake_hint"}}</p>
     </form>
-  </section>
-
-  <section class="pro-block" aria-labelledby="products-title">
-    <h2 id="products-title">{{index .Text "products_title"}}</h2>
     <div class="triad">
       {{range .Products}}
-      <article class="triad-card{{if eq .Key "bankshield_studio"}} is-flagship{{end}}" tabindex="0">
+      {{if ne .Key "bankshield_studio"}}
+      <article class="triad-card" tabindex="0">
         <p class="module">{{.Key}}</p>
         <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
         <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>
         <p class="price">{{if eq $.Lang "en"}}{{.PriceEN}}{{else}}{{.PriceRU}}{{end}}</p>
-        {{if eq .Key "bankshield_studio"}}<p class="hint"><a href="/studio?lang={{$.Lang}}">{{if eq $.Lang "en"}}Open studio{{else if eq $.Lang "de"}}Studio öffnen{{else if eq $.Lang "fr"}}Ouvrir le studio{{else}}Открыть студию{{end}}</a></p>{{end}}
       </article>
       {{end}}
+      {{end}}
     </div>
+    <p class="hint">{{index .Text "legal_patent"}}</p>
   </section>
 
   <section class="pro-block" aria-labelledby="deploy-title">
@@ -59,10 +101,35 @@
     </div>
   </section>
 
+  <section class="pro-block" id="order" aria-labelledby="order-title">
+    <h2 id="order-title">{{if eq .Lang "en"}}Order a turnkey AI agent{{else}}Заказать ИИ-агента под ключ{{end}}</h2>
+    {{if .Sent}}
+    <p class="form-ok" role="status">{{if eq .Lang "en"}}Request received. We will reply to the contact you left.{{else}}Заявка принята. Ответим на указанный контакт.{{end}}</p>
+    {{end}}
+    <form class="intake" method="post" action="/order?lang={{.Lang}}">
+      <label for="company">{{if eq .Lang "en"}}Organization{{else}}Организация{{end}}</label>
+      <input id="company" name="company" type="text" required maxlength="120" autocomplete="organization">
+      <label for="contact">{{if eq .Lang "en"}}Email or phone{{else}}Почта или телефон{{end}}</label>
+      <input id="contact" name="contact" type="text" required maxlength="160" autocomplete="email">
+      <label for="task">{{if eq .Lang "en"}}What the agent should do{{else}}Какую задачу должен закрывать агент{{end}}</label>
+      <textarea id="task" name="task" required maxlength="2000" rows="5"></textarea>
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      {{if eq .ErrorCode "invalid_order"}}
+      <p class="form-error" role="alert">{{if eq .Lang "en"}}Check the organization, contact, and a short description of the task.{{else}}Проверьте организацию, контакт и краткое описание задачи.{{end}}</p>
+      {{end}}
+      <button type="submit">{{if eq .Lang "en"}}Send request{{else}}Отправить заявку{{end}}</button>
+    </form>
+  </section>
+
   <section class="mandate" aria-labelledby="legal-title">
     <h2 id="legal-title">{{index .Text "legal_title"}}</h2>
     <p>{{index .Text "legal_company"}}</p>
-    <a class="doc-link" href="/static/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{index .Text "htp_certificate_label"}}</a>
+    <div class="doc-actions">
+      <a class="doc-link" href="/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View certificate (KG/RU){{else}}Смотреть свидетельство (KG/RU){{end}}</a>
+      <a class="doc-link" href="/docs/htp_certificate.pdf?download=1">{{if eq .Lang "en"}}Download (KG/RU){{else}}Скачать (KG/RU){{end}}</a>
+      <a class="doc-link" href="/docs/htp_certificate_en.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View certificate (EN){{else}}Смотреть свидетельство (EN){{end}}</a>
+      <a class="doc-link" href="/docs/htp_certificate_en.pdf?download=1">{{if eq .Lang "en"}}Download (EN){{else}}Скачать (EN){{end}}</a>
+    </div>
   </section>
 </div>
 {{end}}

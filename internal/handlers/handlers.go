@@ -100,7 +100,15 @@ func New(st *store.Store, root string) (*App, error) {
 }
 
 func (a *App) Home(w http.ResponseWriter, r *http.Request) {
-	a.renderPublic(w, r, "home")
+	data, err := a.publicView(r, requestLang(r), "", "")
+	if err != nil {
+		log.Printf("home: %v", err)
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+	data.CSRF = issueCSRF(w)
+	data.Sent = r.URL.Query().Get("ordered") == "1"
+	a.render(w, "home", data)
 }
 
 func (a *App) About(w http.ResponseWriter, r *http.Request) {

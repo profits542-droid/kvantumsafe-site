@@ -23,7 +23,7 @@
         <a href="/about?lang={{.Lang}}" class="{{if eq .Path "/about"}}is-active{{end}}">{{if eq .Lang "en"}}About{{else if eq .Lang "de"}}Über uns{{else if eq .Lang "fr"}}À propos{{else}}О компании{{end}}</a>
         <a href="/marketplace?lang={{.Lang}}" class="{{if eq .Path "/marketplace"}}is-active{{end}}">{{if eq .Lang "en"}}Marketplace{{else if eq .Lang "de"}}Marktplatz{{else if eq .Lang "fr"}}Marché{{else}}Маркетплейс{{end}}</a>
         <a href="/studio?lang={{.Lang}}" class="{{if eq .Path "/studio"}}is-active{{end}}">{{if eq .Lang "en"}}Studio{{else if eq .Lang "de"}}Studio{{else if eq .Lang "fr"}}Studio{{else}}Студия{{end}}</a>
-        <a class="nav-cloud" href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}GPU/CPU Cloud Grid{{else if eq .Lang "de"}}GPU/CPU Cloud Grid{{else if eq .Lang "fr"}}GPU/CPU Cloud Grid{{else}}Биржа GPU/CPU (Cloud){{end}}</a>
+        <a class="nav-cloud" href="https://cloud.kvantumsafe.tech/?lang={{if eq .Lang "ru"}}ru{{else}}en{{end}}" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}GPU/CPU Cloud Grid{{else if eq .Lang "de"}}GPU/CPU Cloud Grid{{else if eq .Lang "fr"}}GPU/CPU Cloud Grid{{else}}Биржа GPU/CPU (Cloud){{end}}</a>
       </nav>
       <nav class="lang-switch" aria-label="{{if eq .Lang "en"}}Language{{else if eq .Lang "de"}}Sprache{{else if eq .Lang "fr"}}Langue{{else}}Язык{{end}}">
         <a href="{{.Path}}?lang=ru{{if .Domain}}&domain={{.Domain}}{{end}}" class="{{if eq .Lang "ru"}}is-active{{end}}" lang="ru" hreflang="ru">RU</a>

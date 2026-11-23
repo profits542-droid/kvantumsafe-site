@@ -7,7 +7,7 @@
     <h1>{{index .Text "hero_title"}}</h1>
     <p class="lede">{{index .Text "hero_lead"}}</p>
     <div class="hero-actions">
-      <a class="cta" href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Rent GPU / CPU (Cloud){{else}}Арендовать GPU / CPU (Cloud){{end}}</a>
+      <a class="cta" href="https://cloud.kvantumsafe.tech/?lang={{if eq .Lang "ru"}}ru{{else}}en{{end}}" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Rent GPU / CPU (Cloud){{else}}Арендовать GPU / CPU (Cloud){{end}}</a>
       <a class="cta cta-line" href="#order">{{if eq .Lang "en"}}Order a turnkey AI agent{{else}}Заказать ИИ-агента под ключ{{end}}</a>
     </div>
   </section>
@@ -31,10 +31,10 @@
         <h3>KVANTUM CLOUD GRID</h3>
         {{if eq .Lang "en"}}
         <p>An hourly exchange of GPUs (24+ GB VRAM) and many-core CPUs for AI training and tests, plus passive income for hardware owners through the kvantum-worker client agent. cloud.kvantumsafe.tech</p>
-        <p class="hint"><a href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">Open the cloud grid</a></p>
+        <p class="hint"><a href="https://cloud.kvantumsafe.tech/?lang=en" target="_blank" rel="noopener noreferrer">Open the cloud grid</a></p>
         {{else}}
         <p>Почасовая биржа GPU (24+ ГБ VRAM) и многоядерных CPU для обучения и тестов ИИ, а также пассивный заработок для владельцев оборудования через клиентский агент kvantum-worker. cloud.kvantumsafe.tech</p>
-        <p class="hint"><a href="https://cloud.kvantumsafe.tech" target="_blank" rel="noopener noreferrer">Открыть биржу</a></p>
+        <p class="hint"><a href="https://cloud.kvantumsafe.tech/?lang={{if eq .Lang "ru"}}ru{{else}}en{{end}}" target="_blank" rel="noopener noreferrer">Открыть биржу</a></p>
         {{end}}
       </article>
       <article class="triad-card">

@@ -7,7 +7,7 @@
     <h1>{{index .Text "hero_title"}}</h1>
     <p class="lede">{{index .Text "hero_lead"}}</p>
     <div class="hero-actions">
-      <a class="cta" href="https://cloud.kvantumsafe.tech/?lang={{if eq .Lang "ru"}}ru{{else}}en{{end}}" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Rent GPU / CPU (Cloud){{else}}Арендовать GPU / CPU (Cloud){{end}}</a>
+      <a class="cta" href="https://cloud.kvantumsafe.tech/?lang={{.Lang}}" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Rent GPU / CPU (Cloud){{else}}Арендовать GPU / CPU (Cloud){{end}}</a>
       <a class="cta cta-line" href="#order">{{if eq .Lang "en"}}Order a turnkey AI agent{{else}}Заказать ИИ-агента под ключ{{end}}</a>
     </div>
   </section>
@@ -16,35 +16,35 @@
     <h2 id="ecosystem-title">{{if eq .Lang "en"}}Export ecosystem{{else}}Экспортная экосистема{{end}}</h2>
     <div class="triad triad-3">
       <article class="triad-card">
-        <p class="module">01 · Studio</p>
+        <p class="module">{{if eq .Lang "en"}}01 · Studio{{else}}01 · Студия{{end}}</p>
         <h3>KVANTUM AGENT STUDIO</h3>
         {{if eq .Lang "en"}}
         <p>A team of four built-in AI agents (Architect, Pentester, Defender, Compliance Auditor), an evolutionary duel across four threat classes (tool calling, calculation accuracy, multi-step traps, dirty or fake data), and AI dataset export (JSONL).</p>
-        <p class="hint"><a href="/studio?lang=en">Open studio</a></p>
+        <p class="hint"><a href="/studio?lang={{.Lang}}">Open studio</a></p>
         {{else}}
-        <p>Команда из 4 встроенных ИИ-агентов (Архитектор, Пентестер, Защитник, Комплаенс-Аудитор), эволюционная дуэль по 4 классам угроз (Tool Calling, точность расчётов, многошаговые ловушки, грязные и поддельные данные) и экспорт AI-датасетов (JSONL).</p>
+        <p>Команда из 4 встроенных ИИ-агентов (Архитектор, Пентестер, Защитник, Комплаенс-аудитор). Эволюционная дуэль по 4 классам угроз: вызов инструментов, точность расчётов, многошаговые ловушки, грязные и поддельные данные. Экспорт датасета для обучения в формате JSONL.</p>
         <p class="hint"><a href="/studio?lang={{.Lang}}">Открыть студию</a></p>
         {{end}}
       </article>
       <article class="triad-card">
-        <p class="module">02 · Cloud</p>
+        <p class="module">{{if eq .Lang "en"}}02 · Cloud{{else}}02 · Биржа{{end}}</p>
         <h3>KVANTUM CLOUD GRID</h3>
         {{if eq .Lang "en"}}
         <p>An hourly exchange of GPUs (24+ GB VRAM) and many-core CPUs for AI training and tests, plus passive income for hardware owners through the kvantum-worker client agent. cloud.kvantumsafe.tech</p>
         <p class="hint"><a href="https://cloud.kvantumsafe.tech/?lang=en" target="_blank" rel="noopener noreferrer">Open the cloud grid</a></p>
         {{else}}
-        <p>Почасовая биржа GPU (24+ ГБ VRAM) и многоядерных CPU для обучения и тестов ИИ, а также пассивный заработок для владельцев оборудования через клиентский агент kvantum-worker. cloud.kvantumsafe.tech</p>
-        <p class="hint"><a href="https://cloud.kvantumsafe.tech/?lang={{if eq .Lang "ru"}}ru{{else}}en{{end}}" target="_blank" rel="noopener noreferrer">Открыть биржу</a></p>
+        <p>Почасовая биржа видеокарт (от 24 ГБ видеопамяти) и многоядерных процессоров для обучения и тестов ИИ, а также пассивный заработок для владельцев оборудования через клиентский агент kvantum-worker.</p>
+        <p class="hint"><a href="https://cloud.kvantumsafe.tech/?lang={{.Lang}}" target="_blank" rel="noopener noreferrer">Открыть биржу</a></p>
         {{end}}
       </article>
       <article class="triad-card">
-        <p class="module">03 · Sync</p>
+        <p class="module">{{if eq .Lang "en"}}03 · Sync{{else}}03 · Обучение{{end}}</p>
         <h3>{{if eq .Lang "en"}}Turnkey AI agents with live training{{else}}ИИ-агенты под ключ с живым обучением{{end}}</h3>
         {{if eq .Lang "en"}}
         <p>Kvantum Sync Engine delivers a finished compiled file with an official PDF safety protocol, then keeps the AI-Firewall rules and the knowledge base up to date by subscription.</p>
         <p class="hint"><a href="#order">Request an agent</a></p>
         {{else}}
-        <p>Kvantum Sync Engine передаёт готовый скомпилированный файл с официальным PDF-протоколом безопасности и автоматически обновляет правила AI-Firewall и базу знаний по подписке.</p>
+        <p>Заказчик получает готовый скомпилированный файл и официальный протокол безопасности в PDF. Правила контроля ИИ и база знаний обновляются по подписке.</p>
         <p class="hint"><a href="#order">Оставить заявку</a></p>
         {{end}}
       </article>
@@ -57,7 +57,7 @@
     <form class="intake" method="get" action="/report">
       <div class="panel-top">
         <span class="scan-dot" aria-hidden="true"></span>
-        <span>Domain intake</span>
+        <span>{{if eq .Lang "en"}}Domain intake{{else}}Приём домена{{end}}</span>
       </div>
       <label for="domain">{{index .Text "intake_label"}}</label>
       <div class="intake-row">
@@ -74,7 +74,7 @@
       {{range .Products}}
       {{if ne .Key "bankshield_studio"}}
       <article class="triad-card" tabindex="0">
-        <p class="module">{{.Key}}</p>
+        <p class="module">{{if eq $.Lang "en"}}{{if eq .Key "external_scanner"}}Perimeter{{else if eq .Key "internal_scanner"}}Internal files{{else if eq .Key "quantum_bridge"}}Transfers{{else if eq .Key "compliance_orchestrator"}}Compliance{{else}}{{.Key}}{{end}}{{else}}{{if eq .Key "external_scanner"}}Периметр{{else if eq .Key "internal_scanner"}}Внутренние файлы{{else if eq .Key "quantum_bridge"}}Переводы{{else if eq .Key "compliance_orchestrator"}}Комплаенс{{else}}{{.Key}}{{end}}{{end}}</p>
         <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
         <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>
         <p class="price">{{if eq $.Lang "en"}}{{.PriceEN}}{{else}}{{.PriceRU}}{{end}}</p>
@@ -89,12 +89,12 @@
     <h2 id="deploy-title">{{index .Text "deploy_title"}}</h2>
     <div class="deploy">
       <article>
-        <p class="module">DMZ</p>
+        <p class="module">{{if eq .Lang "en"}}DMZ{{else}}Зона ДМЗ{{end}}</p>
         <h3>{{index $.Text "gateway_title"}}</h3>
         <p>{{index $.Text "gateway_text"}}</p>
       </article>
       <article>
-        <p class="module">SDK</p>
+        <p class="module">{{if eq .Lang "en"}}SDK{{else}}Комплект для встраивания{{end}}</p>
         <h3>{{index $.Text "sdk_title"}}</h3>
         <p>{{index $.Text "sdk_text"}}</p>
       </article>

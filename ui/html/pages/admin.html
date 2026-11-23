@@ -7,7 +7,7 @@
       <p class="eyebrow">{{if eq .Lang "en"}}Signed in as{{else}}Вы вошли как{{end}} {{.Username}}</p>
       <h1>{{if eq .Lang "en"}}Submitted bank domains{{else}}Отправленные домены банков{{end}}</h1>
       <p class="lede tight">{{if eq .Lang "en"}}The latest 50 entries from the local SQLite database.{{else}}Последние 50 записей из локальной базы SQLite.{{end}}</p>
-      <p class="hint"><a href="/admin/dashboard{{if eq .Lang "en"}}?lang=en{{end}}">{{if eq .Lang "en"}}Edit page copy{{else}}Править тексты страниц{{end}}</a></p>
+      <p class="hint"><a href="/admin/dashboard?lang={{.Lang}}">{{if eq .Lang "en"}}Edit page copy{{else}}Править тексты страниц{{end}}</a></p>
     </div>
     <form method="post" action="/admin/logout?lang={{.Lang}}">
       <input type="hidden" name="csrf" value="{{.CSRF}}">

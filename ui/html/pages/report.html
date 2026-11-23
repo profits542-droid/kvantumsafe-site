@@ -15,9 +15,9 @@
             <div style="color: #ff8b98;">[CRIT] This report treats RAM Memory Protection and sanctions screening as missing from automatic mode. It explains the risk. It does not show that the domain was broken into or that data was stolen.</div>
             {{else}}
             <div>[INFO] Подготовка журнала экспресс-разбора для домена {{.Domain}}...</div>
-            <div>[INFO] Тема разбора: открытый контур сайта и служба TLS на входе.</div>
+            <div>[INFO] Тема разбора: открытый контур сайта и защищённое соединение на входе.</div>
             <div style="color: #d6b25e;">[WARN] Открытый контур может оставить сессию клиента после операции — как ключи, забытые на столе кассира.</div>
-            <div style="color: #ff8b98;">[CRIT] В этом отчёте защита RAM Memory Protection и санкционный скрининг показаны как отсутствующие в автоматическом режиме. Это разбор риска, а не подтверждение взлома и компрометации данных.</div>
+            <div style="color: #ff8b98;">[CRIT] В этом отчёте защита оперативной памяти и санкционный скрининг показаны как отсутствующие в автоматическом режиме. Это разбор риска, а не подтверждение взлома и утечки данных.</div>
             {{end}}
         </div>
     </section>
@@ -26,12 +26,12 @@
         {{if eq .Lang "en"}}Critical Security Issues for {{.Domain}}{{else}}Критические находки для {{.Domain}}{{end}}
     </h1>
     <p style="color: #a0aec0; margin-top: 0; margin-bottom: 30px;">
-        {{if eq .Lang "en"}}Scan Status: Verified (Handshake OK) | Security Level: CRITICAL RISK{{else}}Статус сканирования: Успешно (Handshake OK) | Уровень угрозы: КРИТИЧЕСКИЙ РИСК{{end}}
+        {{if eq .Lang "en"}}Scan status: verified, the connection was confirmed | Security level: critical risk{{else}}Статус сканирования: успешно, соединение подтверждено | Уровень угрозы: критический риск{{end}}
     </p>
 
     <div style="background: #1b263b; border-left: 4px solid #e63946; padding: 20px; border-radius: 6px; margin-bottom: 25px; color: #ffffff;">
         <h3 style="margin-top: 0; color: #e63946; font-size: 18px;">
-            🚨 {{if eq .Lang "en"}}RAM Memory Protection (AI-AntiHacker Module){{else}}Защита оперативной памяти (ИИ-Модуль АнтиХакер){{end}}
+            🚨 {{if eq .Lang "en"}}Memory protection{{else}}Защита оперативной памяти{{end}}
         </h3>
         <p style="line-height: 1.6; font-size: 15px;">
             <strong>{{if eq .Lang "en"}}In simple terms:{{else}}Простыми словами:{{end}}</strong>
@@ -46,21 +46,21 @@
             {{if eq .Lang "en"}}
             Our low-layer Go/Rust AntiHacker guard acts as an invisible controller. It instantly clears session keys from memory (Stealth RAM Isolation) immediately after a transaction, blocking hackers completely.
             {{else}}
-            Наш защитный модуль АнтиХакер (на базе Go и низкоуровневого Rust) работает как умный охранник. Он мгновенно прячет все ключи доступа из оперативной памяти сразу после совершения операции, делая атаку невозможной.
+            Наш защитный модуль работает как умный охранник. Он сразу убирает ключи доступа из оперативной памяти после операции, и атака на них становится невозможной.
             {{end}}
         </p>
     </div>
 
     <div style="background: #1b263b; border-left: 4px solid #e63946; padding: 20px; border-radius: 6px; margin-bottom: 35px; color: #ffffff;">
         <h3 style="margin-top: 0; color: #e63946; font-size: 18px;">
-            🚨 {{if eq .Lang "en"}}Sanction Screening & Compliance (Graph AI Engine){{else}}Санкционный скрининг и комплаенс (ИИ-Граф связей){{end}}
+            🚨 {{if eq .Lang "en"}}Sanctions screening and compliance{{else}}Санкционная проверка и комплаенс{{end}}
         </h3>
         <p style="line-height: 1.6; font-size: 15px;">
             <strong>{{if eq .Lang "en"}}In simple terms:{{else}}Простыми словами:{{end}}</strong>
             {{if eq .Lang "en"}}
             The bank processes international wire transfers blindly without identifying hidden owners. If money accidentally flows to an OFAC/SDN sanctioned entity, international correspondent accounts will be blocked instantly. Checking just the basic tax ID does not show hidden shell networks.
             {{else}}
-            Банк делает переводы «вслепую», не проверяя, кому именно уходят деньги. Если банк случайно переведет деньги компании под международными санкциями (OFAC/SDN), его счета за рубежом заблокируют. Обычная проверка по ИНН не видит скрытых подставных фирм.
+            Банк делает переводы «вслепую», не проверяя, кому именно уходят деньги. Если банк случайно переведёт деньги компании под международными санкциями, его счета за рубежом заблокируют. Обычная проверка по налоговому номеру не видит скрытых подставных фирм.
             {{end}}
         </p>
         <p style="line-height: 1.6; font-size: 15px; color: #10b981;">
@@ -75,13 +75,13 @@
 
     <div style="background: #14213d; border: 1px solid #00b4d8; padding: 25px; border-radius: 8px; color: #ffffff;">
         <h2 style="margin-top: 0; color: #00b4d8; font-size: 20px;">
-            📊 {{if eq .Lang "en"}}B2B Product Specification & Monetization (SaaS Model){{else}}Спецификация ПО и Коммерциализация (Модель SaaS){{end}}
+            📊 {{if eq .Lang "en"}}Product specification and supply{{else}}Спецификация ПО и поставка{{end}}
         </h2>
         <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1;">
             {{if eq .Lang "en"}}
             Developed by <strong>Kvantum Safe LLC</strong> (HTP resident, Certificate No. 799/10-С-26, Kyrgyzpatent application No. 1295). We deliver a compiled SDK bound to the server hardware.
             {{else}}
-            Разработано компанией <strong>ОсОО «Квантум Сейф»</strong> (резидент ПВТ КР, Свидетельство № 799/10-С-26, заявка в Кыргызпатент № 1295). Продукт поставляется в виде скомпилированного SDK с привязкой к оборудованию сервера.
+            Разработано компанией <strong>ОсОО «Квантум Сейф»</strong> (резидент ПВТ КР, Свидетельство № 799/10-С-26, заявка в Кыргызпатент № 1295). Продукт поставляется в виде скомпилированного комплекта с привязкой к оборудованию сервера.
             {{end}}
         </p>
         <ul style="padding-left: 20px; font-size: 14px; line-height: 1.8; color: #e2e8f0;">

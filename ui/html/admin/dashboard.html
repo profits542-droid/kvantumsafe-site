@@ -18,7 +18,7 @@
   <p class="form-ok" role="status">{{if eq .Lang "en"}}Saved.{{else}}Сохранено.{{end}}</p>
   {{end}}
 
-  <p class="hint"><a href="/admin{{if eq .Lang "en"}}?lang=en{{end}}">{{if eq .Lang "en"}}Submitted domains{{else}}Отправленные домены{{end}}</a></p>
+  <p class="hint"><a href="/admin?lang={{.Lang}}">{{if eq .Lang "en"}}Submitted domains{{else}}Отправленные домены{{end}}</a></p>
 
   <h2>{{if eq .Lang "en"}}Page copy{{else}}Тексты страниц{{end}}</h2>
   {{range .Blocks}}

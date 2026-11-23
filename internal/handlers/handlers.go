@@ -319,12 +319,10 @@ func (a *App) render(w http.ResponseWriter, page string, data viewData) {
 }
 
 func requestLang(r *http.Request) string {
-	switch r.URL.Query().Get("lang") {
-	case "en", "de", "fr", "ru":
-		return r.URL.Query().Get("lang")
-	default:
-		return "ru"
+	if r.URL.Query().Get("lang") == "en" {
+		return "en"
 	}
+	return "ru"
 }
 
 func adminPath(lang string) string {

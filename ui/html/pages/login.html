@@ -12,7 +12,7 @@
     <p class="lede tight">Only a staff account can open submitted bank domains. The session stays in an HttpOnly cookie and expires after 12 hours.</p>
     {{else}}
     <h1>Вход в админ-панель.</h1>
-    <p class="lede tight">Список отправленных доменов банков открывается только служебной учётной записи. Сессия хранится в cookie HttpOnly и истекает через 12 часов.</p>
+    <p class="lede tight">Список отправленных доменов банков открывается только служебной учётной записи. Сессия хранится в защищённой cookie и истекает через 12 часов.</p>
     {{end}}
     <label for="username">{{if eq .Lang "en"}}Username{{else}}Имя{{end}}</label>
     <input id="username" name="username" type="text" autocomplete="username" required maxlength="64">

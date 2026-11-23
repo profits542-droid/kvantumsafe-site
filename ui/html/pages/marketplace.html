@@ -11,11 +11,11 @@
   <section class="triad">
     {{range .Products}}
     <article class="triad-card{{if eq .Key "bankshield_studio"}} is-flagship{{end}}">
-      <p class="module">{{.Key}}</p>
+      <p class="module">{{if eq $.Lang "en"}}{{if eq .Key "bankshield_studio"}}Studio{{else if eq .Key "external_scanner"}}Perimeter{{else if eq .Key "internal_scanner"}}Internal files{{else if eq .Key "quantum_bridge"}}Transfers{{else if eq .Key "compliance_orchestrator"}}Compliance{{else}}{{.Key}}{{end}}{{else}}{{if eq .Key "bankshield_studio"}}Студия{{else if eq .Key "external_scanner"}}Периметр{{else if eq .Key "internal_scanner"}}Внутренние файлы{{else if eq .Key "quantum_bridge"}}Переводы{{else if eq .Key "compliance_orchestrator"}}Комплаенс{{else}}{{.Key}}{{end}}{{end}}</p>
       <h3>{{if eq $.Lang "en"}}{{.NameEN}}{{else}}{{.NameRU}}{{end}}</h3>
       <p>{{if eq $.Lang "en"}}{{.DescEN}}{{else}}{{.DescRU}}{{end}}</p>
       <p class="price">{{if eq $.Lang "en"}}{{.PriceEN}}{{else}}{{.PriceRU}}{{end}}</p>
-      {{if eq .Key "bankshield_studio"}}<p class="hint"><a href="/studio?lang={{$.Lang}}">{{if eq $.Lang "en"}}Open studio{{else if eq $.Lang "de"}}Studio öffnen{{else if eq $.Lang "fr"}}Ouvrir le studio{{else}}Открыть студию{{end}}</a></p>{{end}}
+      {{if eq .Key "bankshield_studio"}}<p class="hint"><a href="/studio?lang={{$.Lang}}">{{if eq $.Lang "en"}}Open studio{{else}}Открыть студию{{end}}</a></p>{{end}}
     </article>
     {{else}}
     <p class="empty">{{if eq .Lang "en"}}No products in the database yet.{{else}}В базе пока нет продуктов.{{end}}</p>

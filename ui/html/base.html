@@ -23,6 +23,7 @@
         <a href="/about?lang={{.Lang}}" class="{{if eq .Path "/about"}}is-active{{end}}">{{if eq .Lang "en"}}About{{else}}О компании{{end}}</a>
         <a href="/marketplace?lang={{.Lang}}" class="{{if eq .Path "/marketplace"}}is-active{{end}}">{{if eq .Lang "en"}}Marketplace{{else}}Маркетплейс{{end}}</a>
         <a href="/studio?lang={{.Lang}}" class="{{if eq .Path "/studio"}}is-active{{end}}">{{if eq .Lang "en"}}Studio{{else}}Студия{{end}}</a>
+        <a href="/scanner?lang={{.Lang}}" class="{{if or (eq .Path "/scanner") (eq .Path "/scanner/report") (eq .Path "/scanner/download") (eq .Path "/scanner/billing")}}is-active{{end}}">{{if eq .Lang "en"}}Scanner{{else}}Сканер{{end}}</a>
         <a class="nav-cloud" href="https://cloud.kvantumsafe.tech/?lang={{.Lang}}" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}GPU/CPU Cloud Grid{{else}}Биржа GPU/CPU (Cloud){{end}}</a>
       </nav>
       <nav class="lang-switch" aria-label="{{if eq .Lang "en"}}Language{{else}}Язык{{end}}">

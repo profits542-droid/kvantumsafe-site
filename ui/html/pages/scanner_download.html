@@ -1,0 +1,46 @@
+{{define "title"}}{{if eq .Lang "en"}}Company modules{{else}}Модули компании{{end}}{{end}}
+
+{{define "main"}}
+<div class="pro scanner-page">
+  <section>
+    <p class="eyebrow">{{if eq .Lang "en"}}In development{{else}}В разработке{{end}}</p>
+    {{if eq .Lang "en"}}
+    <h1>Kvantum Safe modules</h1>
+    <p class="lede">A text description of the product line under development. No PDF is created and nothing is sent anywhere.</p>
+    {{else}}
+    <h1>Модули ОсОО «Квантум Сейф»</h1>
+    <p class="lede">Текстовое описание продуктовой линейки в разработке. PDF не формируется и никуда не отправляется.</p>
+    {{end}}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{if eq .Lang "en"}}Module{{else}}Модуль{{end}}</th>
+            <th>{{if eq .Lang "en"}}Purpose{{else}}Назначение{{end}}</th>
+            <th>{{if eq .Lang "en"}}Status{{else}}Статус{{end}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI P2P Referee</td>
+            <td>{{if eq .Lang "en"}}A review service for disputed person-to-person payments: it compares the parties, keeps an event log, and gives the operator a conclusion.{{else}}Сервис-арбитр для разбора спорных P2P-операций: сверка сторон, журнал событий, выдача заключения оператору.{{end}}</td>
+            <td>{{if eq .Lang "en"}}In development{{else}}В разработке{{end}}</td>
+          </tr>
+          <tr>
+            <td>AI-AntiHacker</td>
+            <td>{{if eq .Lang "en"}}A perimeter monitoring loop: it collects signals, applies response rules, and prepares reports for the security team.{{else}}Контур мониторинга аномалий на периметре заказчика: сбор сигналов, правила реагирования, отчёты для службы безопасности.{{end}}</td>
+            <td>{{if eq .Lang "en"}}In development{{else}}В разработке{{end}}</td>
+          </tr>
+          <tr>
+            <td>Hardware Dongle API</td>
+            <td>{{if eq .Lang "en"}}A software interface to a hardware token: it checks that the token is present and calls operations on the device.{{else}}Программный интерфейс к аппаратному ключу: проверка присутствия токена и вызов операций на устройстве.{{end}}</td>
+            <td>{{if eq .Lang "en"}}In development{{else}}В разработке{{end}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>{{if eq .Lang "en"}}These are company products designed as separate platform modules. This page is not a delivery note, a license, or proof that a client has installed them.{{else}}Это решения компании, которые проектируются и пишутся как отдельные модули платформы. Страница не является актом поставки, лицензией или подтверждением внедрения у клиента.{{end}}</p>
+    <p class="hint"><a href="/scanner?lang={{.Lang}}">{{if eq .Lang "en"}}Back{{else}}Назад{{end}}</a></p>
+  </section>
+</div>
+{{end}}

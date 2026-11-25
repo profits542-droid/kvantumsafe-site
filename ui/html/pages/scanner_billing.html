@@ -1,0 +1,32 @@
+{{define "title"}}{{if eq .Lang "en"}}Plans{{else}}Тарифы{{end}}{{end}}
+
+{{define "main"}}
+<div class="pro scanner-page">
+  <section>
+    <p class="eyebrow">{{if eq .Lang "en"}}Supply terms{{else}}Условия поставки{{end}}</p>
+    <h1>{{if eq .Lang "en"}}Scanner plans{{else}}Тарифы сканера{{end}}</h1>
+    <p class="lede">{{if eq .Lang "en"}}The plans below describe the modules. This page does not take a payment and does not issue a license key.{{else}}Ниже описаны модули. Эта страница не принимает платёж и не выдаёт лицензионный ключ.{{end}}</p>
+    <div class="triad triad-3">
+      <article class="triad-card">
+        <p class="module">scanner.go</p>
+        <h3>Global Scanner</h3>
+        <p>{{if eq .Lang "en"}}Express review of the public TLS door of a domain.{{else}}Экспресс-проверка публичной TLS-точки домена.{{end}}</p>
+        <p class="price">{{if eq .Lang "en"}}Free express audit{{else}}Бесплатный экспресс-аудит{{end}}</p>
+      </article>
+      <article class="triad-card">
+        <p class="module">internal_fs.go</p>
+        <h3>Compliance Pro</h3>
+        <p>{{if eq .Lang "en"}}An internal review of forgotten secret files on the customer's own servers.{{else}}Внутренняя ревизия забытых секретных файлов на серверах заказчика.{{end}}</p>
+        <p class="price">{{if eq .Lang "en"}}Custom quote{{else}}По запросу{{end}}</p>
+      </article>
+      <article class="triad-card">
+        <p class="module">quantum_bridge.go</p>
+        <h3>{{if eq .Lang "en"}}Protected transfer gateway{{else}}Защищённый шлюз переводов{{end}}</h3>
+        <p>{{if eq .Lang "en"}}Checks that a transfer message stays intact on the way through the gateway.{{else}}Проверяет, что сообщение перевода не изменено по дороге через шлюз.{{end}}</p>
+        <p class="price">{{if eq .Lang "en"}}Custom quote{{else}}По запросу{{end}}</p>
+      </article>
+    </div>
+    <p class="hint"><a href="/scanner?lang={{.Lang}}">{{if eq .Lang "en"}}Back to the scanner{{else}}Назад к сканеру{{end}}</a></p>
+  </section>
+</div>
+{{end}}

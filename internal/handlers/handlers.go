@@ -55,6 +55,20 @@ type viewData struct {
 	Engine       string
 	Model        string
 	StudioNotice string
+	Scan         scanView
+}
+
+type scanView struct {
+	IP        string
+	Version   string
+	Cipher    string
+	Subject   string
+	Issuer    string
+	NotAfter  string
+	Validity  string
+	Error     string
+	Logs      string
+	Connected bool
 }
 
 type checkRow struct {
@@ -64,13 +78,17 @@ type checkRow struct {
 
 func New(st *store.Store, root string) (*App, error) {
 	pages := map[string]string{
-		"home":        "home.html",
-		"about":       "about.html",
-		"marketplace": "marketplace.html",
-		"studio":      "studio.html",
-		"report":      "report.html",
-		"login":       "login.html",
-		"admin":       "admin.html",
+		"home":             "home.html",
+		"about":            "about.html",
+		"marketplace":      "marketplace.html",
+		"studio":           "studio.html",
+		"report":           "report.html",
+		"login":            "login.html",
+		"admin":            "admin.html",
+		"scanner":          "scanner.html",
+		"scanner_report":   "scanner_report.html",
+		"scanner_download": "scanner_download.html",
+		"scanner_billing":  "scanner_billing.html",
 	}
 	parsed := make(map[string]*template.Template, len(pages))
 	base := filepath.Join(root, "ui", "html", "base.html")

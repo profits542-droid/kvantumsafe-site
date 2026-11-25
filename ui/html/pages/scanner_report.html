@@ -1,0 +1,54 @@
+{{define "title"}}{{if eq .Lang "en"}}TLS report{{else}}TLS-отчёт{{end}} — {{.Domain}}{{end}}
+
+{{define "main"}}
+<div class="pro scanner-page">
+  <section>
+    <p class="eyebrow">{{if eq .Lang "en"}}Port 443{{else}}Порт 443{{end}}</p>
+    <h1>{{if eq .Lang "en"}}TLS report: {{.Domain}}{{else}}TLS-отчёт: {{.Domain}}{{end}}</h1>
+    <p class="lede">{{if eq .Lang "en"}}A real network connection to port 443. Timeout 3 seconds. Packages net and crypto/tls.{{else}}Реальное сетевое подключение к порту 443. Таймаут 3 секунды. Пакеты net и crypto/tls.{{end}}</p>
+    <p>{{if eq .Lang "en"}}Status:{{else}}Статус:{{end}}
+      {{if .Scan.Connected}}
+      <span class="badge badge-ok">{{if eq .Lang "en"}}CONNECTED{{else}}ПОДКЛЮЧЕНО{{end}}</span>
+      {{else}}
+      <span class="badge badge-critical">{{if eq .Lang "en"}}ERROR{{else}}ОШИБКА{{end}}</span>
+      {{end}}
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{if eq .Lang "en"}}Field{{else}}Параметр{{end}}</th>
+            <th>{{if eq .Lang "en"}}Value{{else}}Значение{{end}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>{{if eq .Lang "en"}}Domain{{else}}Домен{{end}}</td><td class="mono">{{.Domain}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}IP (DNS){{else}}IP (DNS){{end}}</td><td class="mono">{{.Scan.IP}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Port{{else}}Порт{{end}}</td><td>443</td></tr>
+          <tr><td>{{if eq .Lang "en"}}TLS version{{else}}Версия TLS{{end}}</td><td>{{.Scan.Version}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Cipher suite{{else}}Набор шифров{{end}}</td><td>{{.Scan.Cipher}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Certificate (CN){{else}}Сертификат (CN){{end}}</td><td>{{.Scan.Subject}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Issuer{{else}}Издатель{{end}}</td><td>{{.Scan.Issuer}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Valid until{{else}}Действителен до{{end}}</td><td>{{.Scan.NotAfter}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Term{{else}}Срок{{end}}</td><td>{{.Scan.Validity}}</td></tr>
+          <tr><td>{{if eq .Lang "en"}}Error{{else}}Ошибка{{end}}</td><td>{{.Scan.Error}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h2>{{if eq .Lang "en"}}Step log{{else}}Лог шагов{{end}}</h2>
+    <pre class="code-out">{{.Scan.Logs}}</pre>
+    <form class="intake" method="get" action="/scanner/report">
+      <label for="domain">{{if eq .Lang "en"}}Another domain{{else}}Другой домен{{end}}</label>
+      <div class="intake-row">
+        <input id="domain" name="domain" type="text" value="{{.Domain}}" maxlength="253" required>
+        <button type="submit">{{if eq .Lang "en"}}Scan{{else}}Сканировать{{end}}</button>
+      </div>
+      <input type="hidden" name="lang" value="{{.Lang}}">
+    </form>
+    <p class="hint">
+      <a href="/scanner?lang={{.Lang}}">{{if eq .Lang "en"}}Back{{else}}Назад{{end}}</a>
+      · <a href="/scanner/download?lang={{.Lang}}">{{if eq .Lang "en"}}Company modules{{else}}Модули компании{{end}}</a>
+    </p>
+  </section>
+</div>
+{{end}}

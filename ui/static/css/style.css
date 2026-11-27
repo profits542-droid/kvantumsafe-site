@@ -455,11 +455,15 @@ textarea:focus { outline: 2px solid rgba(224, 182, 90, 0.7); outline-offset: 1px
   position: absolute;
   right: 12px;
   bottom: 12px;
-  padding: 8px 14px;
+  display: inline-flex;
+  width: auto;
+  margin-top: 0;
+  padding: 8px 18px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 8px;
   background: linear-gradient(180deg, #f3d48a, #c9962e);
   color: #1a1408;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
 }

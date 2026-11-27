@@ -469,6 +469,56 @@ textarea:focus { outline: 2px solid rgba(224, 182, 90, 0.7); outline-offset: 1px
 }
 .copy-btn:hover { filter: brightness(1.06); }
 
+button.mail-open, .mail-copy, .mail-close {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  margin-top: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+button.mail-open {
+  padding: 10px 16px;
+  border: 1px solid #e0b65a;
+  border-radius: 999px;
+  color: #e0b65a;
+  background: transparent;
+  font-weight: 700;
+}
+button.mail-open:hover { background: rgba(224, 182, 90, 0.12); }
+.mail-copy {
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #f3d48a, #c9962e);
+  color: #1a1408;
+  font-weight: 700;
+}
+.mail-dialog {
+  width: min(480px, calc(100% - 32px));
+  padding: 22px;
+  border: 1px solid rgba(224, 182, 90, 0.45);
+  border-radius: 16px;
+  background: #0d1b2a;
+  color: #e7eef8;
+}
+.mail-dialog::backdrop { background: rgba(5, 11, 19, 0.72); }
+.mail-address {
+  margin: 8px 0 14px;
+  color: #f3d48a;
+  font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
+  font-size: 1.05rem;
+}
+.mail-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.mail-close {
+  padding: 10px 16px;
+  border: 1px solid rgba(224, 182, 90, 0.45);
+  border-radius: 999px;
+  color: #e7eef8;
+  background: transparent;
+  font-weight: 700;
+}
+
 @media (max-width: 800px) {
   .hero, .desk-head, .pro-hero, .triad, .triad-3, .deploy, .field-table { grid-template-columns: 1fr; }
   .cta { width: 100%; }

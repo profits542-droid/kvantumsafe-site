@@ -27,4 +27,21 @@
       fallback();
     });
   });
+
+  var opener = document.getElementById("open-mail");
+  var dialog = document.getElementById("mail-dialog");
+  var closer = document.getElementById("close-mail");
+  if (opener && dialog && typeof dialog.showModal === "function") {
+    opener.addEventListener("click", function () {
+      dialog.showModal();
+    });
+    if (closer) {
+      closer.addEventListener("click", function () {
+        dialog.close();
+      });
+    }
+    dialog.addEventListener("click", function (event) {
+      if (event.target === dialog) dialog.close();
+    });
+  }
 })();

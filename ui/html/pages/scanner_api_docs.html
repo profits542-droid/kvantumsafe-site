@@ -73,8 +73,18 @@
     </div>
     <div class="doc-actions">
       <a class="doc-link" href="https://t.me/KvantumSafe_Lead_Bot" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Request a key on Telegram{{else}}Запросить ключ в Telegram{{end}}</a>
-      <a class="doc-link" href="mailto:info@kvantumsafe.tech">{{if eq .Lang "en"}}Request a key by email{{else}}Запросить ключ по почте{{end}}</a>
+      <button type="button" class="mail-open" id="open-mail">{{if eq .Lang "en"}}Request key via email{{else}}Запросить ключ по почте{{end}}</button>
     </div>
+    <dialog id="mail-dialog" class="mail-dialog" aria-labelledby="mail-dialog-title">
+      <p class="module" id="mail-dialog-title">{{if eq .Lang "en"}}Email{{else}}Почта{{end}}</p>
+      <p id="mail-address" class="mail-address">info@kvantumsafe.tech</p>
+      <button type="button" class="mail-copy" data-copy="mail-address" data-label="{{if eq .Lang "en"}}Copy address{{else}}Скопировать адрес{{end}}" data-copied="{{if eq .Lang "en"}}Copied!{{else}}Скопировано!{{end}}">{{if eq .Lang "en"}}Copy address{{else}}Скопировать адрес{{end}}</button>
+      <div class="mail-actions">
+        <a class="doc-link" href="https://google.com" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Open in Gmail{{else}}Открыть в Gmail{{end}}</a>
+        <a class="doc-link" href="mailto:info@kvantumsafe.tech">{{if eq .Lang "en"}}Open mail program{{else}}Открыть почтовую программу{{end}}</a>
+        <button type="button" class="mail-close" id="close-mail">{{if eq .Lang "en"}}Close{{else}}Закрыть{{end}}</button>
+      </div>
+    </dialog>
 
     <h2>cURL</h2>
     <div class="code-block">

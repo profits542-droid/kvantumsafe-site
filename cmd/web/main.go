@@ -139,6 +139,7 @@ func docsHandler(dir string) http.Handler {
 	allowed := map[string]bool{
 		"htp_certificate.pdf":    true,
 		"htp_certificate_en.pdf": true,
+		"patent_1259.pdf":        true,
 	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		name := strings.TrimPrefix(r.URL.Path, "/docs/")

@@ -14,6 +14,7 @@
 
   <section class="pro-block" aria-labelledby="ecosystem-title">
     <h2 id="ecosystem-title">{{if eq .Lang "en"}}Export ecosystem{{else}}Экспортная экосистема{{end}}</h2>
+    <p class="lede tight">{{if eq .Lang "en"}}Kvantum Agent Studio, the external and internal scanners, and the bank gateways are built on the patented KvantumSafe Pro Framework SDK core (Certificate No. 1259 dated Nov 9, 2026).{{else}}ИИ-студия Kvantum Agent Studio, внешний и внутренний сканеры и банковские шлюзы разработаны на базе запатентованного ядра KvantumSafe Pro Framework SDK (Свидетельство КР № 1259 от 09.11.2026 г.).{{end}}</p>
     <div class="triad triad-3">
       <article class="triad-card">
         <p class="module">{{if eq .Lang "en"}}01 · Studio{{else}}01 · Студия{{end}}</p>
@@ -124,11 +125,15 @@
   <section class="mandate" aria-labelledby="legal-title">
     <h2 id="legal-title">{{index .Text "legal_title"}}</h2>
     <p>{{index .Text "legal_company"}}</p>
+    <p>{{if eq .Lang "en"}}Right holder: Kvantum Safe LLC. Author: Nurlan Sarybaev. Registered program: KvantumSafe Pro Framework SDK, Certificate No. 1259 dated Nov 9, 2026, Application No. 20260165.6.{{else}}Правообладатель — ОсОО «Квантум Сейф» (Kvantum Safe LLC). Автор — Сарыбаев Нурлан Абдылдаевич (Nurlan Sarybaev). Программа для ЭВМ: KvantumSafe Pro Framework SDK, Свидетельство № 1259 от 09.11.2026 г., заявка № 20260165.6.{{end}}</p>
     <div class="doc-actions">
       <a class="doc-link" href="/docs/htp_certificate.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View certificate (KG/RU){{else}}Смотреть свидетельство (KG/RU){{end}}</a>
       <a class="doc-link" href="/docs/htp_certificate.pdf?download=1">{{if eq .Lang "en"}}Download (KG/RU){{else}}Скачать (KG/RU){{end}}</a>
       <a class="doc-link" href="/docs/htp_certificate_en.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View certificate (EN){{else}}Смотреть свидетельство (EN){{end}}</a>
       <a class="doc-link" href="/docs/htp_certificate_en.pdf?download=1">{{if eq .Lang "en"}}Download (EN){{else}}Скачать (EN){{end}}</a>
+      <a class="doc-link" href="/docs/patent_1259.pdf" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}View computer-program certificate No. 1259{{else}}Смотреть свидетельство ЭВМ № 1259{{end}}</a>
+      <a class="doc-link" href="/docs/patent_1259.pdf?download=1">{{if eq .Lang "en"}}Download PDF{{else}}Скачать PDF{{end}}</a>
+      <a class="doc-link" href="https://linkedin.com" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}LinkedIn profile{{else}}Профиль в LinkedIn{{end}}</a>
     </div>
   </section>
 </div>

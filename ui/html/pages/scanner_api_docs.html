@@ -1,0 +1,129 @@
+{{define "title"}}{{if eq .Lang "en"}}Scanner API{{else}}API сканера{{end}}{{end}}
+
+{{define "main"}}
+<div class="pro scanner-page api-docs">
+  <section>
+    <p class="eyebrow">KvantumSafe Pro Framework SDK</p>
+    {{if eq .Lang "en"}}
+    <h1>KvantumSafe TLS &amp; Perimeter Scanner API</h1>
+    <p class="lede">A public read-only method that opens a real TCP/TLS connection to port 443 and returns the certificate details as JSON. The scanner is built on the patented KvantumSafe Pro Framework SDK core (Kyrgyz Republic Certificate No. 1259 dated Nov 9, 2026).</p>
+    {{else}}
+    <h1>KvantumSafe TLS &amp; Perimeter Scanner API</h1>
+    <p class="lede">Публичный метод только для чтения: открывает настоящее TCP/TLS-подключение к порту 443 и возвращает данные сертификата в JSON. Сканер разработан на базе запатентованного ядра KvantumSafe Pro Framework SDK (Свидетельство КР № 1259 от 09.11.2026 г.).</p>
+    {{end}}
+
+    <article class="triad-card">
+      <p class="module">GET</p>
+      <h2>{{if eq .Lang "en"}}Method address{{else}}Адрес метода{{end}}</h2>
+      <p class="endpoint">GET https://kvantumsafe.tech/scanner/api/scan</p>
+      <p>{{if eq .Lang "en"}}Host: https://kvantumsafe.tech. Query parameters are added after the path.{{else}}Хост: https://kvantumsafe.tech. Параметры запроса добавляются после пути.{{end}}</p>
+    </article>
+
+    <h2>{{if eq .Lang "en"}}Parameters{{else}}Параметры{{end}}</h2>
+    <div class="field-table">
+      <div>
+        <p class="module">domain</p>
+        <p>{{if eq .Lang "en"}}Public domain name, for example bakai.kg. Required.{{else}}Публичное имя домена, например bakai.kg. Обязательный.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">lang</p>
+        <p>{{if eq .Lang "en"}}ru or en. Chooses the language of the log lines.{{else}}ru или en. Выбирает язык строк в журнале.{{end}}</p>
+      </div>
+    </div>
+
+    <h2>{{if eq .Lang "en"}}JSON response{{else}}Поля JSON-ответа{{end}}</h2>
+    <div class="field-table">
+      <div>
+        <p class="module">tls_version</p>
+        <p>{{if eq .Lang "en"}}Negotiated TLS version, for example TLS 1.3.{{else}}Согласованная версия TLS, например TLS 1.3.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">cipher_suite</p>
+        <p>{{if eq .Lang "en"}}Name of the cipher suite chosen for the connection.{{else}}Название набора шифров, выбранного для соединения.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">ip</p>
+        <p>{{if eq .Lang "en"}}Resolved address that accepted the connection.{{else}}Адрес, с которым установлено соединение.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">issuer</p>
+        <p>{{if eq .Lang "en"}}Issuer of the TLS certificate.{{else}}Издатель TLS-сертификата.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">not_after</p>
+        <p>{{if eq .Lang "en"}}Certificate expiry time in UTC (RFC3339). Empty if the handshake did not complete.{{else}}Срок окончания сертификата в UTC (RFC3339). Пусто, если рукопожатие не завершилось.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">logs</p>
+        <p>{{if eq .Lang "en"}}Step-by-step lines of the DNS, TCP, and TLS check.{{else}}Пошаговые строки проверки DNS, TCP и TLS.{{end}}</p>
+      </div>
+    </div>
+    <p class="hint">{{if eq .Lang "en"}}The response also includes domain, subject, not_before, ok, and error. An unknown domain returns HTTP 400.{{else}}В ответе также есть domain, subject, not_before, ok и error. Неизвестный домен возвращает HTTP 400.{{end}}</p>
+
+    <h2>cURL</h2>
+    <div class="code-block">
+      {{if eq .Lang "en"}}
+      <pre id="curl-sample">curl "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en"</pre>
+      <button type="button" class="copy-btn" data-copy="curl-sample" data-label="Copy" data-copied="Copied">Copy</button>
+      {{else}}
+      <pre id="curl-sample">curl "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru"</pre>
+      <button type="button" class="copy-btn" data-copy="curl-sample" data-label="Копировать" data-copied="Скопировано">Копировать</button>
+      {{end}}
+    </div>
+
+    <h2>Go (net/http)</h2>
+    <div class="code-block">
+      {{if eq .Lang "en"}}
+      <pre id="go-sample">package main
+
+import (
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    resp, err := http.Get("https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en")
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(body))
+}</pre>
+      <button type="button" class="copy-btn" data-copy="go-sample" data-label="Copy" data-copied="Copied">Copy</button>
+      {{else}}
+      <pre id="go-sample">package main
+
+import (
+    "fmt"
+    "io"
+    "net/http"
+)
+
+func main() {
+    resp, err := http.Get("https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru")
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(string(body))
+}</pre>
+      <button type="button" class="copy-btn" data-copy="go-sample" data-label="Копировать" data-copied="Скопировано">Копировать</button>
+      {{end}}
+    </div>
+
+    <p class="doc-actions">
+      <a class="cta" href="/scanner?lang={{.Lang}}">{{if eq .Lang "en"}}Back to the scanner{{else}}Вернуться к сканеру{{end}}</a>
+    </p>
+  </section>
+</div>
+<script src="/static/js/copy.js" defer></script>
+{{end}}

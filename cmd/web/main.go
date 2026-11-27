@@ -54,6 +54,7 @@ func main() {
 	mux.HandleFunc("GET /scanner/report", app.ScannerReport)
 	mux.HandleFunc("GET /scanner/download", app.ScannerDownload)
 	mux.HandleFunc("GET /scanner/billing", app.ScannerBilling)
+	mux.HandleFunc("GET /scanner/api-docs", app.ScannerAPIDocs)
 	mux.HandleFunc("GET /scanner/api/scan", app.ScannerAPI)
 	mux.HandleFunc("GET /admin/login", app.LoginForm)
 	mux.HandleFunc("POST /admin/login", app.Login)

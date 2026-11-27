@@ -89,6 +89,7 @@ func New(st *store.Store, root string) (*App, error) {
 		"scanner_report":   "scanner_report.html",
 		"scanner_download": "scanner_download.html",
 		"scanner_billing":  "scanner_billing.html",
+		"scanner_api_docs": "scanner_api_docs.html",
 	}
 	parsed := make(map[string]*template.Template, len(pages))
 	base := filepath.Join(root, "ui", "html", "base.html")

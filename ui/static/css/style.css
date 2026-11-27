@@ -424,8 +424,49 @@ textarea:focus { outline: 2px solid rgba(224, 182, 90, 0.7); outline-offset: 1px
 .cms button { width: auto; min-width: 160px; }
 .cms .badge { color: #041018; background: #e0b65a; }
 
+.api-docs h2 { margin: 28px 0 12px; font-size: 1.25rem; }
+.api-docs .endpoint {
+  margin: 8px 0 12px;
+  color: #f3d48a;
+  font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
+  word-break: break-all;
+}
+.field-table { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-table > div {
+  padding: 16px;
+  border: 1px solid rgba(224, 182, 90, 0.28);
+  border-radius: 14px;
+  background: #1b263b;
+}
+.field-table p:last-child { margin: 0; color: #d5e2f0; }
+.code-block { position: relative; margin-top: 8px; }
+.code-block pre {
+  margin: 0;
+  padding: 18px 18px 56px;
+  overflow: auto;
+  border: 1px solid rgba(224, 182, 90, 0.45);
+  border-radius: 12px;
+  background: #0a0f1d;
+  color: #d7fff0;
+  font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
+  white-space: pre-wrap;
+}
+.copy-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f3d48a, #c9962e);
+  color: #1a1408;
+  font-weight: 700;
+  cursor: pointer;
+}
+.copy-btn:hover { filter: brightness(1.06); }
+
 @media (max-width: 800px) {
-  .hero, .desk-head, .pro-hero, .triad, .triad-3, .deploy { grid-template-columns: 1fr; }
+  .hero, .desk-head, .pro-hero, .triad, .triad-3, .deploy, .field-table { grid-template-columns: 1fr; }
   .cta { width: 100%; }
   .intake-row { flex-direction: column; }
   .intake-row button { width: 100%; }

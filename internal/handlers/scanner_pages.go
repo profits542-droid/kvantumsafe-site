@@ -36,6 +36,10 @@ func (a *App) ScannerBilling(w http.ResponseWriter, r *http.Request) {
 	a.render(w, "scanner_billing", a.baseView(r))
 }
 
+func (a *App) ScannerAPIDocs(w http.ResponseWriter, r *http.Request) {
+	a.render(w, "scanner_api_docs", a.baseView(r))
+}
+
 func (a *App) ScannerAPI(w http.ResponseWriter, r *http.Request) {
 	if !a.hits.allow(clientIP(r)) {
 		http.Error(w, "too many requests", http.StatusTooManyRequests)

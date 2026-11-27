@@ -1,12 +1,23 @@
 package handlers
 
 import (
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
+	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"kvantum-safe-platform/internal/scanner"
+)
+
+const (
+	publicScanPerMinute     = 10
+	enterpriseScanPerMinute = 1000
+	scanQuotaWindow         = time.Minute
 )
 
 func (a *App) ScannerHome(w http.ResponseWriter, r *http.Request) {
@@ -41,8 +52,13 @@ func (a *App) ScannerAPIDocs(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) ScannerAPI(w http.ResponseWriter, r *http.Request) {
-	if !a.hits.allow(clientIP(r)) {
-		http.Error(w, "too many requests", http.StatusTooManyRequests)
+	if key, ok := enterpriseScannerKey(r); ok {
+		if !a.scanAPI.allow("key:"+scannerKeyID(key), enterpriseScanPerMinute) {
+			writeScanRateLimit(w)
+			return
+		}
+	} else if !a.scanAPI.allow("ip:"+clientIP(r), publicScanPerMinute) {
+		writeScanRateLimit(w)
 		return
 	}
 	lang := requestLang(r)
@@ -145,6 +161,102 @@ func dashScan(s string) string {
 		return "—"
 	}
 	return s
+}
+
+type scanLimitBody struct {
+	OK    bool   `json:"ok"`
+	Error string `json:"error"`
+}
+
+func writeScanRateLimit(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusTooManyRequests)
+	_ = json.NewEncoder(w).Encode(scanLimitBody{
+		OK:    false,
+		Error: "Rate limit exceeded. Use X-API-Key for enterprise access.",
+	})
+}
+
+func enterpriseScannerKey(r *http.Request) (string, bool) {
+	candidates := []string{
+		strings.TrimSpace(r.Header.Get("X-API-Key")),
+		strings.TrimSpace(r.URL.Query().Get("api_key")),
+	}
+	keys := scannerAPIKeys()
+	var matched string
+	for _, candidate := range candidates {
+		if candidate == "" {
+			continue
+		}
+		for _, allowed := range keys {
+			if subtle.ConstantTimeCompare([]byte(candidate), []byte(allowed)) == 1 {
+				matched = allowed
+			}
+		}
+	}
+	if matched == "" {
+		return "", false
+	}
+	return matched, true
+}
+
+func scannerAPIKeys() []string {
+	raw := os.Getenv("SCANNER_API_KEYS")
+	parts := strings.Split(raw, ",")
+	keys := make([]string, 0, len(parts))
+	for _, part := range parts {
+		key := strings.TrimSpace(part)
+		if key != "" {
+			keys = append(keys, key)
+		}
+	}
+	return keys
+}
+
+func scannerKeyID(key string) string {
+	sum := sha256.Sum256([]byte(key))
+	return hex.EncodeToString(sum[:])
+}
+
+type scanQuota struct {
+	mu      sync.Mutex
+	buckets map[string][]time.Time
+}
+
+func newScanQuota() *scanQuota {
+	return &scanQuota{buckets: make(map[string][]time.Time)}
+}
+
+func (q *scanQuota) allow(id string, limit int) bool {
+	now := time.Now()
+	q.mu.Lock()
+	defer q.mu.Unlock()
+	for key, stamps := range q.buckets {
+		fresh := freshScanStamps(stamps, now)
+		if len(fresh) == 0 {
+			delete(q.buckets, key)
+			continue
+		}
+		if len(fresh) != len(stamps) {
+			q.buckets[key] = fresh
+		}
+	}
+	recent := q.buckets[id]
+	if len(recent) >= limit {
+		return false
+	}
+	q.buckets[id] = append(recent, now)
+	return true
+}
+
+func freshScanStamps(stamps []time.Time, now time.Time) []time.Time {
+	fresh := make([]time.Time, 0, len(stamps))
+	for _, ts := range stamps {
+		if now.Sub(ts) < scanQuotaWindow {
+			fresh = append(fresh, ts)
+		}
+	}
+	return fresh
 }
 
 func itoa(n int) string {

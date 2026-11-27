@@ -31,6 +31,7 @@ type App struct {
 	store     *store.Store
 	pages     map[string]*template.Template
 	hits      *rateGate
+	scanAPI   *scanQuota
 	dummyHash []byte
 	exportDir string
 }
@@ -113,6 +114,7 @@ func New(st *store.Store, root string) (*App, error) {
 		store:     st,
 		pages:     parsed,
 		hits:      newRateGate(8, time.Minute),
+		scanAPI:   newScanQuota(),
 		dummyHash: dummy,
 		exportDir: filepath.Join(root, "data", "exports"),
 	}, nil

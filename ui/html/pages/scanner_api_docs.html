@@ -60,13 +60,31 @@
     </div>
     <p class="hint">{{if eq .Lang "en"}}The response also includes domain, subject, not_before, ok, and error. An unknown domain returns HTTP 400.{{else}}В ответе также есть domain, subject, not_before, ok и error. Неизвестный домен возвращает HTTP 400.{{end}}</p>
 
+    <h2>{{if eq .Lang "en"}}Rate Limits &amp; Enterprise API Keys{{else}}Тарифы и лимиты доступа (Rate Limits &amp; Enterprise API Keys){{end}}</h2>
+    <div class="field-table">
+      <div>
+        <p class="module">Public Tier</p>
+        <p>{{if eq .Lang "en"}}Free: 10 requests per minute from one IP address, with no key.{{else}}Бесплатно: 10 запросов в минуту с одного IP-адреса, без ключа.{{end}}</p>
+      </div>
+      <div>
+        <p class="module">Enterprise Tier</p>
+        <p>{{if eq .Lang "en"}}For banks and fintech: 1000 or more requests per minute with the header X-API-Key: &lt;your_key&gt;. The same key can be sent as ?api_key=.{{else}}Для банков и финтеха: 1000 и более запросов в минуту по заголовку X-API-Key: &lt;your_key&gt;. Тот же ключ можно передать параметром ?api_key=.{{end}}</p>
+      </div>
+    </div>
+    <div class="doc-actions">
+      <a class="doc-link" href="https://t.me/KvantumSafe_Lead_Bot" target="_blank" rel="noopener noreferrer">{{if eq .Lang "en"}}Request a key on Telegram{{else}}Запросить ключ в Telegram{{end}}</a>
+      <a class="doc-link" href="mailto:info@kvantumsafe.tech">{{if eq .Lang "en"}}Request a key by email{{else}}Запросить ключ по почте{{end}}</a>
+    </div>
+
     <h2>cURL</h2>
     <div class="code-block">
       {{if eq .Lang "en"}}
-      <pre id="curl-sample">curl "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en"</pre>
+      <pre id="curl-sample">curl "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en"
+# curl -H "X-API-Key: &lt;your_key&gt;" "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en"</pre>
       <button type="button" class="copy-btn" data-copy="curl-sample" data-label="Copy" data-copied="Copied">Copy</button>
       {{else}}
-      <pre id="curl-sample">curl "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru"</pre>
+      <pre id="curl-sample">curl "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru"
+# curl -H "X-API-Key: &lt;your_key&gt;" "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru"</pre>
       <button type="button" class="copy-btn" data-copy="curl-sample" data-label="Копировать" data-copied="Скопировано">Копировать</button>
       {{end}}
     </div>
@@ -83,7 +101,12 @@ import (
 )
 
 func main() {
-    resp, err := http.Get("https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en")
+    req, err := http.NewRequest(http.MethodGet, "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=en", nil)
+    if err != nil {
+        panic(err)
+    }
+    // req.Header.Set("X-API-Key", "&lt;your_key&gt;")
+    resp, err := http.DefaultClient.Do(req)
     if err != nil {
         panic(err)
     }
@@ -105,7 +128,12 @@ import (
 )
 
 func main() {
-    resp, err := http.Get("https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru")
+    req, err := http.NewRequest(http.MethodGet, "https://kvantumsafe.tech/scanner/api/scan?domain=bakai.kg&amp;lang=ru", nil)
+    if err != nil {
+        panic(err)
+    }
+    // req.Header.Set("X-API-Key", "&lt;your_key&gt;")
+    resp, err := http.DefaultClient.Do(req)
     if err != nil {
         panic(err)
     }

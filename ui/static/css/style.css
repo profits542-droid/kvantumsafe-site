@@ -15,7 +15,7 @@
 
 * { box-sizing: border-box; }
 
-html, body { margin: 0; min-height: 100%; }
+html, body { margin: 0; min-height: 100%; max-width: 100%; overflow-x: hidden; }
 
 body {
   color: var(--ink);
@@ -235,7 +235,9 @@ button.ghost {
 .desk h1 { font-size: clamp(1.8rem, 3vw, 2.5rem); }
 
 .table-wrap {
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: rgba(12, 26, 44, 0.75);
@@ -279,6 +281,7 @@ tr:last-child td { border-bottom: 0; }
 .footer-bar a { color: var(--muted); }
 
 .pro { display: grid; gap: 56px; }
+.pro > * { min-width: 0; }
 .pro-hero {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -431,7 +434,7 @@ textarea:focus { outline: 2px solid rgba(224, 182, 90, 0.7); outline-offset: 1px
   font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
   word-break: break-all;
 }
-.field-table { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field-table { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 100%; min-width: 0; }
 .field-table > div {
   padding: 16px;
   border: 1px solid rgba(224, 182, 90, 0.28);
@@ -439,17 +442,27 @@ textarea:focus { outline: 2px solid rgba(224, 182, 90, 0.7); outline-offset: 1px
   background: #1b263b;
 }
 .field-table p:last-child { margin: 0; color: #d5e2f0; }
-.code-block { position: relative; margin-top: 8px; }
+.code-block {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .code-block pre {
+  width: max-content;
+  min-width: 100%;
   margin: 0;
   padding: 18px 18px 56px;
-  overflow: auto;
+  overflow: visible;
   border: 1px solid rgba(224, 182, 90, 0.45);
   border-radius: 12px;
   background: #0a0f1d;
   color: #d7fff0;
   font-family: Consolas, "Cascadia Mono", ui-monospace, monospace;
-  white-space: pre-wrap;
+  white-space: pre;
 }
 .copy-btn {
   position: absolute;
@@ -525,4 +538,26 @@ button.mail-open:hover { background: rgba(224, 182, 90, 0.12); }
   .intake-row { flex-direction: column; }
   .intake-row button { width: 100%; }
   .page { padding-top: 28px; }
+}
+
+@media (max-width: 720px) {
+  .shell { width: min(var(--max), calc(100% - 20px)); }
+  .header-bar, .footer-bar {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+    min-height: 0;
+    padding: 10px 0;
+  }
+  .brand { order: 1; flex: 1 1 auto; min-width: 0; }
+  .lang-switch { order: 2; flex: 0 0 auto; margin-left: auto; }
+  .site-nav {
+    order: 3;
+    flex: 1 1 100%;
+    margin-left: 0;
+    gap: 8px;
+  }
+  .site-nav a { font-size: 0.82rem; line-height: 1.2; }
+  .site-nav a.nav-cloud { padding: 6px 10px; }
+  .footer-bar p { margin: 0; }
 }
